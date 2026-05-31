@@ -160,41 +160,7 @@ function AlbumList({
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {albums.map((a) => {
         const count = tracks.filter((t) => t.albumId === a.id).length;
-        return (
-          <div key={a.id} className="bg-muted/40 rounded-xl overflow-hidden group">
-            <Link
-              to="/artist/music/$albumId"
-              params={{ albumId: a.id }}
-              className="block aspect-square bg-background overflow-hidden relative"
-            >
-              {a.cover && <img src={a.cover} alt={a.title} className="w-full h-full object-cover group-hover:scale-105 transition" />}
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition grid place-items-center opacity-0 group-hover:opacity-100">
-                <Play className="w-10 h-10 text-white" />
-              </div>
-            </Link>
-            <div className="p-3">
-              <Link
-                to="/artist/music/$albumId"
-                params={{ albumId: a.id }}
-                className="font-bold truncate block hover:text-secondary"
-              >
-                {a.title}
-              </Link>
-              <p className="text-sm text-muted-foreground">{a.year} · {count} track{count !== 1 ? "s" : ""}</p>
-              <div className="mt-3 flex gap-3">
-                <button onClick={() => onEdit(a)} className="hover:text-secondary"><Pencil className="w-4 h-4" /></button>
-                <button
-                  onClick={() => {
-                    if (confirm(`Delete album "${a.title}"? Tracks will become singles.`)) albumsApi.remove(a.id);
-                  }}
-                  className="text-primary"
-                >
-                  <XCircle className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-          </div>
-        );
+        return <AlbumTile key={a.id} a={a} count={count} onEdit={onEdit} />;
       })}
     </div>
   );
