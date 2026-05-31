@@ -34,24 +34,32 @@ function ArtistPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-secondary/30 via-background to-background" />
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,oklch(0.75_0.12_195/0.4),transparent_70%)]" />
         <div className="relative max-w-6xl mx-auto px-6 pt-8 pb-12">
-          {/* Tabs */}
-          <div className="inline-flex bg-muted/60 backdrop-blur rounded-xl p-1.5 gap-1">
-            <button
-              onClick={() => setTab("home")}
-              className={`px-6 py-2 rounded-lg text-sm font-semibold transition ${
-                tab === "home" ? "bg-secondary text-secondary-foreground" : "text-foreground/70"
-              }`}
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            {/* Tabs */}
+            <div className="inline-flex bg-muted/60 backdrop-blur rounded-xl p-1.5 gap-1">
+              <button
+                onClick={() => setTab("home")}
+                className={`px-6 py-2 rounded-lg text-sm font-semibold transition ${
+                  tab === "home" ? "bg-secondary text-secondary-foreground" : "text-foreground/70"
+                }`}
+              >
+                Home
+              </button>
+              <button
+                onClick={() => setTab("music")}
+                className={`px-6 py-2 rounded-lg text-sm font-semibold transition ${
+                  tab === "music" ? "bg-secondary text-secondary-foreground" : "text-foreground/70"
+                }`}
+              >
+                Music
+              </button>
+            </div>
+            <Link
+              to="/artist/edit"
+              className="rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-bold hover:opacity-90 transition shadow-lg"
             >
-              Home
-            </button>
-            <button
-              onClick={() => setTab("music")}
-              className={`px-6 py-2 rounded-lg text-sm font-semibold transition ${
-                tab === "music" ? "bg-secondary text-secondary-foreground" : "text-foreground/70"
-              }`}
-            >
-              Music
-            </button>
+              Edit profil
+            </Link>
           </div>
 
           {/* Profile */}
