@@ -1,7 +1,8 @@
-import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
-import { useMemo, useState, useRef, useEffect } from "react";
-import { Play, Pause, SkipBack, SkipForward, Pencil, Music as MusicIcon } from "lucide-react";
-import { useTracks, useAlbums, useBlobUrl, type Track, type Album } from "@/lib/music-store";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Pause, Pencil, Play, SkipBack, SkipForward, Music as MusicIcon } from "lucide-react";
+import { useTracks, useAlbums, useBlobUrl, resetMusicStore, type Track, type Album } from "@/lib/music-store";
+import { DEMO_ALBUMS, DEMO_TRACKS, DEMO_ALBUM_TRACK_COUNT } from "@/lib/demo-music";
 
 export const Route = createFileRoute("/artist/discography")({
   head: () => ({
@@ -16,16 +17,25 @@ export const Route = createFileRoute("/artist/discography")({
 type Filter = "all" | "albums" | "single";
 
 function DiscographyPage() {
-  const tracks = useTracks();
-  const albums = useAlbums();
+  useEffect(() => { resetMusicStore(); }, []);
+  const userTracks = useTracks();
+  const userAlbums = useAlbums();
+
+  // Show demo content while the user hasn't added anything yet.
+  const usingDemo = userAlbums.length === 0 && userTracks.length === 0;
+  const albums = usingDemo ? DEMO_ALBUMS : userAlbums;
+  const tracks = usingDemo ? DEMO_TRACKS : userTracks;
+
   const [filter, setFilter] = useState<Filter>("all");
   const [playing, setPlaying] = useState<Track | null>(null);
 
   const latest = albums[0];
-  const latestTrackCount = useMemo(
-    () => (latest ? tracks.filter((t) => t.albumId === latest.id).length : 0),
-    [latest, tracks]
-  );
+  const latestTrackCount = useMemo(() => {
+    if (!latest) return 0;
+    if (usingDemo) return DEMO_ALBUM_TRACK_COUNT[latest.id] ?? 0;
+    return tracks.filter((t) => t.albumId === latest.id).length;
+  }, [latest, tracks, usingDemo]);
+
 
   const singles = useMemo(() => tracks.filter((t) => !t.albumId), [tracks]);
   const showAlbums = filter !== "single";
