@@ -332,5 +332,3 @@ function Player({ track, onClose }: { track: Track; onClose: () => void }) {
   );
 }
 
-// Suppress unused-import warning for useRouterState (kept for future tab-state).
-void useRouterState;
