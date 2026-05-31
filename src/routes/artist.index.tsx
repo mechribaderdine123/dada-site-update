@@ -5,7 +5,7 @@ import artistPortrait from "@/assets/artist-portrait.jpg";
 import album1 from "@/assets/album-1.jpg";
 import album2 from "@/assets/album-2.jpg";
 import album3 from "@/assets/album-3.jpg";
-import { useTracks, useAlbums } from "@/lib/music-store";
+import { useTracks, useAlbums, useBlobUrl } from "@/lib/music-store";
 
 export const Route = createFileRoute("/artist/")({
   head: () => ({
