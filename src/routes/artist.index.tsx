@@ -97,26 +97,7 @@ function ArtistPage() {
           <h2 className="text-3xl font-black">{tab === "music" ? "Music" : "Featured"}</h2>
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
             {featured.map((f) => (
-              <div key={f.id} className="group">
-                <div className="aspect-square overflow-hidden rounded-2xl bg-card grid place-items-center">
-                  {f.img ? (
-                    <img src={f.img} alt={f.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  ) : (
-                    <MusicIcon className="w-12 h-12 text-muted-foreground" />
-                  )}
-                </div>
-                <div className="mt-4 flex items-start justify-between gap-2">
-                  <div>
-                    <p className="text-2xl font-black">{f.title}</p>
-                    <p className="text-sm text-muted-foreground">{f.subtitle}</p>
-                  </div>
-                  {f.link && (
-                    <a href={f.link} target="_blank" rel="noreferrer" className="text-secondary hover:opacity-70 mt-2" aria-label="Listen">
-                      <ExternalLink className="w-5 h-5" />
-                    </a>
-                  )}
-                </div>
-              </div>
+              <FeaturedCard key={f.id} item={f} />
             ))}
           </div>
 
