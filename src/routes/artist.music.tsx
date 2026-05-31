@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useRef } from "react";
-import { Plus, Pencil, XCircle, Music as MusicIcon, X, Upload } from "lucide-react";
+import { Plus, Pencil, XCircle, Music as MusicIcon, X, Upload, Play } from "lucide-react";
 import { ArtistSidebar } from "@/components/ArtistSidebar";
 import {
   useTracks,
@@ -28,6 +28,9 @@ function MusicPage() {
 
   const tracks = useTracks();
   const albums = useAlbums();
+
+  // singles = tracks not attached to an album
+  const singles = tracks.filter((t) => !t.albumId);
 
   return (
     <div className="min-h-screen bg-background text-foreground flex">
@@ -78,9 +81,9 @@ function MusicPage() {
         {/* List */}
         <div className="mt-8">
           {view === "single" ? (
-            <TrackList tracks={tracks} onEdit={setTrackModal} />
+            <TrackList tracks={singles} albums={albums} onEdit={setTrackModal} />
           ) : (
-            <AlbumList albums={albums} onEdit={setAlbumModal} />
+            <AlbumList albums={albums} tracks={tracks} onEdit={setAlbumModal} />
           )}
         </div>
       </main>
@@ -88,6 +91,7 @@ function MusicPage() {
       {trackModal && (
         <TrackModal
           track={trackModal === "new" ? null : trackModal}
+          albums={albums}
           onClose={() => setTrackModal(null)}
         />
       )}
@@ -101,26 +105,35 @@ function MusicPage() {
   );
 }
 
-function TrackList({ tracks, onEdit }: { tracks: Track[]; onEdit: (t: Track) => void }) {
+function TrackList({
+  tracks,
+  albums,
+  onEdit,
+}: {
+  tracks: Track[];
+  albums: Album[];
+  onEdit: (t: Track) => void;
+}) {
   if (tracks.length === 0) {
     return (
       <div className="text-center py-16 text-muted-foreground">
-        No tracks yet. Click "Upload new track" to get started.
+        No singles yet. Click "Upload new track" to get started.
       </div>
     );
   }
   return (
     <div>
-      <div className="grid grid-cols-[1fr_120px_100px] gap-4 px-4 pb-3 text-sm font-bold">
+      <div className="grid grid-cols-[1fr_120px_180px_100px] gap-4 px-4 pb-3 text-sm font-bold">
         <div>track</div>
         <div>Genre</div>
+        <div>Publish to album</div>
         <div>Action</div>
       </div>
       <div className="space-y-3">
         {tracks.map((t) => (
           <div
             key={t.id}
-            className="grid grid-cols-[1fr_120px_100px] items-center gap-4 bg-muted/50 rounded-xl p-3"
+            className="grid grid-cols-[1fr_120px_180px_100px] items-center gap-4 bg-muted/50 rounded-xl p-3"
           >
             <div className="flex items-center gap-4 min-w-0">
               <div className="w-12 h-12 rounded-lg bg-background overflow-hidden shrink-0">
@@ -130,9 +143,25 @@ function TrackList({ tracks, onEdit }: { tracks: Track[]; onEdit: (t: Track) => 
                   <div className="w-full h-full grid place-items-center"><MusicIcon className="w-5 h-5 text-muted-foreground" /></div>
                 )}
               </div>
-              <p className="font-bold truncate">{t.title}</p>
+              <div className="min-w-0">
+                <p className="font-bold truncate">{t.title}</p>
+                {t.audioUrl && <audio src={t.audioUrl} controls className="h-7 mt-1 max-w-[260px]" />}
+              </div>
             </div>
             <div className="text-foreground/80">{t.genre}</div>
+            <div>
+              <select
+                value={t.albumId ?? ""}
+                onChange={(e) => tracksApi.update(t.id, { albumId: e.target.value || null })}
+                className="w-full rounded-lg bg-background border border-border px-2 py-1.5 text-xs"
+                disabled={albums.length === 0}
+              >
+                <option value="">— Single —</option>
+                {albums.map((a) => (
+                  <option key={a.id} value={a.id}>{a.title}</option>
+                ))}
+              </select>
+            </div>
             <div className="flex items-center gap-3">
               <button onClick={() => onEdit(t)} className="hover:text-secondary transition" aria-label="Edit">
                 <Pencil className="w-4 h-4" />
@@ -154,7 +183,15 @@ function TrackList({ tracks, onEdit }: { tracks: Track[]; onEdit: (t: Track) => 
   );
 }
 
-function AlbumList({ albums, onEdit }: { albums: Album[]; onEdit: (a: Album) => void }) {
+function AlbumList({
+  albums,
+  tracks,
+  onEdit,
+}: {
+  albums: Album[];
+  tracks: Track[];
+  onEdit: (a: Album) => void;
+}) {
   if (albums.length === 0) {
     return (
       <div className="text-center py-16 text-muted-foreground">
@@ -164,36 +201,52 @@ function AlbumList({ albums, onEdit }: { albums: Album[]; onEdit: (a: Album) => 
   }
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {albums.map((a) => (
-        <div key={a.id} className="bg-muted/40 rounded-xl overflow-hidden">
-          <div className="aspect-square bg-background overflow-hidden">
-            {a.cover && <img src={a.cover} alt={a.title} className="w-full h-full object-cover" />}
-          </div>
-          <div className="p-3">
-            <p className="font-bold truncate">{a.title}</p>
-            <p className="text-sm text-muted-foreground">{a.year}</p>
-            <div className="mt-3 flex gap-3">
-              <button onClick={() => onEdit(a)} className="hover:text-secondary"><Pencil className="w-4 h-4" /></button>
-              <button
-                onClick={() => {
-                  if (confirm(`Delete album "${a.title}"?`)) albumsApi.remove(a.id);
-                }}
-                className="text-primary"
+      {albums.map((a) => {
+        const count = tracks.filter((t) => t.albumId === a.id).length;
+        return (
+          <div key={a.id} className="bg-muted/40 rounded-xl overflow-hidden group">
+            <Link
+              to="/artist/music/$albumId"
+              params={{ albumId: a.id }}
+              className="block aspect-square bg-background overflow-hidden relative"
+            >
+              {a.cover && <img src={a.cover} alt={a.title} className="w-full h-full object-cover group-hover:scale-105 transition" />}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition grid place-items-center opacity-0 group-hover:opacity-100">
+                <Play className="w-10 h-10 text-white" />
+              </div>
+            </Link>
+            <div className="p-3">
+              <Link
+                to="/artist/music/$albumId"
+                params={{ albumId: a.id }}
+                className="font-bold truncate block hover:text-secondary"
               >
-                <XCircle className="w-5 h-5" />
-              </button>
+                {a.title}
+              </Link>
+              <p className="text-sm text-muted-foreground">{a.year} · {count} track{count !== 1 ? "s" : ""}</p>
+              <div className="mt-3 flex gap-3">
+                <button onClick={() => onEdit(a)} className="hover:text-secondary"><Pencil className="w-4 h-4" /></button>
+                <button
+                  onClick={() => {
+                    if (confirm(`Delete album "${a.title}"? Tracks will become singles.`)) albumsApi.remove(a.id);
+                  }}
+                  className="text-primary"
+                >
+                  <XCircle className="w-5 h-5" />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
 
 function ModalShell({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm grid place-items-center p-4">
-      <div className="w-full max-w-md bg-card rounded-2xl border border-border p-6 relative">
+    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm grid place-items-center p-4 overflow-y-auto">
+      <div className="w-full max-w-md bg-card rounded-2xl border border-border p-6 relative my-8">
         <button onClick={onClose} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
         <h2 className="text-xl font-black mb-5">{title}</h2>
         {children}
@@ -202,20 +255,35 @@ function ModalShell({ title, onClose, children }: { title: string; onClose: () =
   );
 }
 
-function TrackModal({ track, onClose }: { track: Track | null; onClose: () => void }) {
+export function TrackModal({
+  track,
+  albums,
+  defaultAlbumId,
+  onClose,
+}: {
+  track: Track | null;
+  albums: Album[];
+  defaultAlbumId?: string | null;
+  onClose: () => void;
+}) {
   const [title, setTitle] = useState(track?.title ?? "");
   const [genre, setGenre] = useState(track?.genre ?? "Hip hop");
   const [cover, setCover] = useState<string>(track?.cover ?? "");
   const [audioUrl, setAudioUrl] = useState(track?.audioUrl ?? "");
+  const [audioName, setAudioName] = useState<string>("");
+  const [albumId, setAlbumId] = useState<string | null>(track?.albumId ?? defaultAlbumId ?? null);
+  const [uploading, setUploading] = useState(false);
   const coverRef = useRef<HTMLInputElement>(null);
+  const audioRef = useRef<HTMLInputElement>(null);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
+    const payload = { title, genre, cover, audioUrl, albumId };
     if (track) {
-      tracksApi.update(track.id, { title, genre, cover, audioUrl });
+      tracksApi.update(track.id, payload);
     } else {
-      tracksApi.add({ title, genre, cover, audioUrl, albumId: null });
+      tracksApi.add(payload);
     }
     onClose();
   };
@@ -233,10 +301,61 @@ function TrackModal({ track, onClose }: { track: Track | null; onClose: () => vo
             <option>Hip hop</option><option>Trap</option><option>R&B</option><option>Rap</option><option>Drill</option>
           </select>
         </Field>
-        <Field label="Audio URL (YouTube, Spotify, mp3...)">
-          <input value={audioUrl} onChange={(e) => setAudioUrl(e.target.value)} type="url" placeholder="https://..."
-            className="w-full rounded-lg bg-background border border-border px-4 py-2.5 text-sm outline-none focus:border-secondary" />
+
+        <Field label="Audio file (mp3)">
+          <button
+            type="button"
+            onClick={() => audioRef.current?.click()}
+            className="w-full rounded-lg border-2 border-dashed border-border hover:border-secondary px-4 py-4 bg-background flex flex-col items-center gap-1 text-sm"
+          >
+            {uploading ? (
+              <span className="text-muted-foreground">Uploading…</span>
+            ) : audioUrl ? (
+              <>
+                <span className="font-semibold">{audioName || "Audio attached"}</span>
+                <span className="text-xs text-muted-foreground">Click to replace</span>
+              </>
+            ) : (
+              <>
+                <Upload className="w-5 h-5 text-muted-foreground" />
+                <span className="text-muted-foreground">Upload mp3 file</span>
+              </>
+            )}
+          </button>
+          {audioUrl && <audio src={audioUrl} controls className="w-full mt-2" />}
+          <input
+            ref={audioRef}
+            type="file"
+            accept="audio/mpeg,audio/mp3,audio/*"
+            className="hidden"
+            onChange={async (e) => {
+              const f = e.target.files?.[0];
+              if (!f) return;
+              setUploading(true);
+              try {
+                const url = await fileToDataUrl(f);
+                setAudioUrl(url);
+                setAudioName(f.name);
+              } finally {
+                setUploading(false);
+              }
+            }}
+          />
         </Field>
+
+        <Field label="Album">
+          <select
+            value={albumId ?? ""}
+            onChange={(e) => setAlbumId(e.target.value || null)}
+            className="w-full rounded-lg bg-background border border-border px-4 py-2.5 text-sm outline-none focus:border-secondary"
+          >
+            <option value="">Publish as single</option>
+            {albums.map((a) => (
+              <option key={a.id} value={a.id}>{a.title}</option>
+            ))}
+          </select>
+        </Field>
+
         <Field label="Cover image">
           <button
             type="button"
@@ -253,7 +372,7 @@ function TrackModal({ track, onClose }: { track: Track | null; onClose: () => vo
         <div className="flex gap-3 pt-2">
           <button type="button" onClick={onClose} className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold hover:bg-muted">Cancel</button>
           <button type="submit" className="flex-1 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-bold hover:opacity-90">
-            {track ? "Save" : "Upload"}
+            {track ? "Save" : "Publish"}
           </button>
         </div>
       </form>
