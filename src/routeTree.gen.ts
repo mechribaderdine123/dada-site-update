@@ -14,6 +14,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ArtistIndexRouteImport } from './routes/artist.index'
 import { Route as ArtistMusicRouteImport } from './routes/artist.music'
 import { Route as ArtistEditRouteImport } from './routes/artist.edit'
+import { Route as ArtistDiscographyRouteImport } from './routes/artist.discography'
 import { Route as ArtistAlbumAlbumIdRouteImport } from './routes/artist.album.$albumId'
 
 const ArtistRoute = ArtistRouteImport.update({
@@ -41,6 +42,11 @@ const ArtistEditRoute = ArtistEditRouteImport.update({
   path: '/edit',
   getParentRoute: () => ArtistRoute,
 } as any)
+const ArtistDiscographyRoute = ArtistDiscographyRouteImport.update({
+  id: '/discography',
+  path: '/discography',
+  getParentRoute: () => ArtistRoute,
+} as any)
 const ArtistAlbumAlbumIdRoute = ArtistAlbumAlbumIdRouteImport.update({
   id: '/album/$albumId',
   path: '/album/$albumId',
@@ -50,6 +56,7 @@ const ArtistAlbumAlbumIdRoute = ArtistAlbumAlbumIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/artist': typeof ArtistRouteWithChildren
+  '/artist/discography': typeof ArtistDiscographyRoute
   '/artist/edit': typeof ArtistEditRoute
   '/artist/music': typeof ArtistMusicRoute
   '/artist/': typeof ArtistIndexRoute
@@ -57,6 +64,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/artist/discography': typeof ArtistDiscographyRoute
   '/artist/edit': typeof ArtistEditRoute
   '/artist/music': typeof ArtistMusicRoute
   '/artist': typeof ArtistIndexRoute
@@ -66,6 +74,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/artist': typeof ArtistRouteWithChildren
+  '/artist/discography': typeof ArtistDiscographyRoute
   '/artist/edit': typeof ArtistEditRoute
   '/artist/music': typeof ArtistMusicRoute
   '/artist/': typeof ArtistIndexRoute
@@ -76,6 +85,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/artist'
+    | '/artist/discography'
     | '/artist/edit'
     | '/artist/music'
     | '/artist/'
@@ -83,6 +93,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/artist/discography'
     | '/artist/edit'
     | '/artist/music'
     | '/artist'
@@ -91,6 +102,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/artist'
+    | '/artist/discography'
     | '/artist/edit'
     | '/artist/music'
     | '/artist/'
@@ -139,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArtistEditRouteImport
       parentRoute: typeof ArtistRoute
     }
+    '/artist/discography': {
+      id: '/artist/discography'
+      path: '/discography'
+      fullPath: '/artist/discography'
+      preLoaderRoute: typeof ArtistDiscographyRouteImport
+      parentRoute: typeof ArtistRoute
+    }
     '/artist/album/$albumId': {
       id: '/artist/album/$albumId'
       path: '/album/$albumId'
@@ -150,6 +169,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface ArtistRouteChildren {
+  ArtistDiscographyRoute: typeof ArtistDiscographyRoute
   ArtistEditRoute: typeof ArtistEditRoute
   ArtistMusicRoute: typeof ArtistMusicRoute
   ArtistIndexRoute: typeof ArtistIndexRoute
@@ -157,6 +177,7 @@ interface ArtistRouteChildren {
 }
 
 const ArtistRouteChildren: ArtistRouteChildren = {
+  ArtistDiscographyRoute: ArtistDiscographyRoute,
   ArtistEditRoute: ArtistEditRoute,
   ArtistMusicRoute: ArtistMusicRoute,
   ArtistIndexRoute: ArtistIndexRoute,
@@ -173,13 +194,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

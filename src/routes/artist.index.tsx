@@ -57,15 +57,14 @@ function ArtistPage() {
               >
                 Home
               </button>
-              <button
-                onClick={() => setTab("music")}
-                className={`px-6 py-2 rounded-lg text-sm font-semibold transition ${
-                  tab === "music" ? "bg-secondary text-secondary-foreground" : "text-foreground/70"
-                }`}
+              <Link
+                to="/artist/discography"
+                className="px-6 py-2 rounded-lg text-sm font-semibold text-foreground/70 hover:text-foreground transition"
               >
                 Music
-              </button>
+              </Link>
             </div>
+
             <Link
               to="/artist/edit"
               className="rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-bold hover:opacity-90 transition shadow-lg"
