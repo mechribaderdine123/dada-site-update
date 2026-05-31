@@ -5,7 +5,7 @@ import { ArtistSidebar } from "@/components/ArtistSidebar";
 import { useTracks, useAlbums, tracksApi, useBlobUrl, type Track } from "@/lib/music-store";
 import { TrackModal } from "./artist.music";
 
-export const Route = createFileRoute("/artist/music/$albumId")({
+export const Route = createFileRoute("/artist/album/$albumId")({
   head: () => ({ meta: [{ title: "Album — Dada Réseaux Artist" }] }),
   component: AlbumDetailPage,
 });
