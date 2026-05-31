@@ -166,6 +166,76 @@ function AlbumList({
   );
 }
 
+function TrackRow({ t, albums, onEdit }: { t: Track; albums: Album[]; onEdit: (t: Track) => void }) {
+  const coverUrl = useBlobUrl(t.coverKey, t.cover);
+  const audioUrl = useBlobUrl(t.audioKey, t.audioUrl);
+  return (
+    <div className="grid grid-cols-[1fr_120px_180px_100px] items-center gap-4 bg-muted/50 rounded-xl p-3">
+      <div className="flex items-center gap-4 min-w-0">
+        <div className="w-12 h-12 rounded-lg bg-background overflow-hidden shrink-0">
+          {coverUrl ? (
+            <img src={coverUrl} alt={t.title} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full grid place-items-center"><MusicIcon className="w-5 h-5 text-muted-foreground" /></div>
+          )}
+        </div>
+        <div className="min-w-0">
+          <p className="font-bold truncate">{t.title}</p>
+          {audioUrl && <audio src={audioUrl} controls className="h-7 mt-1 max-w-[260px]" />}
+        </div>
+      </div>
+      <div className="text-foreground/80">{t.genre}</div>
+      <div>
+        <select
+          value={t.albumId ?? ""}
+          onChange={(e) => tracksApi.update(t.id, { albumId: e.target.value || null })}
+          className="w-full rounded-lg bg-background border border-border px-2 py-1.5 text-xs"
+          disabled={albums.length === 0}
+        >
+          <option value="">— Single —</option>
+          {albums.map((a) => (<option key={a.id} value={a.id}>{a.title}</option>))}
+        </select>
+      </div>
+      <div className="flex items-center gap-3">
+        <button onClick={() => onEdit(t)} className="hover:text-secondary transition" aria-label="Edit"><Pencil className="w-4 h-4" /></button>
+        <button
+          onClick={() => { if (confirm(`Delete "${t.title}"?`)) tracksApi.remove(t.id); }}
+          className="text-primary hover:opacity-70 transition" aria-label="Delete"
+        >
+          <XCircle className="w-5 h-5" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function AlbumTile({ a, count, onEdit }: { a: Album; count: number; onEdit: (a: Album) => void }) {
+  const coverUrl = useBlobUrl(a.coverKey, a.cover);
+  return (
+    <div className="bg-muted/40 rounded-xl overflow-hidden group">
+      <Link to="/artist/music/$albumId" params={{ albumId: a.id }} className="block aspect-square bg-background overflow-hidden relative">
+        {coverUrl && <img src={coverUrl} alt={a.title} className="w-full h-full object-cover group-hover:scale-105 transition" />}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition grid place-items-center opacity-0 group-hover:opacity-100">
+          <Play className="w-10 h-10 text-white" />
+        </div>
+      </Link>
+      <div className="p-3">
+        <Link to="/artist/music/$albumId" params={{ albumId: a.id }} className="font-bold truncate block hover:text-secondary">{a.title}</Link>
+        <p className="text-sm text-muted-foreground">{a.year} · {count} track{count !== 1 ? "s" : ""}</p>
+        <div className="mt-3 flex gap-3">
+          <button onClick={() => onEdit(a)} className="hover:text-secondary"><Pencil className="w-4 h-4" /></button>
+          <button
+            onClick={() => { if (confirm(`Delete album "${a.title}"? Tracks will become singles.`)) albumsApi.remove(a.id); }}
+            className="text-primary"
+          >
+            <XCircle className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ModalShell({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
     <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm grid place-items-center p-4 overflow-y-auto">
