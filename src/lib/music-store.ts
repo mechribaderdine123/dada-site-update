@@ -234,3 +234,27 @@ export function migrateLegacyStore() {
     // ignore
   }
 }
+
+/** One-time wipe: clear all user-added tracks/albums (metadata + blobs). */
+export async function resetMusicStore() {
+  if (typeof window === "undefined") return;
+  const flag = "dada.reset.v1";
+  if (localStorage.getItem(flag)) return;
+  try {
+    const tracks = read<Track>(TRACKS_KEY);
+    const albums = read<Album>(ALBUMS_KEY);
+    for (const t of tracks) {
+      if (t.audioKey) await idbDelete(t.audioKey).catch(() => {});
+      if (t.coverKey) await idbDelete(t.coverKey).catch(() => {});
+    }
+    for (const a of albums) {
+      if (a.coverKey) await idbDelete(a.coverKey).catch(() => {});
+    }
+    write(TRACKS_KEY, []);
+    write(ALBUMS_KEY, []);
+    localStorage.setItem(flag, "1");
+  } catch {
+    // ignore
+  }
+}
+
