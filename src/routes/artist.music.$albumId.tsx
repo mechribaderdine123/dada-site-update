@@ -12,7 +12,6 @@ export const Route = createFileRoute("/artist/music/$albumId")({
 
 function AlbumDetailPage() {
   const { albumId } = Route.useParams();
-  const navigate = useNavigate();
   const albums = useAlbums();
   const tracks = useTracks();
 
