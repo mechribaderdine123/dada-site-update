@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Plus, Pencil, XCircle, Music as MusicIcon, X, Upload, Play } from "lucide-react";
 import { ArtistSidebar } from "@/components/ArtistSidebar";
 import {
@@ -7,7 +7,9 @@ import {
   useAlbums,
   tracksApi,
   albumsApi,
-  fileToDataUrl,
+  idbPut,
+  useBlobUrl,
+  migrateLegacyStore,
   type Track,
   type Album,
 } from "@/lib/music-store";
