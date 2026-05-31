@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ArtistRouteImport } from './routes/artist'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ArtistEditRouteImport } from './routes/artist.edit'
 
 const ArtistRoute = ArtistRouteImport.update({
   id: '/artist',
@@ -22,31 +23,39 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArtistEditRoute = ArtistEditRouteImport.update({
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => ArtistRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/artist': typeof ArtistRoute
+  '/artist': typeof ArtistRouteWithChildren
+  '/artist/edit': typeof ArtistEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/artist': typeof ArtistRoute
+  '/artist': typeof ArtistRouteWithChildren
+  '/artist/edit': typeof ArtistEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/artist': typeof ArtistRoute
+  '/artist': typeof ArtistRouteWithChildren
+  '/artist/edit': typeof ArtistEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/artist'
+  fullPaths: '/' | '/artist' | '/artist/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/artist'
-  id: '__root__' | '/' | '/artist'
+  to: '/' | '/artist' | '/artist/edit'
+  id: '__root__' | '/' | '/artist' | '/artist/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ArtistRoute: typeof ArtistRoute
+  ArtistRoute: typeof ArtistRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -65,13 +74,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/artist/edit': {
+      id: '/artist/edit'
+      path: '/edit'
+      fullPath: '/artist/edit'
+      preLoaderRoute: typeof ArtistEditRouteImport
+      parentRoute: typeof ArtistRoute
+    }
   }
 }
 
+interface ArtistRouteChildren {
+  ArtistEditRoute: typeof ArtistEditRoute
+}
+
+const ArtistRouteChildren: ArtistRouteChildren = {
+  ArtistEditRoute: ArtistEditRoute,
+}
+
+const ArtistRouteWithChildren =
+  ArtistRoute._addFileChildren(ArtistRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ArtistRoute: ArtistRoute,
+  ArtistRoute: ArtistRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
