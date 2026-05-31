@@ -14,7 +14,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ArtistIndexRouteImport } from './routes/artist.index'
 import { Route as ArtistMusicRouteImport } from './routes/artist.music'
 import { Route as ArtistEditRouteImport } from './routes/artist.edit'
-import { Route as ArtistMusicAlbumIdRouteImport } from './routes/artist.music.$albumId'
+import { Route as ArtistAlbumAlbumIdRouteImport } from './routes/artist.album.$albumId'
 
 const ArtistRoute = ArtistRouteImport.update({
   id: '/artist',
@@ -41,35 +41,35 @@ const ArtistEditRoute = ArtistEditRouteImport.update({
   path: '/edit',
   getParentRoute: () => ArtistRoute,
 } as any)
-const ArtistMusicAlbumIdRoute = ArtistMusicAlbumIdRouteImport.update({
-  id: '/$albumId',
-  path: '/$albumId',
-  getParentRoute: () => ArtistMusicRoute,
+const ArtistAlbumAlbumIdRoute = ArtistAlbumAlbumIdRouteImport.update({
+  id: '/album/$albumId',
+  path: '/album/$albumId',
+  getParentRoute: () => ArtistRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/artist': typeof ArtistRouteWithChildren
   '/artist/edit': typeof ArtistEditRoute
-  '/artist/music': typeof ArtistMusicRouteWithChildren
+  '/artist/music': typeof ArtistMusicRoute
   '/artist/': typeof ArtistIndexRoute
-  '/artist/music/$albumId': typeof ArtistMusicAlbumIdRoute
+  '/artist/album/$albumId': typeof ArtistAlbumAlbumIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/artist/edit': typeof ArtistEditRoute
-  '/artist/music': typeof ArtistMusicRouteWithChildren
+  '/artist/music': typeof ArtistMusicRoute
   '/artist': typeof ArtistIndexRoute
-  '/artist/music/$albumId': typeof ArtistMusicAlbumIdRoute
+  '/artist/album/$albumId': typeof ArtistAlbumAlbumIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/artist': typeof ArtistRouteWithChildren
   '/artist/edit': typeof ArtistEditRoute
-  '/artist/music': typeof ArtistMusicRouteWithChildren
+  '/artist/music': typeof ArtistMusicRoute
   '/artist/': typeof ArtistIndexRoute
-  '/artist/music/$albumId': typeof ArtistMusicAlbumIdRoute
+  '/artist/album/$albumId': typeof ArtistAlbumAlbumIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -79,14 +79,14 @@ export interface FileRouteTypes {
     | '/artist/edit'
     | '/artist/music'
     | '/artist/'
-    | '/artist/music/$albumId'
+    | '/artist/album/$albumId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/artist/edit'
     | '/artist/music'
     | '/artist'
-    | '/artist/music/$albumId'
+    | '/artist/album/$albumId'
   id:
     | '__root__'
     | '/'
@@ -94,7 +94,7 @@ export interface FileRouteTypes {
     | '/artist/edit'
     | '/artist/music'
     | '/artist/'
-    | '/artist/music/$albumId'
+    | '/artist/album/$albumId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -139,38 +139,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArtistEditRouteImport
       parentRoute: typeof ArtistRoute
     }
-    '/artist/music/$albumId': {
-      id: '/artist/music/$albumId'
-      path: '/$albumId'
-      fullPath: '/artist/music/$albumId'
-      preLoaderRoute: typeof ArtistMusicAlbumIdRouteImport
-      parentRoute: typeof ArtistMusicRoute
+    '/artist/album/$albumId': {
+      id: '/artist/album/$albumId'
+      path: '/album/$albumId'
+      fullPath: '/artist/album/$albumId'
+      preLoaderRoute: typeof ArtistAlbumAlbumIdRouteImport
+      parentRoute: typeof ArtistRoute
     }
   }
 }
 
-interface ArtistMusicRouteChildren {
-  ArtistMusicAlbumIdRoute: typeof ArtistMusicAlbumIdRoute
-}
-
-const ArtistMusicRouteChildren: ArtistMusicRouteChildren = {
-  ArtistMusicAlbumIdRoute: ArtistMusicAlbumIdRoute,
-}
-
-const ArtistMusicRouteWithChildren = ArtistMusicRoute._addFileChildren(
-  ArtistMusicRouteChildren,
-)
-
 interface ArtistRouteChildren {
   ArtistEditRoute: typeof ArtistEditRoute
-  ArtistMusicRoute: typeof ArtistMusicRouteWithChildren
+  ArtistMusicRoute: typeof ArtistMusicRoute
   ArtistIndexRoute: typeof ArtistIndexRoute
+  ArtistAlbumAlbumIdRoute: typeof ArtistAlbumAlbumIdRoute
 }
 
 const ArtistRouteChildren: ArtistRouteChildren = {
   ArtistEditRoute: ArtistEditRoute,
-  ArtistMusicRoute: ArtistMusicRouteWithChildren,
+  ArtistMusicRoute: ArtistMusicRoute,
   ArtistIndexRoute: ArtistIndexRoute,
+  ArtistAlbumAlbumIdRoute: ArtistAlbumAlbumIdRoute,
 }
 
 const ArtistRouteWithChildren =
@@ -183,3 +173,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
