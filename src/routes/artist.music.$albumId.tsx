@@ -95,44 +95,7 @@ function AlbumDetailPage() {
           ) : (
             <div className="space-y-3">
               {albumTracks.map((t, i) => (
-                <div key={t.id} className="flex items-center gap-4 bg-muted/50 rounded-xl p-3">
-                  <span className="w-6 text-center text-muted-foreground font-bold">{i + 1}</span>
-                  <div className="w-12 h-12 rounded-lg bg-background overflow-hidden shrink-0">
-                    {t.cover ? (
-                      <img src={t.cover} alt={t.title} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full grid place-items-center"><MusicIcon className="w-5 h-5 text-muted-foreground" /></div>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-bold truncate">{t.title}</p>
-                    <p className="text-xs text-muted-foreground">{t.genre}</p>
-                    {t.audioUrl && <audio src={t.audioUrl} controls className="h-7 mt-1 max-w-full" />}
-                  </div>
-                  <button
-                    onClick={() => setTrackModal(t)}
-                    className="hover:text-secondary"
-                    aria-label="Edit track"
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => tracksApi.update(t.id, { albumId: null })}
-                    className="text-foreground/70 hover:text-foreground text-xs font-semibold border border-border rounded-lg px-2 py-1"
-                    title="Remove from album (keeps as single)"
-                  >
-                    Remove
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (confirm(`Delete "${t.title}" permanently?`)) tracksApi.remove(t.id);
-                    }}
-                    className="text-primary hover:opacity-70"
-                    aria-label="Delete track"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
+                <AlbumTrackRow key={t.id} t={t} index={i} onEdit={() => setTrackModal(t)} />
               ))}
             </div>
           )}
