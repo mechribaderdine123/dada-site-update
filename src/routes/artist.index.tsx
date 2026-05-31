@@ -33,10 +33,10 @@ function ArtistPage() {
 
   // Build featured items from user content; fallback to defaults if empty
   const userItems = [
-    ...albums.map((a) => ({ id: a.id, img: a.cover, title: a.title, subtitle: `album ${a.year}`, link: undefined as string | undefined })),
-    ...tracks.map((t) => ({ id: t.id, img: t.cover, title: t.title, subtitle: t.genre, link: t.audioUrl })),
+    ...albums.map((a) => ({ id: a.id, img: a.cover, imgKey: a.coverKey, title: a.title, subtitle: `album ${a.year}`, link: undefined as string | undefined, linkKey: undefined as string | undefined })),
+    ...tracks.map((t) => ({ id: t.id, img: t.cover, imgKey: t.coverKey, title: t.title, subtitle: t.genre, link: t.audioUrl, linkKey: t.audioKey })),
   ];
-  const featured = userItems.length > 0 ? userItems.slice(0, 6) : fallbackFeatured.map((f, i) => ({ id: String(i), ...f, link: undefined }));
+  const featured = userItems.length > 0 ? userItems.slice(0, 6) : fallbackFeatured.map((f, i) => ({ id: String(i), ...f, imgKey: undefined, link: undefined, linkKey: undefined }));
 
 
   return (
