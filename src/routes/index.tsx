@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import heroDancers from "@/assets/hero-dancers.jpg";
 import artistPortrait from "@/assets/artist-portrait.jpg";
@@ -48,9 +48,9 @@ function Index() {
             <p className="mt-4 text-lg md:text-xl font-semibold text-white/95">
               Un espace conçu pour vous mettre en lumière
             </p>
-            <button className="mt-8 rounded-md bg-primary text-primary-foreground px-6 py-2.5 text-sm font-bold hover:opacity-90 transition shadow-lg">
+            <Link to="/artist" className="mt-8 inline-block rounded-md bg-primary text-primary-foreground px-6 py-2.5 text-sm font-bold hover:opacity-90 transition shadow-lg">
               Sign in artist
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -107,9 +107,9 @@ function Index() {
             Rejoignez la plateforme artistique de Dada Hip Hop Academy et partagez votre univers.
             Décrivez votre style, présentez vos œuvres, ajoutez vos liens sociaux et construisez votre présence professionnelle.
           </p>
-          <button className="mt-8 rounded-md bg-primary text-primary-foreground px-6 py-2.5 text-sm font-bold hover:opacity-90 transition shadow-lg">
+          <Link to="/artist" className="mt-8 inline-block rounded-md bg-primary text-primary-foreground px-6 py-2.5 text-sm font-bold hover:opacity-90 transition shadow-lg">
             Sign in artist
-          </button>
+          </Link>
         </div>
       </section>
     </div>
