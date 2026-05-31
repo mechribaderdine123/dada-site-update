@@ -79,20 +79,7 @@ function AlbumDetailPage() {
             <p className="text-sm font-bold mb-3">Pick singles to add to this album</p>
             <div className="space-y-2">
               {availableSingles.map((s) => (
-                <div key={s.id} className="flex items-center justify-between gap-3 bg-background rounded-lg p-2">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 rounded bg-muted overflow-hidden shrink-0">
-                      {s.cover && <img src={s.cover} alt={s.title} className="w-full h-full object-cover" />}
-                    </div>
-                    <p className="font-semibold truncate">{s.title}</p>
-                  </div>
-                  <button
-                    onClick={() => tracksApi.update(s.id, { albumId })}
-                    className="rounded-lg bg-secondary text-secondary-foreground px-3 py-1.5 text-xs font-bold hover:opacity-90"
-                  >
-                    Add
-                  </button>
-                </div>
+                <SingleAddRow key={s.id} s={s} onAdd={() => tracksApi.update(s.id, { albumId })} />
               ))}
             </div>
           </div>
