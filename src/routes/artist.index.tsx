@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Mail, Phone, Youtube, Instagram, Facebook } from "lucide-react";
+import { Mail, Phone, Youtube, Instagram, Facebook, Music as MusicIcon, ExternalLink } from "lucide-react";
 import artistPortrait from "@/assets/artist-portrait.jpg";
 import album1 from "@/assets/album-1.jpg";
 import album2 from "@/assets/album-2.jpg";
 import album3 from "@/assets/album-3.jpg";
+import { useTracks, useAlbums } from "@/lib/music-store";
 
 export const Route = createFileRoute("/artist/")({
   head: () => ({
@@ -18,14 +19,25 @@ export const Route = createFileRoute("/artist/")({
 
 const bio = "An artist who transforms simple ideas into expressive visual stories, blending emotion, texture, and modern aesthetics. Their work explores connection, identity, and the beauty hidden in everyday moments.";
 
-const featured = [
+const fallbackFeatured = [
   { img: album1, title: "Album name", subtitle: "album 2025" },
   { img: album2, title: "Track name", subtitle: "album 2025" },
   { img: album3, title: "Album name", subtitle: "album 2025" },
 ];
 
+
 function ArtistPage() {
   const [tab, setTab] = useState<"home" | "music">("home");
+  const tracks = useTracks();
+  const albums = useAlbums();
+
+  // Build featured items from user content; fallback to defaults if empty
+  const userItems = [
+    ...albums.map((a) => ({ id: a.id, img: a.cover, title: a.title, subtitle: `album ${a.year}`, link: undefined as string | undefined })),
+    ...tracks.map((t) => ({ id: t.id, img: t.cover, title: t.title, subtitle: t.genre, link: t.audioUrl })),
+  ];
+  const featured = userItems.length > 0 ? userItems.slice(0, 6) : fallbackFeatured.map((f, i) => ({ id: String(i), ...f, link: undefined }));
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -82,18 +94,32 @@ function ArtistPage() {
       {/* Featured */}
       <section className="bg-background py-16 px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-black">Featured</h2>
+          <h2 className="text-3xl font-black">{tab === "music" ? "Music" : "Featured"}</h2>
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            {featured.map((f, i) => (
-              <div key={i} className="group cursor-pointer">
-                <div className="aspect-square overflow-hidden rounded-2xl bg-card">
-                  <img src={f.img} alt={f.title} width={800} height={800} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            {featured.map((f) => (
+              <div key={f.id} className="group">
+                <div className="aspect-square overflow-hidden rounded-2xl bg-card grid place-items-center">
+                  {f.img ? (
+                    <img src={f.img} alt={f.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  ) : (
+                    <MusicIcon className="w-12 h-12 text-muted-foreground" />
+                  )}
                 </div>
-                <p className="mt-4 text-2xl font-black">{f.title}</p>
-                <p className="text-sm text-muted-foreground">{f.subtitle}</p>
+                <div className="mt-4 flex items-start justify-between gap-2">
+                  <div>
+                    <p className="text-2xl font-black">{f.title}</p>
+                    <p className="text-sm text-muted-foreground">{f.subtitle}</p>
+                  </div>
+                  {f.link && (
+                    <a href={f.link} target="_blank" rel="noreferrer" className="text-secondary hover:opacity-70 mt-2" aria-label="Listen">
+                      <ExternalLink className="w-5 h-5" />
+                    </a>
+                  )}
+                </div>
               </div>
             ))}
           </div>
+
         </div>
       </section>
 

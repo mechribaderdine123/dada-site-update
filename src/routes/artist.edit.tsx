@@ -1,6 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState, useRef } from "react";
-import { Upload, Mail, Phone, Youtube, Facebook, Instagram, Music2, LogOut } from "lucide-react";
+import { Upload, Mail, Phone, Youtube, Facebook, Instagram, Music2 } from "lucide-react";
+import { ArtistSidebar } from "@/components/ArtistSidebar";
 
 export const Route = createFileRoute("/artist/edit")({
   head: () => ({
@@ -10,7 +11,6 @@ export const Route = createFileRoute("/artist/edit")({
 });
 
 function EditProfilePage() {
-  const [tab, setTab] = useState<"profil" | "music">("profil");
   const [preview, setPreview] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -21,32 +21,8 @@ function EditProfilePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex">
-      {/* Sidebar */}
-      <aside className="w-64 shrink-0 bg-muted/40 p-6 flex flex-col gap-2 border-r border-border/50">
-        <Link to="/artist" className="font-bold text-lg mb-8 hover:text-secondary transition">artist name</Link>
-        <button
-          onClick={() => setTab("profil")}
-          className={`text-left px-4 py-2 rounded-lg font-semibold text-sm transition ${
-            tab === "profil" ? "bg-secondary text-secondary-foreground" : "hover:bg-muted"
-          }`}
-        >
-          Profil
-        </button>
-        <button
-          onClick={() => setTab("music")}
-          className={`text-left px-4 py-2 rounded-lg font-semibold text-sm transition ${
-            tab === "music" ? "bg-secondary text-secondary-foreground" : "hover:bg-muted"
-          }`}
-        >
-          Music
-        </button>
-        <Link
-          to="/"
-          className="mt-4 flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm bg-background border border-border hover:bg-muted transition"
-        >
-          <LogOut className="w-4 h-4" /> Logout
-        </Link>
-      </aside>
+      <ArtistSidebar />
+
 
       {/* Content */}
       <main className="flex-1 p-8 md:p-12 max-w-5xl">
