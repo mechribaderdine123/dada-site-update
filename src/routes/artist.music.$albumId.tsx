@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowLeft, Plus, Music as MusicIcon, Trash2, Pencil } from "lucide-react";
 import { ArtistSidebar } from "@/components/ArtistSidebar";
-import { useTracks, useAlbums, tracksApi, type Track } from "@/lib/music-store";
+import { useTracks, useAlbums, tracksApi, useBlobUrl, type Track } from "@/lib/music-store";
 import { TrackModal } from "./artist.music";
 
 export const Route = createFileRoute("/artist/music/$albumId")({
