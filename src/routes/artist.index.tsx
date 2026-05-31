@@ -132,3 +132,40 @@ function ArtistPage() {
     </div>
   );
 }
+
+type FeaturedItem = {
+  id: string;
+  img?: string;
+  imgKey?: string;
+  title: string;
+  subtitle: string;
+  link?: string;
+  linkKey?: string;
+};
+
+function FeaturedCard({ item }: { item: FeaturedItem }) {
+  const img = useBlobUrl(item.imgKey, item.img);
+  const audio = useBlobUrl(item.linkKey, item.link);
+  return (
+    <div className="group">
+      <div className="aspect-square overflow-hidden rounded-2xl bg-card grid place-items-center">
+        {img ? (
+          <img src={img} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        ) : (
+          <MusicIcon className="w-12 h-12 text-muted-foreground" />
+        )}
+      </div>
+      <div className="mt-4 flex items-start justify-between gap-2">
+        <div>
+          <p className="text-2xl font-black">{item.title}</p>
+          <p className="text-sm text-muted-foreground">{item.subtitle}</p>
+        </div>
+        {audio && (
+          <a href={audio} target="_blank" rel="noreferrer" className="text-secondary hover:opacity-70 mt-2" aria-label="Listen">
+            <ExternalLink className="w-5 h-5" />
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
