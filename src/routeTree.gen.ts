@@ -9,19 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ArtistRouteImport } from './routes/artist'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ArtistIndexRouteImport } from './routes/artist.index'
 import { Route as ArtistEditRouteImport } from './routes/artist.edit'
 
+const ArtistRoute = ArtistRouteImport.update({
+  id: '/artist',
+  path: '/artist',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArtistIndexRoute = ArtistIndexRouteImport.update({
-  id: '/artist/',
-  path: '/artist/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => ArtistRoute,
 } as any)
 const ArtistEditRoute = ArtistEditRouteImport.update({
   id: '/edit',
@@ -31,6 +37,7 @@ const ArtistEditRoute = ArtistEditRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/artist': typeof ArtistRouteWithChildren
   '/artist/edit': typeof ArtistEditRoute
   '/artist/': typeof ArtistIndexRoute
 }
@@ -42,24 +49,32 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/artist': typeof ArtistRouteWithChildren
   '/artist/edit': typeof ArtistEditRoute
   '/artist/': typeof ArtistIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/artist/edit' | '/artist/'
+  fullPaths: '/' | '/artist' | '/artist/edit' | '/artist/'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/artist/edit' | '/artist'
-  id: '__root__' | '/' | '/artist/edit' | '/artist/'
+  id: '__root__' | '/' | '/artist' | '/artist/edit' | '/artist/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ArtistIndexRoute: typeof ArtistIndexRoute
+  ArtistRoute: typeof ArtistRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/artist': {
+      id: '/artist'
+      path: '/artist'
+      fullPath: '/artist'
+      preLoaderRoute: typeof ArtistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -69,10 +84,10 @@ declare module '@tanstack/react-router' {
     }
     '/artist/': {
       id: '/artist/'
-      path: '/artist'
+      path: '/'
       fullPath: '/artist/'
       preLoaderRoute: typeof ArtistIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ArtistRoute
     }
     '/artist/edit': {
       id: '/artist/edit'
@@ -84,20 +99,23 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface ArtistRouteChildren {
+  ArtistEditRoute: typeof ArtistEditRoute
+  ArtistIndexRoute: typeof ArtistIndexRoute
+}
+
+const ArtistRouteChildren: ArtistRouteChildren = {
+  ArtistEditRoute: ArtistEditRoute,
+  ArtistIndexRoute: ArtistIndexRoute,
+}
+
+const ArtistRouteWithChildren =
+  ArtistRoute._addFileChildren(ArtistRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ArtistIndexRoute: ArtistIndexRoute,
+  ArtistRoute: ArtistRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
