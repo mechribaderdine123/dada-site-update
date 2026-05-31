@@ -48,13 +48,8 @@ function AlbumDetailPage() {
 
         {/* Header */}
         <div className="flex flex-col md:flex-row gap-8 items-start">
-          <div className="w-48 h-48 rounded-2xl overflow-hidden bg-muted shrink-0">
-            {album?.cover ? (
-              <img src={album.cover} alt={album.title} className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full grid place-items-center text-muted-foreground"><MusicIcon className="w-10 h-10" /></div>
-            )}
-          </div>
+          <AlbumCover album={album} />
+
           <div className="flex-1">
             <p className="text-sm uppercase tracking-widest text-muted-foreground">Album</p>
             <h1 className="mt-1 text-4xl md:text-5xl font-black text-secondary">{album?.title}</h1>
