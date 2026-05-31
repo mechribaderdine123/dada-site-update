@@ -5,7 +5,7 @@ import artistPortrait from "@/assets/artist-portrait.jpg";
 import album1 from "@/assets/album-1.jpg";
 import album2 from "@/assets/album-2.jpg";
 import album3 from "@/assets/album-3.jpg";
-import { useTracks, useAlbums } from "@/lib/music-store";
+import { useTracks, useAlbums, useBlobUrl } from "@/lib/music-store";
 
 export const Route = createFileRoute("/artist/")({
   head: () => ({
@@ -33,10 +33,10 @@ function ArtistPage() {
 
   // Build featured items from user content; fallback to defaults if empty
   const userItems = [
-    ...albums.map((a) => ({ id: a.id, img: a.cover, title: a.title, subtitle: `album ${a.year}`, link: undefined as string | undefined })),
-    ...tracks.map((t) => ({ id: t.id, img: t.cover, title: t.title, subtitle: t.genre, link: t.audioUrl })),
+    ...albums.map((a) => ({ id: a.id, img: a.cover, imgKey: a.coverKey, title: a.title, subtitle: `album ${a.year}`, link: undefined as string | undefined, linkKey: undefined as string | undefined })),
+    ...tracks.map((t) => ({ id: t.id, img: t.cover, imgKey: t.coverKey, title: t.title, subtitle: t.genre, link: t.audioUrl, linkKey: t.audioKey })),
   ];
-  const featured = userItems.length > 0 ? userItems.slice(0, 6) : fallbackFeatured.map((f, i) => ({ id: String(i), ...f, link: undefined }));
+  const featured = userItems.length > 0 ? userItems.slice(0, 6) : fallbackFeatured.map((f, i) => ({ id: String(i), ...f, imgKey: undefined, link: undefined, linkKey: undefined }));
 
 
   return (
@@ -97,26 +97,7 @@ function ArtistPage() {
           <h2 className="text-3xl font-black">{tab === "music" ? "Music" : "Featured"}</h2>
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
             {featured.map((f) => (
-              <div key={f.id} className="group">
-                <div className="aspect-square overflow-hidden rounded-2xl bg-card grid place-items-center">
-                  {f.img ? (
-                    <img src={f.img} alt={f.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  ) : (
-                    <MusicIcon className="w-12 h-12 text-muted-foreground" />
-                  )}
-                </div>
-                <div className="mt-4 flex items-start justify-between gap-2">
-                  <div>
-                    <p className="text-2xl font-black">{f.title}</p>
-                    <p className="text-sm text-muted-foreground">{f.subtitle}</p>
-                  </div>
-                  {f.link && (
-                    <a href={f.link} target="_blank" rel="noreferrer" className="text-secondary hover:opacity-70 mt-2" aria-label="Listen">
-                      <ExternalLink className="w-5 h-5" />
-                    </a>
-                  )}
-                </div>
-              </div>
+              <FeaturedCard key={f.id} item={f} />
             ))}
           </div>
 
@@ -148,6 +129,43 @@ function ArtistPage() {
           <Link to="/" className="text-sm text-muted-foreground hover:text-secondary transition">← Back to home</Link>
         </div>
       </footer>
+    </div>
+  );
+}
+
+type FeaturedItem = {
+  id: string;
+  img?: string;
+  imgKey?: string;
+  title: string;
+  subtitle: string;
+  link?: string;
+  linkKey?: string;
+};
+
+function FeaturedCard({ item }: { item: FeaturedItem }) {
+  const img = useBlobUrl(item.imgKey, item.img);
+  const audio = useBlobUrl(item.linkKey, item.link);
+  return (
+    <div className="group">
+      <div className="aspect-square overflow-hidden rounded-2xl bg-card grid place-items-center">
+        {img ? (
+          <img src={img} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        ) : (
+          <MusicIcon className="w-12 h-12 text-muted-foreground" />
+        )}
+      </div>
+      <div className="mt-4 flex items-start justify-between gap-2">
+        <div>
+          <p className="text-2xl font-black">{item.title}</p>
+          <p className="text-sm text-muted-foreground">{item.subtitle}</p>
+        </div>
+        {audio && (
+          <a href={audio} target="_blank" rel="noreferrer" className="text-secondary hover:opacity-70 mt-2" aria-label="Listen">
+            <ExternalLink className="w-5 h-5" />
+          </a>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Plus, Pencil, XCircle, Music as MusicIcon, X, Upload, Play } from "lucide-react";
 import { ArtistSidebar } from "@/components/ArtistSidebar";
 import {
@@ -7,7 +7,9 @@ import {
   useAlbums,
   tracksApi,
   albumsApi,
-  fileToDataUrl,
+  idbPut,
+  useBlobUrl,
+  migrateLegacyStore,
   type Track,
   type Album,
 } from "@/lib/music-store";
@@ -22,10 +24,10 @@ export const Route = createFileRoute("/artist/music")({
 type View = "single" | "album";
 
 function MusicPage() {
+  useEffect(() => { migrateLegacyStore(); }, []);
   const [view, setView] = useState<View>("single");
   const [trackModal, setTrackModal] = useState<Track | "new" | null>(null);
   const [albumModal, setAlbumModal] = useState<Album | "new" | null>(null);
-
   const tracks = useTracks();
   const albums = useAlbums();
 
@@ -131,52 +133,7 @@ function TrackList({
       </div>
       <div className="space-y-3">
         {tracks.map((t) => (
-          <div
-            key={t.id}
-            className="grid grid-cols-[1fr_120px_180px_100px] items-center gap-4 bg-muted/50 rounded-xl p-3"
-          >
-            <div className="flex items-center gap-4 min-w-0">
-              <div className="w-12 h-12 rounded-lg bg-background overflow-hidden shrink-0">
-                {t.cover ? (
-                  <img src={t.cover} alt={t.title} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full grid place-items-center"><MusicIcon className="w-5 h-5 text-muted-foreground" /></div>
-                )}
-              </div>
-              <div className="min-w-0">
-                <p className="font-bold truncate">{t.title}</p>
-                {t.audioUrl && <audio src={t.audioUrl} controls className="h-7 mt-1 max-w-[260px]" />}
-              </div>
-            </div>
-            <div className="text-foreground/80">{t.genre}</div>
-            <div>
-              <select
-                value={t.albumId ?? ""}
-                onChange={(e) => tracksApi.update(t.id, { albumId: e.target.value || null })}
-                className="w-full rounded-lg bg-background border border-border px-2 py-1.5 text-xs"
-                disabled={albums.length === 0}
-              >
-                <option value="">— Single —</option>
-                {albums.map((a) => (
-                  <option key={a.id} value={a.id}>{a.title}</option>
-                ))}
-              </select>
-            </div>
-            <div className="flex items-center gap-3">
-              <button onClick={() => onEdit(t)} className="hover:text-secondary transition" aria-label="Edit">
-                <Pencil className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => {
-                  if (confirm(`Delete "${t.title}"?`)) tracksApi.remove(t.id);
-                }}
-                className="text-primary hover:opacity-70 transition"
-                aria-label="Delete"
-              >
-                <XCircle className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
+          <TrackRow key={t.id} t={t} albums={albums} onEdit={onEdit} />
         ))}
       </div>
     </div>
@@ -203,42 +160,78 @@ function AlbumList({
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {albums.map((a) => {
         const count = tracks.filter((t) => t.albumId === a.id).length;
-        return (
-          <div key={a.id} className="bg-muted/40 rounded-xl overflow-hidden group">
-            <Link
-              to="/artist/music/$albumId"
-              params={{ albumId: a.id }}
-              className="block aspect-square bg-background overflow-hidden relative"
-            >
-              {a.cover && <img src={a.cover} alt={a.title} className="w-full h-full object-cover group-hover:scale-105 transition" />}
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition grid place-items-center opacity-0 group-hover:opacity-100">
-                <Play className="w-10 h-10 text-white" />
-              </div>
-            </Link>
-            <div className="p-3">
-              <Link
-                to="/artist/music/$albumId"
-                params={{ albumId: a.id }}
-                className="font-bold truncate block hover:text-secondary"
-              >
-                {a.title}
-              </Link>
-              <p className="text-sm text-muted-foreground">{a.year} · {count} track{count !== 1 ? "s" : ""}</p>
-              <div className="mt-3 flex gap-3">
-                <button onClick={() => onEdit(a)} className="hover:text-secondary"><Pencil className="w-4 h-4" /></button>
-                <button
-                  onClick={() => {
-                    if (confirm(`Delete album "${a.title}"? Tracks will become singles.`)) albumsApi.remove(a.id);
-                  }}
-                  className="text-primary"
-                >
-                  <XCircle className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-          </div>
-        );
+        return <AlbumTile key={a.id} a={a} count={count} onEdit={onEdit} />;
       })}
+    </div>
+  );
+}
+
+function TrackRow({ t, albums, onEdit }: { t: Track; albums: Album[]; onEdit: (t: Track) => void }) {
+  const coverUrl = useBlobUrl(t.coverKey, t.cover);
+  const audioUrl = useBlobUrl(t.audioKey, t.audioUrl);
+  return (
+    <div className="grid grid-cols-[1fr_120px_180px_100px] items-center gap-4 bg-muted/50 rounded-xl p-3">
+      <div className="flex items-center gap-4 min-w-0">
+        <div className="w-12 h-12 rounded-lg bg-background overflow-hidden shrink-0">
+          {coverUrl ? (
+            <img src={coverUrl} alt={t.title} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full grid place-items-center"><MusicIcon className="w-5 h-5 text-muted-foreground" /></div>
+          )}
+        </div>
+        <div className="min-w-0">
+          <p className="font-bold truncate">{t.title}</p>
+          {audioUrl && <audio src={audioUrl} controls className="h-7 mt-1 max-w-[260px]" />}
+        </div>
+      </div>
+      <div className="text-foreground/80">{t.genre}</div>
+      <div>
+        <select
+          value={t.albumId ?? ""}
+          onChange={(e) => tracksApi.update(t.id, { albumId: e.target.value || null })}
+          className="w-full rounded-lg bg-background border border-border px-2 py-1.5 text-xs"
+          disabled={albums.length === 0}
+        >
+          <option value="">— Single —</option>
+          {albums.map((a) => (<option key={a.id} value={a.id}>{a.title}</option>))}
+        </select>
+      </div>
+      <div className="flex items-center gap-3">
+        <button onClick={() => onEdit(t)} className="hover:text-secondary transition" aria-label="Edit"><Pencil className="w-4 h-4" /></button>
+        <button
+          onClick={() => { if (confirm(`Delete "${t.title}"?`)) tracksApi.remove(t.id); }}
+          className="text-primary hover:opacity-70 transition" aria-label="Delete"
+        >
+          <XCircle className="w-5 h-5" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function AlbumTile({ a, count, onEdit }: { a: Album; count: number; onEdit: (a: Album) => void }) {
+  const coverUrl = useBlobUrl(a.coverKey, a.cover);
+  return (
+    <div className="bg-muted/40 rounded-xl overflow-hidden group">
+      <Link to="/artist/music/$albumId" params={{ albumId: a.id }} className="block aspect-square bg-background overflow-hidden relative">
+        {coverUrl && <img src={coverUrl} alt={a.title} className="w-full h-full object-cover group-hover:scale-105 transition" />}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition grid place-items-center opacity-0 group-hover:opacity-100">
+          <Play className="w-10 h-10 text-white" />
+        </div>
+      </Link>
+      <div className="p-3">
+        <Link to="/artist/music/$albumId" params={{ albumId: a.id }} className="font-bold truncate block hover:text-secondary">{a.title}</Link>
+        <p className="text-sm text-muted-foreground">{a.year} · {count} track{count !== 1 ? "s" : ""}</p>
+        <div className="mt-3 flex gap-3">
+          <button onClick={() => onEdit(a)} className="hover:text-secondary"><Pencil className="w-4 h-4" /></button>
+          <button
+            onClick={() => { if (confirm(`Delete album "${a.title}"? Tracks will become singles.`)) albumsApi.remove(a.id); }}
+            className="text-primary"
+          >
+            <XCircle className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -268,24 +261,29 @@ export function TrackModal({
 }) {
   const [title, setTitle] = useState(track?.title ?? "");
   const [genre, setGenre] = useState(track?.genre ?? "Hip hop");
-  const [cover, setCover] = useState<string>(track?.cover ?? "");
-  const [audioUrl, setAudioUrl] = useState(track?.audioUrl ?? "");
+  const [coverKey, setCoverKey] = useState<string | undefined>(track?.coverKey);
+  const [audioKey, setAudioKey] = useState<string | undefined>(track?.audioKey);
   const [audioName, setAudioName] = useState<string>("");
   const [albumId, setAlbumId] = useState<string | null>(track?.albumId ?? defaultAlbumId ?? null);
   const [uploading, setUploading] = useState(false);
   const coverRef = useRef<HTMLInputElement>(null);
   const audioRef = useRef<HTMLInputElement>(null);
 
+  const coverPreview = useBlobUrl(coverKey, track?.cover);
+  const audioPreview = useBlobUrl(audioKey, track?.audioUrl);
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
-    const payload = { title, genre, cover, audioUrl, albumId };
-    if (track) {
-      tracksApi.update(track.id, payload);
-    } else {
-      tracksApi.add(payload);
+    const payload = { title, genre, coverKey, audioKey, albumId };
+    try {
+      if (track) tracksApi.update(track.id, payload);
+      else tracksApi.add(payload);
+      onClose();
+    } catch (err) {
+      alert("Could not save. Storage is full — try removing some tracks first.");
+      console.error(err);
     }
-    onClose();
   };
 
   return (
@@ -310,7 +308,7 @@ export function TrackModal({
           >
             {uploading ? (
               <span className="text-muted-foreground">Uploading…</span>
-            ) : audioUrl ? (
+            ) : audioPreview ? (
               <>
                 <span className="font-semibold">{audioName || "Audio attached"}</span>
                 <span className="text-xs text-muted-foreground">Click to replace</span>
@@ -322,7 +320,7 @@ export function TrackModal({
               </>
             )}
           </button>
-          {audioUrl && <audio src={audioUrl} controls className="w-full mt-2" />}
+          {audioPreview && <audio src={audioPreview} controls className="w-full mt-2" />}
           <input
             ref={audioRef}
             type="file"
@@ -333,9 +331,12 @@ export function TrackModal({
               if (!f) return;
               setUploading(true);
               try {
-                const url = await fileToDataUrl(f);
-                setAudioUrl(url);
+                const key = await idbPut(f);
+                setAudioKey(key);
                 setAudioName(f.name);
+              } catch (err) {
+                console.error(err);
+                alert("Could not store audio file.");
               } finally {
                 setUploading(false);
               }
@@ -362,12 +363,12 @@ export function TrackModal({
             onClick={() => coverRef.current?.click()}
             className="w-full h-32 rounded-lg border-2 border-dashed border-border hover:border-secondary flex items-center justify-center overflow-hidden bg-background"
           >
-            {cover ? <img src={cover} alt="" className="w-full h-full object-cover" /> : (
+            {coverPreview ? <img src={coverPreview} alt="" className="w-full h-full object-cover" /> : (
               <div className="flex flex-col items-center gap-2 text-muted-foreground"><Upload className="w-5 h-5" /> Upload cover</div>
             )}
           </button>
           <input ref={coverRef} type="file" accept="image/*" className="hidden"
-            onChange={async (e) => { const f = e.target.files?.[0]; if (f) setCover(await fileToDataUrl(f)); }} />
+            onChange={async (e) => { const f = e.target.files?.[0]; if (f) setCoverKey(await idbPut(f)); }} />
         </Field>
         <div className="flex gap-3 pt-2">
           <button type="button" onClick={onClose} className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold hover:bg-muted">Cancel</button>
@@ -383,18 +384,21 @@ export function TrackModal({
 function AlbumModal({ album, onClose }: { album: Album | null; onClose: () => void }) {
   const [title, setTitle] = useState(album?.title ?? "");
   const [year, setYear] = useState(album?.year ?? String(new Date().getFullYear()));
-  const [cover, setCover] = useState<string>(album?.cover ?? "");
+  const [coverKey, setCoverKey] = useState<string | undefined>(album?.coverKey);
+  const coverPreview = useBlobUrl(coverKey, album?.cover);
   const coverRef = useRef<HTMLInputElement>(null);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
-    if (album) {
-      albumsApi.update(album.id, { title, year, cover });
-    } else {
-      albumsApi.add({ title, year, cover });
+    try {
+      if (album) albumsApi.update(album.id, { title, year, coverKey });
+      else albumsApi.add({ title, year, coverKey });
+      onClose();
+    } catch (err) {
+      console.error(err);
+      alert("Could not save album.");
     }
-    onClose();
   };
 
   return (
@@ -414,12 +418,12 @@ function AlbumModal({ album, onClose }: { album: Album | null; onClose: () => vo
             onClick={() => coverRef.current?.click()}
             className="w-full h-32 rounded-lg border-2 border-dashed border-border hover:border-secondary flex items-center justify-center overflow-hidden bg-background"
           >
-            {cover ? <img src={cover} alt="" className="w-full h-full object-cover" /> : (
+            {coverPreview ? <img src={coverPreview} alt="" className="w-full h-full object-cover" /> : (
               <div className="flex flex-col items-center gap-2 text-muted-foreground"><Upload className="w-5 h-5" /> Upload cover</div>
             )}
           </button>
           <input ref={coverRef} type="file" accept="image/*" className="hidden"
-            onChange={async (e) => { const f = e.target.files?.[0]; if (f) setCover(await fileToDataUrl(f)); }} />
+            onChange={async (e) => { const f = e.target.files?.[0]; if (f) setCoverKey(await idbPut(f)); }} />
         </Field>
         <div className="flex gap-3 pt-2">
           <button type="button" onClick={onClose} className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold hover:bg-muted">Cancel</button>
