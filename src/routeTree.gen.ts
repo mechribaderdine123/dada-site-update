@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ArtistRouteImport } from './routes/artist'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ArtistIndexRouteImport } from './routes/artist.index'
 import { Route as ArtistEditRouteImport } from './routes/artist.edit'
 
 const ArtistRoute = ArtistRouteImport.update({
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArtistIndexRoute = ArtistIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ArtistRoute,
+} as any)
 const ArtistEditRoute = ArtistEditRouteImport.update({
   id: '/edit',
   path: '/edit',
@@ -33,24 +39,26 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/artist': typeof ArtistRouteWithChildren
   '/artist/edit': typeof ArtistEditRoute
+  '/artist/': typeof ArtistIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/artist': typeof ArtistRouteWithChildren
   '/artist/edit': typeof ArtistEditRoute
+  '/artist': typeof ArtistIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/artist': typeof ArtistRouteWithChildren
   '/artist/edit': typeof ArtistEditRoute
+  '/artist/': typeof ArtistIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/artist' | '/artist/edit'
+  fullPaths: '/' | '/artist' | '/artist/edit' | '/artist/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/artist' | '/artist/edit'
-  id: '__root__' | '/' | '/artist' | '/artist/edit'
+  to: '/' | '/artist/edit' | '/artist'
+  id: '__root__' | '/' | '/artist' | '/artist/edit' | '/artist/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -74,6 +82,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/artist/': {
+      id: '/artist/'
+      path: '/'
+      fullPath: '/artist/'
+      preLoaderRoute: typeof ArtistIndexRouteImport
+      parentRoute: typeof ArtistRoute
+    }
     '/artist/edit': {
       id: '/artist/edit'
       path: '/edit'
@@ -86,10 +101,12 @@ declare module '@tanstack/react-router' {
 
 interface ArtistRouteChildren {
   ArtistEditRoute: typeof ArtistEditRoute
+  ArtistIndexRoute: typeof ArtistIndexRoute
 }
 
 const ArtistRouteChildren: ArtistRouteChildren = {
   ArtistEditRoute: ArtistEditRoute,
+  ArtistIndexRoute: ArtistIndexRoute,
 }
 
 const ArtistRouteWithChildren =
