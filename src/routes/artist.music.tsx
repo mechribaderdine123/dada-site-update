@@ -24,11 +24,10 @@ export const Route = createFileRoute("/artist/music")({
 type View = "single" | "album";
 
 function MusicPage() {
+  useEffect(() => { migrateLegacyStore(); }, []);
   const [view, setView] = useState<View>("single");
   const [trackModal, setTrackModal] = useState<Track | "new" | null>(null);
   const [albumModal, setAlbumModal] = useState<Album | "new" | null>(null);
-
-  const tracks = useTracks();
   const albums = useAlbums();
 
   // singles = tracks not attached to an album
