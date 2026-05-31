@@ -270,24 +270,29 @@ export function TrackModal({
 }) {
   const [title, setTitle] = useState(track?.title ?? "");
   const [genre, setGenre] = useState(track?.genre ?? "Hip hop");
-  const [cover, setCover] = useState<string>(track?.cover ?? "");
-  const [audioUrl, setAudioUrl] = useState(track?.audioUrl ?? "");
+  const [coverKey, setCoverKey] = useState<string | undefined>(track?.coverKey);
+  const [audioKey, setAudioKey] = useState<string | undefined>(track?.audioKey);
   const [audioName, setAudioName] = useState<string>("");
   const [albumId, setAlbumId] = useState<string | null>(track?.albumId ?? defaultAlbumId ?? null);
   const [uploading, setUploading] = useState(false);
   const coverRef = useRef<HTMLInputElement>(null);
   const audioRef = useRef<HTMLInputElement>(null);
 
+  const coverPreview = useBlobUrl(coverKey, track?.cover);
+  const audioPreview = useBlobUrl(audioKey, track?.audioUrl);
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
-    const payload = { title, genre, cover, audioUrl, albumId };
-    if (track) {
-      tracksApi.update(track.id, payload);
-    } else {
-      tracksApi.add(payload);
+    const payload = { title, genre, coverKey, audioKey, albumId };
+    try {
+      if (track) tracksApi.update(track.id, payload);
+      else tracksApi.add(payload);
+      onClose();
+    } catch (err) {
+      alert("Could not save. Storage is full — try removing some tracks first.");
+      console.error(err);
     }
-    onClose();
   };
 
   return (
@@ -312,7 +317,7 @@ export function TrackModal({
           >
             {uploading ? (
               <span className="text-muted-foreground">Uploading…</span>
-            ) : audioUrl ? (
+            ) : audioPreview ? (
               <>
                 <span className="font-semibold">{audioName || "Audio attached"}</span>
                 <span className="text-xs text-muted-foreground">Click to replace</span>
@@ -324,7 +329,7 @@ export function TrackModal({
               </>
             )}
           </button>
-          {audioUrl && <audio src={audioUrl} controls className="w-full mt-2" />}
+          {audioPreview && <audio src={audioPreview} controls className="w-full mt-2" />}
           <input
             ref={audioRef}
             type="file"
@@ -335,9 +340,12 @@ export function TrackModal({
               if (!f) return;
               setUploading(true);
               try {
-                const url = await fileToDataUrl(f);
-                setAudioUrl(url);
+                const key = await idbPut(f);
+                setAudioKey(key);
                 setAudioName(f.name);
+              } catch (err) {
+                console.error(err);
+                alert("Could not store audio file.");
               } finally {
                 setUploading(false);
               }
@@ -364,12 +372,12 @@ export function TrackModal({
             onClick={() => coverRef.current?.click()}
             className="w-full h-32 rounded-lg border-2 border-dashed border-border hover:border-secondary flex items-center justify-center overflow-hidden bg-background"
           >
-            {cover ? <img src={cover} alt="" className="w-full h-full object-cover" /> : (
+            {coverPreview ? <img src={coverPreview} alt="" className="w-full h-full object-cover" /> : (
               <div className="flex flex-col items-center gap-2 text-muted-foreground"><Upload className="w-5 h-5" /> Upload cover</div>
             )}
           </button>
           <input ref={coverRef} type="file" accept="image/*" className="hidden"
-            onChange={async (e) => { const f = e.target.files?.[0]; if (f) setCover(await fileToDataUrl(f)); }} />
+            onChange={async (e) => { const f = e.target.files?.[0]; if (f) setCoverKey(await idbPut(f)); }} />
         </Field>
         <div className="flex gap-3 pt-2">
           <button type="button" onClick={onClose} className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold hover:bg-muted">Cancel</button>
@@ -385,18 +393,21 @@ export function TrackModal({
 function AlbumModal({ album, onClose }: { album: Album | null; onClose: () => void }) {
   const [title, setTitle] = useState(album?.title ?? "");
   const [year, setYear] = useState(album?.year ?? String(new Date().getFullYear()));
-  const [cover, setCover] = useState<string>(album?.cover ?? "");
+  const [coverKey, setCoverKey] = useState<string | undefined>(album?.coverKey);
+  const coverPreview = useBlobUrl(coverKey, album?.cover);
   const coverRef = useRef<HTMLInputElement>(null);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
-    if (album) {
-      albumsApi.update(album.id, { title, year, cover });
-    } else {
-      albumsApi.add({ title, year, cover });
+    try {
+      if (album) albumsApi.update(album.id, { title, year, coverKey });
+      else albumsApi.add({ title, year, coverKey });
+      onClose();
+    } catch (err) {
+      console.error(err);
+      alert("Could not save album.");
     }
-    onClose();
   };
 
   return (
@@ -416,12 +427,12 @@ function AlbumModal({ album, onClose }: { album: Album | null; onClose: () => vo
             onClick={() => coverRef.current?.click()}
             className="w-full h-32 rounded-lg border-2 border-dashed border-border hover:border-secondary flex items-center justify-center overflow-hidden bg-background"
           >
-            {cover ? <img src={cover} alt="" className="w-full h-full object-cover" /> : (
+            {coverPreview ? <img src={coverPreview} alt="" className="w-full h-full object-cover" /> : (
               <div className="flex flex-col items-center gap-2 text-muted-foreground"><Upload className="w-5 h-5" /> Upload cover</div>
             )}
           </button>
           <input ref={coverRef} type="file" accept="image/*" className="hidden"
-            onChange={async (e) => { const f = e.target.files?.[0]; if (f) setCover(await fileToDataUrl(f)); }} />
+            onChange={async (e) => { const f = e.target.files?.[0]; if (f) setCoverKey(await idbPut(f)); }} />
         </Field>
         <div className="flex gap-3 pt-2">
           <button type="button" onClick={onClose} className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold hover:bg-muted">Cancel</button>
