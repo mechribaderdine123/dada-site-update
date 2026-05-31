@@ -213,14 +213,14 @@ function AlbumTile({ a, count, onEdit }: { a: Album; count: number; onEdit: (a: 
   const coverUrl = useBlobUrl(a.coverKey, a.cover);
   return (
     <div className="bg-muted/40 rounded-xl overflow-hidden group">
-      <Link to="/artist/music/$albumId" params={{ albumId: a.id }} className="block aspect-square bg-background overflow-hidden relative">
+      <Link to="/artist/album/$albumId" params={{ albumId: a.id }} className="block aspect-square bg-background overflow-hidden relative">
         {coverUrl && <img src={coverUrl} alt={a.title} className="w-full h-full object-cover group-hover:scale-105 transition" />}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition grid place-items-center opacity-0 group-hover:opacity-100">
           <Play className="w-10 h-10 text-white" />
         </div>
       </Link>
       <div className="p-3">
-        <Link to="/artist/music/$albumId" params={{ albumId: a.id }} className="font-bold truncate block hover:text-secondary">{a.title}</Link>
+        <Link to="/artist/album/$albumId" params={{ albumId: a.id }} className="font-bold truncate block hover:text-secondary">{a.title}</Link>
         <p className="text-sm text-muted-foreground">{a.year} · {count} track{count !== 1 ? "s" : ""}</p>
         <div className="mt-3 flex gap-3">
           <button onClick={() => onEdit(a)} className="hover:text-secondary"><Pencil className="w-4 h-4" /></button>
