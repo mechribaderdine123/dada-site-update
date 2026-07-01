@@ -24,7 +24,11 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ArtistMusicRouteImport } from './routes/artist.music'
 import { Route as ArtistEditRouteImport } from './routes/artist.edit'
 import { Route as ArtistDiscographyRouteImport } from './routes/artist.discography'
+import { Route as AdminWorkshopsRouteImport } from './routes/admin.workshops'
 import { Route as AdminSignInRouteImport } from './routes/admin.sign-in'
+import { Route as AdminCoursRouteImport } from './routes/admin.cours'
+import { Route as AdminContactRouteImport } from './routes/admin.contact'
+import { Route as AdminAboutRouteImport } from './routes/admin.about'
 import { Route as ArtistAlbumAlbumIdRouteImport } from './routes/artist.album.$albumId'
 
 const WorkshopsRoute = WorkshopsRouteImport.update({
@@ -102,9 +106,29 @@ const ArtistDiscographyRoute = ArtistDiscographyRouteImport.update({
   path: '/discography',
   getParentRoute: () => ArtistRoute,
 } as any)
+const AdminWorkshopsRoute = AdminWorkshopsRouteImport.update({
+  id: '/workshops',
+  path: '/workshops',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSignInRoute = AdminSignInRouteImport.update({
   id: '/sign-in',
   path: '/sign-in',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCoursRoute = AdminCoursRouteImport.update({
+  id: '/cours',
+  path: '/cours',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminContactRoute = AdminContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAboutRoute = AdminAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => AdminRoute,
 } as any)
 const ArtistAlbumAlbumIdRoute = ArtistAlbumAlbumIdRouteImport.update({
@@ -124,7 +148,11 @@ export interface FileRoutesByFullPath {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/workshops': typeof WorkshopsRoute
+  '/admin/about': typeof AdminAboutRoute
+  '/admin/contact': typeof AdminContactRoute
+  '/admin/cours': typeof AdminCoursRoute
   '/admin/sign-in': typeof AdminSignInRoute
+  '/admin/workshops': typeof AdminWorkshopsRoute
   '/artist/discography': typeof ArtistDiscographyRoute
   '/artist/edit': typeof ArtistEditRoute
   '/artist/music': typeof ArtistMusicRoute
@@ -141,7 +169,11 @@ export interface FileRoutesByTo {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/workshops': typeof WorkshopsRoute
+  '/admin/about': typeof AdminAboutRoute
+  '/admin/contact': typeof AdminContactRoute
+  '/admin/cours': typeof AdminCoursRoute
   '/admin/sign-in': typeof AdminSignInRoute
+  '/admin/workshops': typeof AdminWorkshopsRoute
   '/artist/discography': typeof ArtistDiscographyRoute
   '/artist/edit': typeof ArtistEditRoute
   '/artist/music': typeof ArtistMusicRoute
@@ -161,7 +193,11 @@ export interface FileRoutesById {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/workshops': typeof WorkshopsRoute
+  '/admin/about': typeof AdminAboutRoute
+  '/admin/contact': typeof AdminContactRoute
+  '/admin/cours': typeof AdminCoursRoute
   '/admin/sign-in': typeof AdminSignInRoute
+  '/admin/workshops': typeof AdminWorkshopsRoute
   '/artist/discography': typeof ArtistDiscographyRoute
   '/artist/edit': typeof ArtistEditRoute
   '/artist/music': typeof ArtistMusicRoute
@@ -182,7 +218,11 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/workshops'
+    | '/admin/about'
+    | '/admin/contact'
+    | '/admin/cours'
     | '/admin/sign-in'
+    | '/admin/workshops'
     | '/artist/discography'
     | '/artist/edit'
     | '/artist/music'
@@ -199,7 +239,11 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/workshops'
+    | '/admin/about'
+    | '/admin/contact'
+    | '/admin/cours'
     | '/admin/sign-in'
+    | '/admin/workshops'
     | '/artist/discography'
     | '/artist/edit'
     | '/artist/music'
@@ -218,7 +262,11 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/workshops'
+    | '/admin/about'
+    | '/admin/contact'
+    | '/admin/cours'
     | '/admin/sign-in'
+    | '/admin/workshops'
     | '/artist/discography'
     | '/artist/edit'
     | '/artist/music'
@@ -347,11 +395,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArtistDiscographyRouteImport
       parentRoute: typeof ArtistRoute
     }
+    '/admin/workshops': {
+      id: '/admin/workshops'
+      path: '/workshops'
+      fullPath: '/admin/workshops'
+      preLoaderRoute: typeof AdminWorkshopsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/sign-in': {
       id: '/admin/sign-in'
       path: '/sign-in'
       fullPath: '/admin/sign-in'
       preLoaderRoute: typeof AdminSignInRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cours': {
+      id: '/admin/cours'
+      path: '/cours'
+      fullPath: '/admin/cours'
+      preLoaderRoute: typeof AdminCoursRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/contact': {
+      id: '/admin/contact'
+      path: '/contact'
+      fullPath: '/admin/contact'
+      preLoaderRoute: typeof AdminContactRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/about': {
+      id: '/admin/about'
+      path: '/about'
+      fullPath: '/admin/about'
+      preLoaderRoute: typeof AdminAboutRouteImport
       parentRoute: typeof AdminRoute
     }
     '/artist/album/$albumId': {
@@ -365,12 +441,20 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminAboutRoute: typeof AdminAboutRoute
+  AdminContactRoute: typeof AdminContactRoute
+  AdminCoursRoute: typeof AdminCoursRoute
   AdminSignInRoute: typeof AdminSignInRoute
+  AdminWorkshopsRoute: typeof AdminWorkshopsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAboutRoute: AdminAboutRoute,
+  AdminContactRoute: AdminContactRoute,
+  AdminCoursRoute: AdminCoursRoute,
   AdminSignInRoute: AdminSignInRoute,
+  AdminWorkshopsRoute: AdminWorkshopsRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 

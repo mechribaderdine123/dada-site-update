@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PersonStanding, Dumbbell, Flower2 } from "lucide-react";
 import heroAsset from "@/assets/cours-hero.png.asset.json";
 import planAsset from "@/assets/cours-plan.png.asset.json";
+import { useContent } from "@/lib/site-content";
 
 export const Route = createFileRoute("/cours-activites")({
   head: () => ({
