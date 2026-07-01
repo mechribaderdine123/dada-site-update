@@ -35,25 +35,25 @@ function MusicPage() {
   const singles = tracks.filter((t) => !t.albumId);
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex">
+    <div className="min-h-screen bg-[#393939] text-white flex">
       <ArtistSidebar />
 
       <main className="flex-1 p-8 md:p-12">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
             <h1 className="text-4xl md:text-5xl font-black text-secondary">Music management</h1>
-            <p className="mt-2 text-foreground/80">Upload new track and manage your discography</p>
+            <p className="mt-2 text-white/80">Upload new track and manage your discography</p>
           </div>
           <div className="flex gap-3">
             <button
               onClick={() => setAlbumModal("new")}
-              className="flex items-center gap-2 rounded-xl bg-background border border-border px-4 py-2.5 text-sm font-semibold hover:bg-muted transition"
+              className="flex items-center gap-2 rounded-xl bg-white/10 border border-white/10 px-4 py-2.5 text-sm font-semibold hover:bg-white/20 transition"
             >
               <Plus className="w-4 h-4" /> Add new album
             </button>
             <button
               onClick={() => setTrackModal("new")}
-              className="flex items-center gap-2 rounded-xl bg-background border border-border px-4 py-2.5 text-sm font-semibold hover:bg-muted transition"
+              className="flex items-center gap-2 rounded-xl bg-white/10 border border-white/10 px-4 py-2.5 text-sm font-semibold hover:bg-white/20 transition"
             >
               <Plus className="w-4 h-4" /> Upload new track
             </button>
