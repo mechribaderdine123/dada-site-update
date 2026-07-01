@@ -189,7 +189,7 @@ function AlbumCard({ album }: { album: Album }) {
       params={{ albumId: album.id }}
       className="group block"
     >
-      <div className="aspect-square rounded-2xl overflow-hidden bg-muted">
+      <div className="aspect-square rounded-2xl overflow-hidden bg-[#4a4a4a]">
         {cover ? (
           <img
             src={cover}
@@ -197,13 +197,13 @@ function AlbumCard({ album }: { album: Album }) {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div className="w-full h-full grid place-items-center text-muted-foreground">
+          <div className="w-full h-full grid place-items-center text-white/50">
             <MusicIcon className="w-12 h-12" />
           </div>
         )}
       </div>
-      <p className="mt-3 text-2xl font-black truncate">{album.title}</p>
-      <p className="text-sm text-muted-foreground">album {album.year}</p>
+      <p className="mt-3 text-2xl font-black truncate text-white">{album.title}</p>
+      <p className="text-sm text-white/60">album {album.year}</p>
     </Link>
   );
 }
