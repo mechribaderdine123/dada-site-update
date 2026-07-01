@@ -37,12 +37,12 @@ function EditProfilePage() {
         </div>
 
         {/* Profile image */}
-        <section className="mt-8 bg-muted/30 rounded-2xl p-6 border border-border/50">
-          <h2 className="text-xl font-bold">Profile and header image</h2>
-          <p className="text-sm text-muted-foreground mt-1">Upload your image to personalize your profile</p>
+        <section className="mt-8 bg-white/10 rounded-2xl p-6 border border-white/10">
+          <h2 className="text-xl font-bold text-white">Profile and header image</h2>
+          <p className="text-sm text-white/60 mt-1">Upload your image to personalize your profile</p>
           <button
             onClick={() => fileRef.current?.click()}
-            className="mt-5 w-full h-56 rounded-xl border-2 border-dashed border-border/70 hover:border-secondary transition flex flex-col items-center justify-center bg-background/50 overflow-hidden"
+            className="mt-5 w-full h-56 rounded-xl border-2 border-dashed border-white/20 hover:border-secondary transition flex flex-col items-center justify-center bg-[#4a4a4a]/50 overflow-hidden"
           >
             {preview ? (
               <img src={preview} alt="Preview" className="w-full h-full object-cover" />
