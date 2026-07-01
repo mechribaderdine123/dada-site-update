@@ -147,11 +147,11 @@ function LatestAlbumHero({ album, trackCount }: { album: Album; trackCount: numb
   const cover = useBlobUrl(album.coverKey, album.cover);
   return (
     <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-8 items-center">
-      <div className="aspect-square rounded-2xl overflow-hidden bg-muted shadow-2xl">
+      <div className="aspect-square rounded-2xl overflow-hidden bg-[#4a4a4a] shadow-2xl">
         {cover ? (
           <img src={cover} alt={album.title} className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full grid place-items-center text-muted-foreground">
+          <div className="w-full h-full grid place-items-center text-white/50">
             <MusicIcon className="w-16 h-16" />
           </div>
         )}
@@ -159,7 +159,7 @@ function LatestAlbumHero({ album, trackCount }: { album: Album; trackCount: numb
       <div>
         <p className="text-2xl font-black">Lastest Album</p>
         <p className="mt-1 text-3xl md:text-4xl font-black text-secondary">{album.title}</p>
-        <p className="mt-2 text-foreground/80">{trackCount} track{trackCount !== 1 ? "s" : ""}</p>
+        <p className="mt-2 text-white/80">{trackCount} track{trackCount !== 1 ? "s" : ""}</p>
         <div className="mt-5 flex gap-3 flex-wrap">
           <Link
             to="/artist/album/$albumId"
@@ -171,7 +171,7 @@ function LatestAlbumHero({ album, trackCount }: { album: Album; trackCount: numb
           <Link
             to="/artist/album/$albumId"
             params={{ albumId: album.id }}
-            className="rounded-xl border border-border bg-background px-5 py-2.5 text-sm font-semibold hover:bg-muted"
+            className="rounded-xl border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-semibold hover:bg-white/20"
           >
             View tracklist
           </Link>
