@@ -43,14 +43,14 @@ function HomePage() {
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <Link
               to="/cours-activites"
-              className="group inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-6 py-3 text-sm font-bold uppercase tracking-wider hover:opacity-90 transition shadow-xl shadow-primary/30"
+              className="group inline-flex items-center gap-2 rounded-md bg-secondary text-secondary-foreground px-6 py-3 text-sm font-bold uppercase tracking-wider hover:opacity-90 transition shadow-xl shadow-secondary/30"
             >
               Découvrir nos cours
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
               to="/sign-in"
-              className="inline-flex items-center gap-2 rounded-md border border-foreground/40 bg-background/40 backdrop-blur px-6 py-3 text-sm font-bold uppercase tracking-wider hover:bg-foreground hover:text-background transition"
+              className="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-6 py-3 text-sm font-bold uppercase tracking-wider hover:opacity-90 transition shadow-xl shadow-primary/30"
             >
               Se connecter artiste
             </Link>

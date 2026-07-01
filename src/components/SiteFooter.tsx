@@ -1,15 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram, Mail, Phone, MapPin } from "lucide-react";
+import logo from "@/assets/dada-logo.png.asset.json";
 
 export function SiteFooter() {
   return (
     <footer className="mt-20 border-t border-border/60 bg-card/40">
       <div className="max-w-7xl mx-auto px-6 py-14 grid gap-10 md:grid-cols-4">
         <div className="md:col-span-2">
-          <div className="flex items-center gap-2 font-display tracking-widest text-xl">
-            <span className="w-8 h-8 grid place-items-center rounded-md bg-primary text-primary-foreground font-black">D</span>
-            DADA HIP HOP ACADEMY
-          </div>
+          <img src={logo.url} alt="Dada Hip Hop Academy" className="h-16 w-auto" />
           <p className="mt-4 text-sm text-muted-foreground max-w-md leading-relaxed">
             Un centre artistique et sportif où chaque talent trouve son expression. Danse, gymnastique, arts martiaux et création — pour tous les âges.
           </p>

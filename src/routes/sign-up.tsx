@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import authImg from "@/assets/dada-auth.jpg";
+import logo from "@/assets/dada-logo.png.asset.json";
 
 export const Route = createFileRoute("/sign-up")({
   head: () => ({
@@ -29,9 +30,8 @@ function SignUpPage() {
         <img src={authImg} alt="" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-br from-background/70 via-background/40 to-primary/40" />
         <div className="relative h-full flex flex-col justify-between p-10">
-          <Link to="/" className="flex items-center gap-2 font-display tracking-widest text-xl">
-            <span className="w-9 h-9 grid place-items-center rounded-md bg-primary text-primary-foreground font-black">D</span>
-            DADA HIP HOP
+          <Link to="/" className="inline-flex">
+            <img src={logo.url} alt="Dada Hip Hop Academy" className="h-20 w-auto drop-shadow-2xl" />
           </Link>
           <div>
             <h2 className="font-display text-5xl tracking-wide leading-none">Rejoignez<br />l'aventure.</h2>
