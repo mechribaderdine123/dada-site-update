@@ -117,11 +117,11 @@ function AlbumDetailPage() {
 function AlbumCover({ album }: { album: { title?: string; cover?: string; coverKey?: string } | undefined }) {
   const url = useBlobUrl(album?.coverKey, album?.cover);
   return (
-    <div className="w-48 h-48 rounded-2xl overflow-hidden bg-muted shrink-0">
+    <div className="w-48 h-48 rounded-2xl overflow-hidden bg-[#4a4a4a] shrink-0">
       {url ? (
         <img src={url} alt={album?.title ?? ""} className="w-full h-full object-cover" />
       ) : (
-        <div className="w-full h-full grid place-items-center text-muted-foreground"><MusicIcon className="w-10 h-10" /></div>
+        <div className="w-full h-full grid place-items-center text-white/50"><MusicIcon className="w-10 h-10" /></div>
       )}
     </div>
   );
