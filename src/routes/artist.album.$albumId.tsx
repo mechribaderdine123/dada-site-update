@@ -51,9 +51,9 @@ function AlbumDetailPage() {
           <AlbumCover album={album} />
 
           <div className="flex-1">
-            <p className="text-sm uppercase tracking-widest text-muted-foreground">Album</p>
+            <p className="text-sm uppercase tracking-widest text-white/60">Album</p>
             <h1 className="mt-1 text-4xl md:text-5xl font-black text-secondary">{album?.title}</h1>
-            <p className="mt-2 text-foreground/80">{album?.year} · {albumTracks.length} track{albumTracks.length !== 1 ? "s" : ""}</p>
+            <p className="mt-2 text-white/80">{album?.year} · {albumTracks.length} track{albumTracks.length !== 1 ? "s" : ""}</p>
             <div className="mt-5 flex gap-3 flex-wrap">
               <button
                 onClick={() => setTrackModal("new")}
@@ -64,7 +64,7 @@ function AlbumDetailPage() {
               {availableSingles.length > 0 && (
                 <button
                   onClick={() => setAddExisting((v) => !v)}
-                  className="flex items-center gap-2 rounded-xl bg-background border border-border px-4 py-2.5 text-sm font-semibold hover:bg-muted"
+                  className="flex items-center gap-2 rounded-xl bg-white/10 border border-white/10 px-4 py-2.5 text-sm font-semibold hover:bg-white/20"
                 >
                   <Plus className="w-4 h-4" /> Add existing single
                 </button>
