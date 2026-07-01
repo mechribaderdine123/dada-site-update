@@ -238,9 +238,9 @@ function AlbumTile({ a, count, onEdit }: { a: Album; count: number; onEdit: (a: 
 
 function ModalShell({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm grid place-items-center p-4 overflow-y-auto">
-      <div className="w-full max-w-md bg-card rounded-2xl border border-border p-6 relative my-8">
-        <button onClick={onClose} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm grid place-items-center p-4 overflow-y-auto">
+      <div className="w-full max-w-md bg-[#2d2d2d] rounded-2xl border border-white/10 p-6 relative my-8 text-white">
+        <button onClick={onClose} className="absolute top-4 right-4 text-white/60 hover:text-white"><X className="w-5 h-5" /></button>
         <h2 className="text-xl font-black mb-5">{title}</h2>
         {children}
       </div>
