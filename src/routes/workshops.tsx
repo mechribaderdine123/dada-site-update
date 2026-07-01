@@ -78,6 +78,10 @@ const EVENTS: EventItem[] = [
 function WorkshopsPage() {
   const [category, setCategory] = useState<Category>("Tous");
   const [open, setOpen] = useState(false);
+  const title1 = useContent("workshops.title1", "WORKSHOPS &");
+  const title2 = useContent("workshops.title2", "ÉVÉNEMENTS");
+  const intro = useContent("workshops.intro", "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu. Il permet d'enregistrer, produire, mixer, filmer et expérimenter dans un cadre moderne.");
+  const section = useContent("workshops.section", "PROCHAINS EVENEMENTS");
 
   const events = category === "Tous"
     ? EVENTS
@@ -88,20 +92,16 @@ function WorkshopsPage() {
       <div className="max-w-5xl mx-auto">
         <header className="text-center mb-10">
           <h1 className="font-display tracking-wider text-5xl md:text-7xl leading-[0.9]">
-            WORKSHOPS &amp;
+            {title1}
             <br />
-            ÉVÉNEMENTS
+            {title2}
           </h1>
-          <p className="mt-6 max-w-2xl mx-auto text-muted-foreground">
-            Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs,
-            beatmakers et créateurs de contenu. Il permet d'enregistrer, produire,
-            mixer, filmer et expérimenter dans un cadre moderne.
-          </p>
+          <p className="mt-6 max-w-2xl mx-auto text-muted-foreground">{intro}</p>
         </header>
 
         <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
           <h2 className="font-display tracking-widest text-xl md:text-2xl">
-            PROCHAINS <span className="text-primary">EVENEMENTS</span>
+            {section.split(" ")[0]} <span className="text-primary">{section.split(" ").slice(1).join(" ")}</span>
           </h2>
 
           <div className="relative">
