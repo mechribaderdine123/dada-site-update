@@ -125,7 +125,7 @@ function TrackList({
   }
   return (
     <div>
-      <div className="grid grid-cols-[1fr_120px_180px_100px] gap-4 px-4 pb-3 text-sm font-bold">
+      <div className="grid grid-cols-[1fr_120px_180px_100px] gap-4 px-4 pb-3 text-sm font-bold text-white/70">
         <div>track</div>
         <div>Genre</div>
         <div>Publish to album</div>
