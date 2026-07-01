@@ -130,12 +130,12 @@ function AlbumCover({ album }: { album: { title?: string; cover?: string; coverK
 function SingleAddRow({ s, onAdd }: { s: Track; onAdd: () => void }) {
   const cover = useBlobUrl(s.coverKey, s.cover);
   return (
-    <div className="flex items-center justify-between gap-3 bg-background rounded-lg p-2">
+    <div className="flex items-center justify-between gap-3 bg-[#4a4a4a] rounded-lg p-2">
       <div className="flex items-center gap-3 min-w-0">
-        <div className="w-10 h-10 rounded bg-muted overflow-hidden shrink-0">
+        <div className="w-10 h-10 rounded bg-white/10 overflow-hidden shrink-0">
           {cover && <img src={cover} alt={s.title} className="w-full h-full object-cover" />}
         </div>
-        <p className="font-semibold truncate">{s.title}</p>
+        <p className="font-semibold truncate text-white">{s.title}</p>
       </div>
       <button onClick={onAdd} className="rounded-lg bg-secondary text-secondary-foreground px-3 py-1.5 text-xs font-bold hover:opacity-90">Add</button>
     </div>
