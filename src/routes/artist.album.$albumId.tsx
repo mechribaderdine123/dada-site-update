@@ -146,21 +146,21 @@ function AlbumTrackRow({ t, index, onEdit }: { t: Track; index: number; onEdit: 
   const cover = useBlobUrl(t.coverKey, t.cover);
   const audio = useBlobUrl(t.audioKey, t.audioUrl);
   return (
-    <div className="flex items-center gap-4 bg-muted/50 rounded-xl p-3">
-      <span className="w-6 text-center text-muted-foreground font-bold">{index + 1}</span>
-      <div className="w-12 h-12 rounded-lg bg-background overflow-hidden shrink-0">
+    <div className="flex items-center gap-4 bg-white/10 rounded-xl p-3">
+      <span className="w-6 text-center text-white/60 font-bold">{index + 1}</span>
+      <div className="w-12 h-12 rounded-lg bg-[#4a4a4a] overflow-hidden shrink-0">
         {cover ? <img src={cover} alt={t.title} className="w-full h-full object-cover" />
-          : <div className="w-full h-full grid place-items-center"><MusicIcon className="w-5 h-5 text-muted-foreground" /></div>}
+          : <div className="w-full h-full grid place-items-center"><MusicIcon className="w-5 h-5 text-white/50" /></div>}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-bold truncate">{t.title}</p>
-        <p className="text-xs text-muted-foreground">{t.genre}</p>
+        <p className="font-bold truncate text-white">{t.title}</p>
+        <p className="text-xs text-white/60">{t.genre}</p>
         {audio && <audio src={audio} controls className="h-7 mt-1 max-w-full" />}
       </div>
-      <button onClick={onEdit} className="hover:text-secondary" aria-label="Edit track"><Pencil className="w-4 h-4" /></button>
+      <button onClick={onEdit} className="hover:text-secondary text-white" aria-label="Edit track"><Pencil className="w-4 h-4" /></button>
       <button
         onClick={() => tracksApi.update(t.id, { albumId: null })}
-        className="text-foreground/70 hover:text-foreground text-xs font-semibold border border-border rounded-lg px-2 py-1"
+        className="text-white/70 hover:text-white text-xs font-semibold border border-white/10 rounded-lg px-2 py-1"
         title="Remove from album (keeps as single)"
       >
         Remove
