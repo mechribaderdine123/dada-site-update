@@ -147,17 +147,17 @@ function FeaturedCard({ item }: { item: FeaturedItem }) {
   const audio = useBlobUrl(item.linkKey, item.link);
   return (
     <div className="group">
-      <div className="aspect-square overflow-hidden rounded-2xl bg-card grid place-items-center">
+      <div className="aspect-square overflow-hidden rounded-2xl bg-[#4a4a4a] grid place-items-center">
         {img ? (
           <img src={img} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
-          <MusicIcon className="w-12 h-12 text-muted-foreground" />
+          <MusicIcon className="w-12 h-12 text-white/50" />
         )}
       </div>
       <div className="mt-4 flex items-start justify-between gap-2">
         <div>
           <p className="text-2xl font-black">{item.title}</p>
-          <p className="text-sm text-muted-foreground">{item.subtitle}</p>
+          <p className="text-sm text-white/60">{item.subtitle}</p>
         </div>
         {audio && (
           <a href={audio} target="_blank" rel="noreferrer" className="text-secondary hover:opacity-70 mt-2" aria-label="Listen">
