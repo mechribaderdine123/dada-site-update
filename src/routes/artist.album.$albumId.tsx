@@ -87,9 +87,9 @@ function AlbumDetailPage() {
 
         {/* Tracks */}
         <div className="mt-10">
-          <h2 className="text-xl font-black mb-4">Tracks</h2>
+          <h2 className="text-xl font-black mb-4 text-white">Tracks</h2>
           {albumTracks.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground rounded-xl border border-dashed border-border">
+            <div className="text-center py-12 text-white/60 rounded-xl border border-dashed border-white/20">
               No tracks in this album yet. Add a new track or attach an existing single.
             </div>
           ) : (
