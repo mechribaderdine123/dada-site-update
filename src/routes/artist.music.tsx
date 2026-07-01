@@ -170,26 +170,26 @@ function TrackRow({ t, albums, onEdit }: { t: Track; albums: Album[]; onEdit: (t
   const coverUrl = useBlobUrl(t.coverKey, t.cover);
   const audioUrl = useBlobUrl(t.audioKey, t.audioUrl);
   return (
-    <div className="grid grid-cols-[1fr_120px_180px_100px] items-center gap-4 bg-muted/50 rounded-xl p-3">
+    <div className="grid grid-cols-[1fr_120px_180px_100px] items-center gap-4 bg-white/10 rounded-xl p-3">
       <div className="flex items-center gap-4 min-w-0">
-        <div className="w-12 h-12 rounded-lg bg-background overflow-hidden shrink-0">
+        <div className="w-12 h-12 rounded-lg bg-[#4a4a4a] overflow-hidden shrink-0">
           {coverUrl ? (
             <img src={coverUrl} alt={t.title} className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-full grid place-items-center"><MusicIcon className="w-5 h-5 text-muted-foreground" /></div>
+            <div className="w-full h-full grid place-items-center"><MusicIcon className="w-5 h-5 text-white/50" /></div>
           )}
         </div>
         <div className="min-w-0">
-          <p className="font-bold truncate">{t.title}</p>
+          <p className="font-bold truncate text-white">{t.title}</p>
           {audioUrl && <audio src={audioUrl} controls className="h-7 mt-1 max-w-[260px]" />}
         </div>
       </div>
-      <div className="text-foreground/80">{t.genre}</div>
+      <div className="text-white/80">{t.genre}</div>
       <div>
         <select
           value={t.albumId ?? ""}
           onChange={(e) => tracksApi.update(t.id, { albumId: e.target.value || null })}
-          className="w-full rounded-lg bg-background border border-border px-2 py-1.5 text-xs"
+          className="w-full rounded-lg bg-[#4a4a4a] border border-white/10 px-2 py-1.5 text-xs text-white"
           disabled={albums.length === 0}
         >
           <option value="">— Single —</option>
@@ -197,7 +197,7 @@ function TrackRow({ t, albums, onEdit }: { t: Track; albums: Album[]; onEdit: (t
         </select>
       </div>
       <div className="flex items-center gap-3">
-        <button onClick={() => onEdit(t)} className="hover:text-secondary transition" aria-label="Edit"><Pencil className="w-4 h-4" /></button>
+        <button onClick={() => onEdit(t)} className="hover:text-secondary transition text-white" aria-label="Edit"><Pencil className="w-4 h-4" /></button>
         <button
           onClick={() => { if (confirm(`Delete "${t.title}"?`)) tracksApi.remove(t.id); }}
           className="text-primary hover:opacity-70 transition" aria-label="Delete"
