@@ -20,6 +20,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ArtistIndexRouteImport } from './routes/artist.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ArtistMusicRouteImport } from './routes/artist.music'
 import { Route as ArtistEditRouteImport } from './routes/artist.edit'
 import { Route as ArtistDiscographyRouteImport } from './routes/artist.discography'
@@ -81,6 +82,11 @@ const ArtistIndexRoute = ArtistIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ArtistRoute,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ArtistMusicRoute = ArtistMusicRouteImport.update({
   id: '/music',
   path: '/music',
@@ -122,13 +128,13 @@ export interface FileRoutesByFullPath {
   '/artist/discography': typeof ArtistDiscographyRoute
   '/artist/edit': typeof ArtistEditRoute
   '/artist/music': typeof ArtistMusicRoute
+  '/admin/': typeof AdminIndexRoute
   '/artist/': typeof ArtistIndexRoute
   '/artist/album/$albumId': typeof ArtistAlbumAlbumIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/admin': typeof AdminRouteWithChildren
   '/contact': typeof ContactRoute
   '/cours-activites': typeof CoursActivitesRoute
   '/dada-reseaux-artist': typeof DadaReseauxArtistRoute
@@ -139,6 +145,7 @@ export interface FileRoutesByTo {
   '/artist/discography': typeof ArtistDiscographyRoute
   '/artist/edit': typeof ArtistEditRoute
   '/artist/music': typeof ArtistMusicRoute
+  '/admin': typeof AdminIndexRoute
   '/artist': typeof ArtistIndexRoute
   '/artist/album/$albumId': typeof ArtistAlbumAlbumIdRoute
 }
@@ -158,6 +165,7 @@ export interface FileRoutesById {
   '/artist/discography': typeof ArtistDiscographyRoute
   '/artist/edit': typeof ArtistEditRoute
   '/artist/music': typeof ArtistMusicRoute
+  '/admin/': typeof AdminIndexRoute
   '/artist/': typeof ArtistIndexRoute
   '/artist/album/$albumId': typeof ArtistAlbumAlbumIdRoute
 }
@@ -178,13 +186,13 @@ export interface FileRouteTypes {
     | '/artist/discography'
     | '/artist/edit'
     | '/artist/music'
+    | '/admin/'
     | '/artist/'
     | '/artist/album/$albumId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/a-propos'
-    | '/admin'
     | '/contact'
     | '/cours-activites'
     | '/dada-reseaux-artist'
@@ -195,6 +203,7 @@ export interface FileRouteTypes {
     | '/artist/discography'
     | '/artist/edit'
     | '/artist/music'
+    | '/admin'
     | '/artist'
     | '/artist/album/$albumId'
   id:
@@ -213,6 +222,7 @@ export interface FileRouteTypes {
     | '/artist/discography'
     | '/artist/edit'
     | '/artist/music'
+    | '/admin/'
     | '/artist/'
     | '/artist/album/$albumId'
   fileRoutesById: FileRoutesById
@@ -309,6 +319,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArtistIndexRouteImport
       parentRoute: typeof ArtistRoute
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/artist/music': {
       id: '/artist/music'
       path: '/music'
@@ -349,10 +366,12 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminSignInRoute: typeof AdminSignInRoute
+  AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminSignInRoute: AdminSignInRoute,
+  AdminIndexRoute: AdminIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
