@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Sparkles, Eye, Heart } from "lucide-react";
-import founderImg from "@/assets/dada-founder.jpg";
+import teamAsset from "@/assets/apropos-team.png.asset.json";
+import dancersAsset from "@/assets/apropos-dancers.png.asset.json";
 
 export const Route = createFileRoute("/a-propos")({
   head: () => ({
@@ -12,89 +12,78 @@ export const Route = createFileRoute("/a-propos")({
   component: AboutPage,
 });
 
-const VALUES = ["Créativité", "Respect", "Énergie", "Confiance", "Excellence", "Communauté"];
-
 function AboutPage() {
   return (
-    <>
-      <section className="pt-32 pb-16">
-        <div className="max-w-6xl mx-auto px-6 grid gap-12 md:grid-cols-2 items-center">
-          <div>
-            <p className="uppercase tracking-[0.4em] text-primary text-xs font-semibold">Notre histoire</p>
-            <h1 className="mt-4 font-display text-5xl md:text-7xl tracking-wide">Qui sommes-nous ?</h1>
-            <div className="mt-6 space-y-5 text-foreground/90 leading-relaxed">
-              <p>
-                <span className="font-display text-2xl text-secondary tracking-wide">Dada Hip Hop Academy</span> est un centre artistique et sportif conçu pour inspirer, former et accompagner les talents de tous âges.
-              </p>
-              <p>
-                Fondé par <strong>Ghada Belgacem</strong>, danseuse, coach et créatrice de contenus, notre espace met en avant les valeurs de la culture urbaine&nbsp;: énergie, créativité, liberté et dépassement.
-              </p>
-              <p>
-                Nous offrons un environnement où chacun peut évoluer à son rythme&nbsp;: passionnés, débutants, athlètes, artistes, enfants, adultes...
-              </p>
-              <p className="text-lg text-secondary font-semibold">
-                Notre objectif est simple&nbsp;: révéler le potentiel de chaque individu à travers le mouvement et la création.
-              </p>
-            </div>
+    <div className="pt-28 pb-20">
+      <div className="max-w-6xl mx-auto px-6">
+        <h1 className="text-center font-display text-5xl md:text-7xl tracking-wide">QUI SOMMES-NOUS ?</h1>
+
+        {/* Row 1 */}
+        <div className="mt-12 grid gap-10 md:grid-cols-2 items-start">
+          <img
+            src={teamAsset.url}
+            alt="Dada Hip Hop Academy — Where the beat drops"
+            className="w-full rounded-2xl object-cover"
+            loading="lazy"
+          />
+          <div className="space-y-5 text-foreground/90 leading-relaxed">
+            <p>
+              Dada Hip Hop Academy est un centre artistique et sportif conçu pour inspirer, former et accompagner les talents de tous âges.
+            </p>
+            <p>
+              Fondé par <strong>Ghada Belgacem</strong>, danseuse, coach et créatrice de contenus, notre espace met en avant les valeurs de la culture urbaine : énergie, créativité, liberté et dépassement.
+            </p>
             <Link
               to="/cours-activites"
-              className="mt-8 inline-flex rounded-md bg-primary text-primary-foreground px-6 py-3 text-sm font-bold uppercase tracking-wider hover:opacity-90 transition"
+              className="inline-flex mt-4 rounded-md bg-secondary text-secondary-foreground px-6 py-3 text-sm font-bold lowercase tracking-wider hover:opacity-90 transition"
             >
-              Voir les cours
+              voir les cours
             </Link>
           </div>
-          <div className="relative">
-            <div className="absolute -inset-4 bg-gradient-to-tr from-primary/40 to-secondary/40 blur-3xl -z-10" />
-            <img
-              src={founderImg}
-              alt="Ghada Belgacem, fondatrice"
-              width={1024}
-              height={1280}
-              loading="lazy"
-              className="w-full rounded-2xl object-cover shadow-2xl"
-            />
-          </div>
         </div>
-      </section>
 
-      {/* MISSION / VISION / VALEURS */}
-      <section className="py-20 border-t border-border/40 bg-card/30">
-        <div className="max-w-6xl mx-auto px-6 grid gap-6 md:grid-cols-3">
-          <Pillar
-            icon={<Sparkles className="w-6 h-6" />}
-            title="Mission"
-            body="Promouvoir la danse, le bien-être et la création artistique à travers un espace moderne et inclusif."
+        {/* Row 2 */}
+        <div className="mt-14 grid gap-10 md:grid-cols-2 items-center">
+          <div className="space-y-5 text-foreground/90 leading-relaxed">
+            <p>
+              Nous offrons un environnement où chacun peut évoluer à son rythme : passionnés, débutants, athlètes, artistes, enfants, adultes…
+            </p>
+            <p>
+              <strong>Notre objectif est simple :</strong>
+              <br />
+              révéler le potentiel de chaque individu à travers le mouvement et la création.
+            </p>
+          </div>
+          <img
+            src={dancersAsset.url}
+            alt="Danseurs Dada Hip Hop en performance"
+            className="w-full rounded-2xl object-cover"
+            loading="lazy"
           />
-          <Pillar
-            icon={<Eye className="w-6 h-6" />}
-            title="Vision"
-            body="Créer une plateforme culturelle et sportive qui révèle les talents et inspire la nouvelle génération."
-          />
-          <div className="rounded-xl bg-card border border-border/60 p-8">
-            <div className="w-12 h-12 grid place-items-center rounded-lg bg-primary/15 text-primary">
-              <Heart className="w-6 h-6" />
-            </div>
-            <h3 className="mt-4 font-display text-2xl tracking-wide uppercase">Valeurs</h3>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {VALUES.map((v) => (
-                <span key={v} className="px-3 py-1 rounded-full bg-primary/10 border border-primary/30 text-xs font-semibold uppercase tracking-wider">
-                  {v}
-                </span>
-              ))}
+        </div>
+
+        {/* Pillars */}
+        <div className="mt-16 grid gap-6 md:grid-cols-3">
+          <Card title="MISSION" body="Promouvoir la danse, le bien-être et la création artistique à travers un espace moderne et inclusif." />
+          <Card title="VISION" body="Créer une plateforme culturelle et sportive qui révèle les talents et inspire la nouvelle génération." />
+          <div className="rounded-2xl border border-border p-8">
+            <h3 className="font-display text-3xl tracking-wide text-primary">VALEURS</h3>
+            <div className="mt-4 grid grid-cols-3 gap-x-4 gap-y-2 text-sm">
+              <span>Créativité</span><span>Respect</span><span>Énergie</span>
+              <span>Confiance</span><span>Excellence</span><span>Communauté</span>
             </div>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </div>
   );
 }
 
-function Pillar({ icon, title, body }: { icon: React.ReactNode; title: string; body: string }) {
+function Card({ title, body }: { title: string; body: string }) {
   return (
-    <div className="rounded-xl bg-card border border-border/60 p-8">
-      <div className="w-12 h-12 grid place-items-center rounded-lg bg-primary/15 text-primary">{icon}</div>
-      <h3 className="mt-4 font-display text-2xl tracking-wide uppercase">{title}</h3>
-      <p className="mt-3 text-muted-foreground leading-relaxed">{body}</p>
+    <div className="rounded-2xl border border-border p-8">
+      <h3 className="font-display text-3xl tracking-wide text-primary">{title}</h3>
+      <p className="mt-3 text-foreground/85 leading-relaxed">{body}</p>
     </div>
   );
 }
