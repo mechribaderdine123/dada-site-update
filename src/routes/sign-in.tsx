@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import bg from "@/assets/auth-boombox.jpg";
+import bgAsset from "@/assets/auth-bg.png.asset.json";
+const bg = bgAsset.url;
 import logo from "@/assets/dada-logo.png.asset.json";
 
 export const Route = createFileRoute("/sign-in")({
