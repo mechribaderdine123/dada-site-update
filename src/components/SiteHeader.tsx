@@ -13,8 +13,7 @@ export function SiteHeader() {
   const linkBase =
     "px-4 py-2 rounded-full font-display tracking-widest text-base transition-colors";
   const linkPlain = "text-foreground hover:text-primary";
-  const linkPill =
-    "border border-foreground/80 hover:border-primary hover:text-primary";
+  const activePill = "border border-primary text-primary";
 
   return (
     <header className="absolute top-0 inset-x-0 z-40 pt-4 px-4">
@@ -27,7 +26,7 @@ export function SiteHeader() {
           <li>
             <Link
               to="/"
-              className={`${linkBase} ${linkPlain} ${pathname === "/" ? "text-primary" : ""}`}
+              className={`${linkBase} ${pathname === "/" ? activePill : linkPlain}`}
             >
               Accueil
             </Link>
@@ -39,8 +38,8 @@ export function SiteHeader() {
             onMouseLeave={() => setAproposOpen(false)}
           >
             <button
-              className={`${linkBase} ${linkPill} inline-flex items-center gap-1 ${
-                isApropos ? "text-primary border-primary" : ""
+              className={`${linkBase} inline-flex items-center gap-1 ${
+                isApropos ? activePill : linkPlain
               }`}
             >
               À propos
@@ -69,8 +68,8 @@ export function SiteHeader() {
           <li>
             <Link
               to="/cours-activites"
-              className={`${linkBase} ${linkPlain} ${
-                pathname === "/cours-activites" ? "text-primary" : ""
+              className={`${linkBase} ${
+                pathname === "/cours-activites" ? activePill : linkPlain
               }`}
             >
               Cours & Activités
@@ -78,7 +77,7 @@ export function SiteHeader() {
           </li>
 
           <li>
-            <a href="#workshops" className={`${linkBase} ${linkPill}`}>
+            <a href="#workshops" className={`${linkBase} ${linkPlain}`}>
               Workshops & Événements
             </a>
           </li>
@@ -89,6 +88,7 @@ export function SiteHeader() {
             </a>
           </li>
         </ul>
+
 
         <Link
           to="/sign-in"
