@@ -35,13 +35,13 @@ function AlbumDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex">
+    <div className="min-h-screen bg-[#393939] text-white flex">
       <ArtistSidebar />
 
       <main className="flex-1 p-8 md:p-12">
         <Link
           to="/artist/music"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6"
+          className="inline-flex items-center gap-2 text-sm text-white/60 hover:text-white mb-6"
         >
           <ArrowLeft className="w-4 h-4" /> Back to music
         </Link>
