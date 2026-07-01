@@ -406,27 +406,27 @@ function AlbumModal({ album, onClose }: { album: Album | null; onClose: () => vo
       <form onSubmit={submit} className="space-y-4">
         <Field label="Album title">
           <input value={title} onChange={(e) => setTitle(e.target.value)} required
-            className="w-full rounded-lg bg-background border border-border px-4 py-2.5 text-sm outline-none focus:border-secondary" />
+            className="w-full rounded-lg bg-[#4a4a4a] border border-white/10 px-4 py-2.5 text-sm outline-none focus:border-secondary text-white" />
         </Field>
         <Field label="Year">
           <input value={year} onChange={(e) => setYear(e.target.value)} required
-            className="w-full rounded-lg bg-background border border-border px-4 py-2.5 text-sm outline-none focus:border-secondary" />
+            className="w-full rounded-lg bg-[#4a4a4a] border border-white/10 px-4 py-2.5 text-sm outline-none focus:border-secondary text-white" />
         </Field>
         <Field label="Cover image">
           <button
             type="button"
             onClick={() => coverRef.current?.click()}
-            className="w-full h-32 rounded-lg border-2 border-dashed border-border hover:border-secondary flex items-center justify-center overflow-hidden bg-background"
+            className="w-full h-32 rounded-lg border-2 border-dashed border-white/10 hover:border-secondary flex items-center justify-center overflow-hidden bg-[#4a4a4a]"
           >
             {coverPreview ? <img src={coverPreview} alt="" className="w-full h-full object-cover" /> : (
-              <div className="flex flex-col items-center gap-2 text-muted-foreground"><Upload className="w-5 h-5" /> Upload cover</div>
+              <div className="flex flex-col items-center gap-2 text-white/60"><Upload className="w-5 h-5" /> Upload cover</div>
             )}
           </button>
           <input ref={coverRef} type="file" accept="image/*" className="hidden"
             onChange={async (e) => { const f = e.target.files?.[0]; if (f) setCoverKey(await idbPut(f)); }} />
         </Field>
         <div className="flex gap-3 pt-2">
-          <button type="button" onClick={onClose} className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold hover:bg-muted">Cancel</button>
+          <button type="button" onClick={onClose} className="flex-1 rounded-lg border border-white/10 px-4 py-2.5 text-sm font-semibold hover:bg-white/10">Cancel</button>
           <button type="submit" className="flex-1 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-bold hover:opacity-90">
             {album ? "Save" : "Create"}
           </button>
