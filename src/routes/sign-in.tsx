@@ -31,7 +31,7 @@ function SignInPage() {
       <img src={bg} alt="" className="absolute inset-0 w-full h-full object-cover" />
       <div className="absolute inset-0 bg-black/40" />
 
-      <div className="relative w-full max-w-lg rounded-2xl bg-black/55 backdrop-blur-xl border border-white/10 shadow-2xl p-8 md:p-10">
+      <div className="relative w-full max-w-lg rounded-2xl bg-black/50 backdrop-blur-xl border border-white/10 shadow-2xl p-8 md:p-10">
         <div className="flex justify-center">
           <img src={logo.url} alt="Dada Hip Hop Academy" className="h-20 w-auto" />
         </div>
