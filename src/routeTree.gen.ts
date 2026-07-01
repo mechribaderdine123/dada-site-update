@@ -9,7 +9,13 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignUpRouteImport } from './routes/sign-up'
+import { Route as SignInRouteImport } from './routes/sign-in'
+import { Route as DadaReseauxArtistRouteImport } from './routes/dada-reseaux-artist'
+import { Route as CoursActivitesRouteImport } from './routes/cours-activites'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ArtistRouteImport } from './routes/artist'
+import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ArtistIndexRouteImport } from './routes/artist.index'
 import { Route as ArtistMusicRouteImport } from './routes/artist.music'
@@ -17,9 +23,39 @@ import { Route as ArtistEditRouteImport } from './routes/artist.edit'
 import { Route as ArtistDiscographyRouteImport } from './routes/artist.discography'
 import { Route as ArtistAlbumAlbumIdRouteImport } from './routes/artist.album.$albumId'
 
+const SignUpRoute = SignUpRouteImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignInRoute = SignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DadaReseauxArtistRoute = DadaReseauxArtistRouteImport.update({
+  id: '/dada-reseaux-artist',
+  path: '/dada-reseaux-artist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursActivitesRoute = CoursActivitesRouteImport.update({
+  id: '/cours-activites',
+  path: '/cours-activites',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ArtistRoute = ArtistRouteImport.update({
   id: '/artist',
   path: '/artist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AProposRoute = AProposRouteImport.update({
+  id: '/a-propos',
+  path: '/a-propos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -55,7 +91,13 @@ const ArtistAlbumAlbumIdRoute = ArtistAlbumAlbumIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
   '/artist': typeof ArtistRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/cours-activites': typeof CoursActivitesRoute
+  '/dada-reseaux-artist': typeof DadaReseauxArtistRoute
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
   '/artist/discography': typeof ArtistDiscographyRoute
   '/artist/edit': typeof ArtistEditRoute
   '/artist/music': typeof ArtistMusicRoute
@@ -64,6 +106,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
+  '/contact': typeof ContactRoute
+  '/cours-activites': typeof CoursActivitesRoute
+  '/dada-reseaux-artist': typeof DadaReseauxArtistRoute
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
   '/artist/discography': typeof ArtistDiscographyRoute
   '/artist/edit': typeof ArtistEditRoute
   '/artist/music': typeof ArtistMusicRoute
@@ -73,7 +121,13 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
   '/artist': typeof ArtistRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/cours-activites': typeof CoursActivitesRoute
+  '/dada-reseaux-artist': typeof DadaReseauxArtistRoute
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
   '/artist/discography': typeof ArtistDiscographyRoute
   '/artist/edit': typeof ArtistEditRoute
   '/artist/music': typeof ArtistMusicRoute
@@ -84,7 +138,13 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/a-propos'
     | '/artist'
+    | '/contact'
+    | '/cours-activites'
+    | '/dada-reseaux-artist'
+    | '/sign-in'
+    | '/sign-up'
     | '/artist/discography'
     | '/artist/edit'
     | '/artist/music'
@@ -93,6 +153,12 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/a-propos'
+    | '/contact'
+    | '/cours-activites'
+    | '/dada-reseaux-artist'
+    | '/sign-in'
+    | '/sign-up'
     | '/artist/discography'
     | '/artist/edit'
     | '/artist/music'
@@ -101,7 +167,13 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/a-propos'
     | '/artist'
+    | '/contact'
+    | '/cours-activites'
+    | '/dada-reseaux-artist'
+    | '/sign-in'
+    | '/sign-up'
     | '/artist/discography'
     | '/artist/edit'
     | '/artist/music'
@@ -111,16 +183,64 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AProposRoute: typeof AProposRoute
   ArtistRoute: typeof ArtistRouteWithChildren
+  ContactRoute: typeof ContactRoute
+  CoursActivitesRoute: typeof CoursActivitesRoute
+  DadaReseauxArtistRoute: typeof DadaReseauxArtistRoute
+  SignInRoute: typeof SignInRoute
+  SignUpRoute: typeof SignUpRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sign-up': {
+      id: '/sign-up'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof SignUpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-in': {
+      id: '/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof SignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dada-reseaux-artist': {
+      id: '/dada-reseaux-artist'
+      path: '/dada-reseaux-artist'
+      fullPath: '/dada-reseaux-artist'
+      preLoaderRoute: typeof DadaReseauxArtistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cours-activites': {
+      id: '/cours-activites'
+      path: '/cours-activites'
+      fullPath: '/cours-activites'
+      preLoaderRoute: typeof CoursActivitesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/artist': {
       id: '/artist'
       path: '/artist'
       fullPath: '/artist'
       preLoaderRoute: typeof ArtistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/a-propos': {
+      id: '/a-propos'
+      path: '/a-propos'
+      fullPath: '/a-propos'
+      preLoaderRoute: typeof AProposRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -189,7 +309,13 @@ const ArtistRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AProposRoute: AProposRoute,
   ArtistRoute: ArtistRouteWithChildren,
+  ContactRoute: ContactRoute,
+  CoursActivitesRoute: CoursActivitesRoute,
+  DadaReseauxArtistRoute: DadaReseauxArtistRoute,
+  SignInRoute: SignInRoute,
+  SignUpRoute: SignUpRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
