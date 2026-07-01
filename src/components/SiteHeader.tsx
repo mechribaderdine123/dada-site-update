@@ -1,52 +1,98 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import logo from "@/assets/dada-logo.png.asset.json";
-
-const NAV = [
-  { to: "/", label: "Accueil" },
-  { to: "/a-propos", label: "À propos" },
-  { to: "/cours-activites", label: "Cours & Activités" },
-  { to: "/contact", label: "Contact" },
-] as const;
 
 export function SiteHeader() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
+  const [aproposOpen, setAproposOpen] = useState(false);
+
+  const isApropos = pathname === "/a-propos" || pathname === "/contact";
+
+  const linkBase =
+    "px-4 py-2 rounded-full font-display tracking-widest text-base transition-colors";
+  const linkPlain = "text-foreground hover:text-primary";
+  const linkPill =
+    "border border-foreground/80 hover:border-primary hover:text-primary";
 
   return (
     <header className="absolute top-0 inset-x-0 z-40 pt-4 px-4">
-      <nav className="max-w-7xl mx-auto flex items-center justify-between gap-4 rounded-full bg-background/85 backdrop-blur-md border border-border/60 pl-3 pr-3 py-2 shadow-xl">
-        <Link to="/" className="flex items-center">
+      <nav className="max-w-7xl mx-auto flex items-center justify-between gap-4 rounded-full bg-background/90 backdrop-blur-md border border-border/60 pl-4 pr-3 py-2 shadow-xl">
+        <Link to="/" className="flex items-center shrink-0">
           <img src={logo.url} alt="Dada Hip Hop Academy" className="h-12 w-auto" />
         </Link>
 
-        <ul className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-widest">
-          {NAV.map((l) => (
-            <li key={l.to}>
-              <Link
-                to={l.to}
-                className={`px-4 py-2 rounded-full transition-colors ${
-                  pathname === l.to ? "text-primary" : "text-foreground/85 hover:text-primary"
-                }`}
-              >
-                {l.label}
-              </Link>
-            </li>
-          ))}
+        <ul className="hidden lg:flex items-center gap-2">
           <li>
             <Link
-              to="/dada-reseaux-artist"
-              className="px-4 py-2 rounded-full text-secondary hover:text-secondary/80 transition"
+              to="/"
+              className={`${linkBase} ${linkPlain} ${pathname === "/" ? "text-primary" : ""}`}
             >
-              Studio Musique
+              Accueil
             </Link>
+          </li>
+
+          <li
+            className="relative"
+            onMouseEnter={() => setAproposOpen(true)}
+            onMouseLeave={() => setAproposOpen(false)}
+          >
+            <button
+              className={`${linkBase} ${linkPill} inline-flex items-center gap-1 ${
+                isApropos ? "text-primary border-primary" : ""
+              }`}
+            >
+              À propos
+              <ChevronDown className="w-4 h-4" />
+            </button>
+            {aproposOpen && (
+              <div className="absolute left-0 top-full pt-2 min-w-[220px]">
+                <div className="rounded-2xl bg-background border border-border shadow-xl p-2">
+                  <Link
+                    to="/a-propos"
+                    className="block px-4 py-2 rounded-lg font-display tracking-widest text-sm hover:bg-muted"
+                  >
+                    Qui sommes-nous
+                  </Link>
+                  <Link
+                    to="/contact"
+                    className="block px-4 py-2 rounded-lg font-display tracking-widest text-sm hover:bg-muted"
+                  >
+                    Contact
+                  </Link>
+                </div>
+              </div>
+            )}
+          </li>
+
+          <li>
+            <Link
+              to="/cours-activites"
+              className={`${linkBase} ${linkPlain} ${
+                pathname === "/cours-activites" ? "text-primary" : ""
+              }`}
+            >
+              Cours & Activités
+            </Link>
+          </li>
+
+          <li>
+            <a href="#workshops" className={`${linkBase} ${linkPill}`}>
+              Workshops & Événements
+            </a>
+          </li>
+
+          <li>
+            <a href="#studio" className={`${linkBase} ${linkPlain}`}>
+              Studio Musique
+            </a>
           </li>
         </ul>
 
         <Link
           to="/sign-in"
-          className="hidden md:inline-flex items-center rounded-full border-2 border-primary text-primary px-5 py-2 text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-primary-foreground transition"
+          className="hidden md:inline-flex items-center rounded-full border-2 border-primary text-primary px-5 py-2 font-display tracking-widest text-base hover:bg-primary hover:text-primary-foreground transition"
         >
           Dada Réseaux Artiste
         </Link>
@@ -62,23 +108,42 @@ export function SiteHeader() {
 
       {open && (
         <div className="lg:hidden mt-2 mx-2 rounded-2xl bg-background/95 backdrop-blur border border-border shadow-xl">
-          <ul className="flex flex-col p-3 gap-1">
-            {NAV.map((l) => (
-              <li key={l.to}>
-                <Link
-                  to={l.to}
-                  onClick={() => setOpen(false)}
-                  className="block px-4 py-2 rounded-lg text-sm font-semibold uppercase tracking-wider hover:bg-muted"
-                >
-                  {l.label}
-                </Link>
-              </li>
-            ))}
+          <ul className="flex flex-col p-3 gap-1 font-display tracking-widest">
+            <li>
+              <Link to="/" onClick={() => setOpen(false)} className="block px-4 py-2 rounded-lg hover:bg-muted">
+                Accueil
+              </Link>
+            </li>
+            <li>
+              <Link to="/a-propos" onClick={() => setOpen(false)} className="block px-4 py-2 rounded-lg hover:bg-muted">
+                Qui sommes-nous
+              </Link>
+            </li>
+            <li>
+              <Link to="/contact" onClick={() => setOpen(false)} className="block px-4 py-2 rounded-lg hover:bg-muted">
+                Contact
+              </Link>
+            </li>
+            <li>
+              <Link to="/cours-activites" onClick={() => setOpen(false)} className="block px-4 py-2 rounded-lg hover:bg-muted">
+                Cours & Activités
+              </Link>
+            </li>
+            <li>
+              <a href="#workshops" onClick={() => setOpen(false)} className="block px-4 py-2 rounded-lg hover:bg-muted">
+                Workshops & Événements
+              </a>
+            </li>
+            <li>
+              <a href="#studio" onClick={() => setOpen(false)} className="block px-4 py-2 rounded-lg hover:bg-muted">
+                Studio Musique
+              </a>
+            </li>
             <li>
               <Link
                 to="/sign-in"
                 onClick={() => setOpen(false)}
-                className="block mt-2 text-center rounded-lg bg-primary text-primary-foreground px-4 py-2 font-bold uppercase tracking-widest text-sm"
+                className="block mt-2 text-center rounded-lg border-2 border-primary text-primary px-4 py-2"
               >
                 Dada Réseaux Artiste
               </Link>
