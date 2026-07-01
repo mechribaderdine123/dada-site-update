@@ -20,7 +20,7 @@ function EditProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex">
+    <div className="min-h-screen bg-[#393939] text-white flex">
       <ArtistSidebar />
 
 
@@ -29,9 +29,9 @@ function EditProfilePage() {
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
             <h1 className="text-4xl md:text-5xl font-black text-secondary">Profil management</h1>
-            <p className="mt-2 text-foreground/80">Update Your biography profile picture and contact information</p>
+            <p className="mt-2 text-white/80">Update Your biography profile picture and contact information</p>
           </div>
-          <button className="rounded-lg bg-muted hover:bg-muted/70 px-5 py-2.5 text-sm font-semibold border border-border transition">
+          <button className="rounded-lg bg-white/10 hover:bg-white/20 px-5 py-2.5 text-sm font-semibold border border-white/10 transition">
             Save changes
           </button>
         </div>
