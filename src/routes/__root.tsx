@@ -77,20 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Dada Hip Hop Academy — Danse. Culture. Création." },
+      { name: "description", content: "Centre artistique et sportif fondé par Ghada Belgacem. Danse, gymnastique, arts martiaux et création — un espace pour révéler chaque talent." },
+      { property: "og:title", content: "Dada Hip Hop Academy" },
+      { property: "og:description", content: "L'espace où chaque talent trouve son expression." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
+      { rel: "stylesheet", href: appCss },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700;800&display=swap" },
     ],
   }),
   shellComponent: RootShell,
@@ -118,8 +116,27 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <SiteLayout>
+        <Outlet />
+      </SiteLayout>
     </QueryClientProvider>
+  );
+}
+
+import { useRouterState } from "@tanstack/react-router";
+import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
+
+function SiteLayout({ children }: { children: ReactNode }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  // Hide site chrome on auth pages and inside the artist dashboard (has its own sidebar)
+  const bare = pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up") || pathname.startsWith("/artist");
+  if (bare) return <>{children}</>;
+  return (
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <SiteHeader />
+      <main className="flex-1">{children}</main>
+      <SiteFooter />
+    </div>
   );
 }

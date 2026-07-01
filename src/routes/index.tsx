@@ -1,117 +1,121 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Search } from "lucide-react";
-import heroDancers from "@/assets/hero-dancers.jpg";
-import artistPortrait from "@/assets/artist-portrait.jpg";
+import { ArrowRight } from "lucide-react";
+import heroImg from "@/assets/dada-hero.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Dada Réseaux Artist — Hip Hop Academy" },
-      { name: "description", content: "Un espace conçu pour vous mettre en lumière. Rejoignez la plateforme artistique de Dada Hip Hop Academy." },
-      { property: "og:title", content: "Dada Réseaux Artist — Hip Hop Academy" },
-      { property: "og:description", content: "Un espace conçu pour vous mettre en lumière." },
+      { title: "Dada Hip Hop Academy — Danse. Culture. Création." },
+      { name: "description", content: "L'espace où chaque talent trouve son expression. Cours de danse, gymnastique, arts martiaux à Tunis." },
     ],
   }),
-  component: Index,
+  component: HomePage,
 });
 
-const navLinks = ["Accueil", "À propos", "Studio Musique", "Workshops & Événements", "Communauté"];
-const artists = [1, 2, 3, 4];
+const PARTNERS = Array.from({ length: 12 }, (_, i) => `P${String(i + 1).padStart(2, "0")}`);
 
-function Index() {
+function HomePage() {
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans">
-      {/* Nav */}
-      <header className="absolute top-0 left-0 right-0 z-20 bg-background/80 backdrop-blur-sm">
-        <nav className="max-w-7xl mx-auto flex items-center justify-between px-6 py-5">
-          <div className="font-bold text-lg tracking-tight">Hip Hop Academy</div>
-          <ul className="hidden md:flex items-center gap-8 text-sm text-foreground/80">
-            {navLinks.map((l) => (
-              <li key={l}><a href="#" className="hover:text-secondary transition-colors">{l}</a></li>
-            ))}
-          </ul>
-          <a href="#signin" className="rounded-full bg-secondary text-secondary-foreground px-4 py-2 text-xs font-semibold hover:opacity-90 transition">
-            Dada Réseaux Artist
-          </a>
-        </nav>
-      </header>
+    <>
+      {/* HERO */}
+      <section className="relative min-h-screen flex items-center overflow-hidden">
+        <img
+          src={heroImg}
+          alt="Danseurs Dada Hip Hop Academy"
+          className="absolute inset-0 w-full h-full object-cover"
+          width={1920}
+          height={1280}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/85 via-background/60 to-background" />
+        <div className="absolute inset-0" style={{ background: "var(--glow-red)" }} />
 
-      {/* Hero */}
-      <section className="relative pt-20">
-        <div className="relative h-[600px] overflow-hidden border-y-4 border-secondary">
-          <img src={heroDancers} alt="Hip hop dancers" width={1920} height={1080} className="absolute inset-0 w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-background/50" />
-          <div className="relative h-full flex flex-col items-center justify-center text-center px-6">
-            <h1 className="text-5xl md:text-7xl font-black tracking-tight uppercase drop-shadow-2xl">
-              Dada Reseaux Artist
-            </h1>
-            <p className="mt-4 text-lg md:text-xl font-semibold text-white/95">
-              Un espace conçu pour vous mettre en lumière
+        <div className="relative max-w-6xl mx-auto px-6 py-32 text-center w-full">
+          <p className="uppercase tracking-[0.4em] text-primary text-xs font-semibold">Hip Hop Academy</p>
+          <h1 className="mt-6 font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.9] tracking-wide">
+            DADA HIP HOP<br />ACADEMY
+          </h1>
+          <h2 className="mt-6 font-display text-2xl md:text-3xl tracking-widest text-secondary">
+            Danse. Culture. Création.
+          </h2>
+          <p className="mt-6 max-w-xl mx-auto text-base md:text-lg text-foreground/85">
+            L'espace où chaque talent trouve son expression.
+          </p>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <Link
+              to="/cours-activites"
+              className="group inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-6 py-3 text-sm font-bold uppercase tracking-wider hover:opacity-90 transition shadow-xl shadow-primary/30"
+            >
+              Découvrir nos cours
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <Link
+              to="/sign-in"
+              className="inline-flex items-center gap-2 rounded-md border border-foreground/40 bg-background/40 backdrop-blur px-6 py-3 text-sm font-bold uppercase tracking-wider hover:bg-foreground hover:text-background transition"
+            >
+              Se connecter artiste
+            </Link>
+          </div>
+        </div>
+
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-xs text-muted-foreground animate-bounce">
+          <div className="w-px h-8 bg-foreground/40" />
+          scroll
+        </div>
+      </section>
+
+      {/* PARTNERS */}
+      <section className="py-20 border-t border-border/40">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center">
+            <p className="uppercase tracking-[0.4em] text-primary text-xs font-semibold">Ensemble</p>
+            <h2 className="mt-3 font-display text-5xl md:text-6xl tracking-wide">Nos Partenaires</h2>
+            <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
+              Ils nous font confiance et soutiennent l'aventure Dada Hip Hop Academy.
             </p>
-            <Link to="/artist" className="mt-8 inline-block rounded-md bg-primary text-primary-foreground px-6 py-2.5 text-sm font-bold hover:opacity-90 transition shadow-lg">
-              Sign in artist
+          </div>
+
+          <div className="mt-12 overflow-hidden relative">
+            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10" />
+            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10" />
+            <div className="flex gap-6 animate-[marquee_35s_linear_infinite]">
+              {[...PARTNERS, ...PARTNERS].map((p, i) => (
+                <div
+                  key={i}
+                  className="shrink-0 w-40 h-24 rounded-lg bg-card border border-border/60 grid place-items-center font-display text-2xl tracking-widest text-muted-foreground hover:text-secondary hover:border-secondary transition"
+                >
+                  {p}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* PROMO STRIP */}
+      <section className="relative py-24 border-t border-border/40 overflow-hidden">
+        <div className="absolute inset-0" style={{ background: "var(--glow-red)" }} />
+        <div className="relative max-w-4xl mx-auto text-center px-6">
+          <h2 className="font-display text-5xl md:text-7xl tracking-wide">Rejoignez la famille</h2>
+          <p className="mt-5 text-foreground/85 max-w-2xl mx-auto">
+            Que vous soyez débutant curieux, athlète confirmé ou artiste en devenir — trouvez votre discipline et donnez vie à votre énergie.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+            <Link to="/cours-activites" className="rounded-md bg-primary text-primary-foreground px-6 py-3 text-sm font-bold uppercase tracking-wider hover:opacity-90 transition">
+              Voir les cours
+            </Link>
+            <Link to="/contact" className="rounded-md border border-foreground/40 px-6 py-3 text-sm font-bold uppercase tracking-wider hover:bg-foreground hover:text-background transition">
+              Contactez-nous
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Discover */}
-      <section className="py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-center text-4xl md:text-5xl font-black uppercase tracking-tight">
-            Decouvrer <span className="text-primary">Nos Artist</span>
-          </h2>
-
-          <div className="mt-10 flex justify-center">
-            <div className="relative w-full max-w-md">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="search artist"
-                className="w-full pl-12 pr-4 py-3 rounded-lg bg-transparent border border-border focus:border-secondary outline-none transition"
-              />
-            </div>
-          </div>
-
-          <h3 className="mt-14 text-xl font-bold">Featured Artist</h3>
-          <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-6">
-            {artists.map((i) => (
-              <div key={i} className="group cursor-pointer">
-                <div className="aspect-square overflow-hidden rounded-2xl bg-card">
-                  <img src={artistPortrait} alt="Artist" width={400} height={400} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                </div>
-                <div className="mt-3">
-                  <p className="font-bold text-lg">Artist name</p>
-                  <p className="text-sm text-muted-foreground">under ground</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8 flex justify-end">
-            <button className="rounded-md bg-primary text-primary-foreground px-5 py-2 text-sm font-bold hover:opacity-90 transition">
-              See all
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="relative py-24 px-6 overflow-hidden border-t-4 border-secondary">
-        <div className="absolute inset-0" style={{ background: "var(--glow-teal)" }} />
-        <div className="relative max-w-3xl mx-auto text-center">
-          <div className="inline-block rounded-full bg-secondary text-secondary-foreground px-8 py-3 font-bold text-lg shadow-lg">
-            Créer votre Profil Artistique
-          </div>
-          <p className="mt-6 text-sm md:text-base text-foreground/80 max-w-xl mx-auto leading-relaxed">
-            Rejoignez la plateforme artistique de Dada Hip Hop Academy et partagez votre univers.
-            Décrivez votre style, présentez vos œuvres, ajoutez vos liens sociaux et construisez votre présence professionnelle.
-          </p>
-          <Link to="/artist" className="mt-8 inline-block rounded-md bg-primary text-primary-foreground px-6 py-2.5 text-sm font-bold hover:opacity-90 transition shadow-lg">
-            Sign in artist
-          </Link>
-        </div>
-      </section>
-    </div>
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+      `}</style>
+    </>
   );
 }
