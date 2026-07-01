@@ -75,8 +75,8 @@ function AlbumDetailPage() {
 
         {/* Add existing singles panel */}
         {addExisting && availableSingles.length > 0 && (
-          <div className="mt-6 rounded-xl border border-border bg-muted/30 p-4">
-            <p className="text-sm font-bold mb-3">Pick singles to add to this album</p>
+          <div className="mt-6 rounded-xl border border-white/10 bg-white/10 p-4">
+            <p className="text-sm font-bold mb-3 text-white">Pick singles to add to this album</p>
             <div className="space-y-2">
               {availableSingles.map((s) => (
                 <SingleAddRow key={s.id} s={s} onAdd={() => tracksApi.update(s.id, { albumId })} />
