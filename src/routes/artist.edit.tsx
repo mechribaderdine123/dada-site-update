@@ -66,12 +66,12 @@ function EditProfilePage() {
         </section>
 
         {/* Biography */}
-        <section className="mt-6 bg-muted/30 rounded-2xl p-6 border border-border/50">
-          <h2 className="text-xl font-bold">Biography</h2>
+        <section className="mt-6 bg-white/10 rounded-2xl p-6 border border-white/10">
+          <h2 className="text-xl font-bold text-white">Biography</h2>
           <textarea
             placeholder="Tell your story...."
             rows={8}
-            className="mt-4 w-full rounded-xl border-2 border-dashed border-border/70 bg-background/50 p-4 outline-none focus:border-secondary transition resize-none"
+            className="mt-4 w-full rounded-xl border-2 border-dashed border-white/20 bg-[#4a4a4a]/50 p-4 outline-none focus:border-secondary transition resize-none text-white placeholder:text-white/50"
           />
         </section>
 
