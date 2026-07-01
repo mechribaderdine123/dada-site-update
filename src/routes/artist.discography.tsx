@@ -83,7 +83,7 @@ function DiscographyPage() {
       <section className="max-w-6xl mx-auto px-6 mt-16">
         <div className="flex items-end justify-between gap-4 flex-wrap">
           <h2 className="text-3xl font-black">All Music</h2>
-          <div className="inline-flex bg-muted/60 rounded-xl p-1.5 gap-1">
+          <div className="inline-flex bg-white/10 rounded-xl p-1.5 gap-1">
             {(["all", "albums", "single"] as Filter[]).map((f) => (
               <button
                 key={f}
@@ -91,7 +91,7 @@ function DiscographyPage() {
                 className={`px-5 py-2 rounded-lg text-sm font-semibold capitalize transition ${
                   filter === f
                     ? "bg-secondary text-secondary-foreground"
-                    : "text-foreground/70 hover:text-foreground"
+                    : "text-white/70 hover:text-white"
                 }`}
               >
                 {f}
