@@ -43,7 +43,7 @@ function ArtistPage() {
     <div className="min-h-screen bg-[#393939] text-white">
       {/* Top banner section */}
       <section className="relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-secondary/30 via-background to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-secondary/30 via-[#393939] to-[#393939]" />
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,oklch(0.75_0.12_195/0.4),transparent_70%)]" />
         <div className="relative max-w-6xl mx-auto px-6 pt-8 pb-12">
           <div className="flex items-center justify-between gap-4 flex-wrap">
