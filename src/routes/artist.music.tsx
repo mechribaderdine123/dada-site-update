@@ -151,7 +151,7 @@ function AlbumList({
 }) {
   if (albums.length === 0) {
     return (
-      <div className="text-center py-16 text-muted-foreground">
+      <div className="text-center py-16 text-white/60">
         No albums yet. Click "Add new album" to get started.
       </div>
     );
