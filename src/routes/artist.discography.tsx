@@ -283,19 +283,19 @@ function Player({ track, onClose }: { track: Track; onClose: () => void }) {
   };
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-40 bg-card/95 backdrop-blur border-t border-border">
+    <div className="fixed bottom-0 inset-x-0 z-40 bg-[#2d2d2d]/95 backdrop-blur border-t border-white/10 text-white">
       <div className="max-w-6xl mx-auto px-4 py-3 grid grid-cols-[1fr_auto_1fr] items-center gap-4">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-12 h-12 rounded-lg bg-muted overflow-hidden shrink-0">
+          <div className="w-12 h-12 rounded-lg bg-[#4a4a4a] overflow-hidden shrink-0">
             {cover && <img src={cover} alt={track.title} className="w-full h-full object-cover" />}
           </div>
           <div className="min-w-0">
             <p className="font-bold truncate">{track.title}</p>
-            <p className="text-xs text-muted-foreground truncate">{track.genre}</p>
+            <p className="text-xs text-white/60 truncate">{track.genre}</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <button className="text-foreground/60 hover:text-foreground" aria-label="Previous"><SkipBack className="w-5 h-5" /></button>
+          <button className="text-white/60 hover:text-white" aria-label="Previous"><SkipBack className="w-5 h-5" /></button>
           <button
             onClick={toggle}
             className="w-11 h-11 grid place-items-center rounded-full border-2 border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground transition"
@@ -303,19 +303,19 @@ function Player({ track, onClose }: { track: Track; onClose: () => void }) {
           >
             {playing ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
           </button>
-          <button className="text-foreground/60 hover:text-foreground" aria-label="Next"><SkipForward className="w-5 h-5" /></button>
+          <button className="text-white/60 hover:text-white" aria-label="Next"><SkipForward className="w-5 h-5" /></button>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex-1 h-1 rounded bg-muted overflow-hidden">
+          <div className="flex-1 h-1 rounded bg-white/10 overflow-hidden">
             <div
               className="h-full bg-secondary transition-[width]"
               style={{ width: dur > 0 ? `${(cur / dur) * 100}%` : "0%" }}
             />
           </div>
-          <span className="text-xs text-muted-foreground tabular-nums whitespace-nowrap">
+          <span className="text-xs text-white/60 tabular-nums whitespace-nowrap">
             {formatTime(cur)} / {formatTime(dur)}
           </span>
-          <button onClick={onClose} className="text-xs text-muted-foreground hover:text-foreground ml-2">Close</button>
+          <button onClick={onClose} className="text-xs text-white/60 hover:text-white ml-2">Close</button>
         </div>
       </div>
       {audioUrl && (
