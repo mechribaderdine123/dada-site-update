@@ -123,13 +123,13 @@ function EditProfilePage() {
 function SocialInput({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
     <div>
-      <label className="flex items-center gap-2 text-sm font-semibold mb-2">
+      <label className="flex items-center gap-2 text-sm font-semibold mb-2 text-white">
         {icon} {label}
       </label>
       <input
         type="url"
         placeholder="https://www.youtube.com/@your artist"
-        className="w-full rounded-lg bg-background/70 border border-border px-4 py-2.5 text-sm outline-none focus:border-secondary transition"
+        className="w-full rounded-lg bg-[#4a4a4a]/70 border border-white/10 px-4 py-2.5 text-sm outline-none focus:border-secondary transition text-white placeholder:text-white/50"
       />
     </div>
   );
