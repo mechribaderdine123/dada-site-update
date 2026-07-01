@@ -42,13 +42,13 @@ function DiscographyPage() {
   const showSingles = filter !== "albums";
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-28">
+    <div className="min-h-screen bg-[#393939] text-white pb-28">
       {/* Top nav */}
       <header className="max-w-6xl mx-auto px-6 pt-6 flex items-center justify-between">
-        <div className="inline-flex bg-muted/60 backdrop-blur rounded-xl p-1.5 gap-1">
+        <div className="inline-flex bg-white/10 backdrop-blur rounded-xl p-1.5 gap-1">
           <Link
             to="/artist"
-            className="px-6 py-2 rounded-lg text-sm font-semibold text-foreground/70 hover:text-foreground"
+            className="px-6 py-2 rounded-lg text-sm font-semibold text-white/70 hover:text-white"
           >
             Home
           </Link>
@@ -58,7 +58,7 @@ function DiscographyPage() {
         </div>
         <Link
           to="/artist/edit"
-          className="inline-flex items-center gap-2 rounded-lg bg-muted/60 px-4 py-2 text-sm font-semibold hover:bg-muted"
+          className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-sm font-semibold hover:bg-white/20"
         >
           <Pencil className="w-4 h-4 text-secondary" /> Edit
         </Link>
