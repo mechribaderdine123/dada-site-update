@@ -40,7 +40,7 @@ function ArtistPage() {
 
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-[#393939] text-white">
       {/* Top banner section */}
       <section className="relative">
         <div className="absolute inset-0 bg-gradient-to-b from-secondary/30 via-background to-background" />
