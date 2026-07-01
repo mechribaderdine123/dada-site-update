@@ -76,9 +76,9 @@ function EditProfilePage() {
         </section>
 
         {/* Socials */}
-        <section className="mt-6 bg-muted/30 rounded-2xl p-6 border border-border/50">
-          <h2 className="text-xl font-bold">Social media links</h2>
-          <p className="text-sm text-muted-foreground mt-1">Add links to your social media profiles to connect with your fans</p>
+        <section className="mt-6 bg-white/10 rounded-2xl p-6 border border-white/10">
+          <h2 className="text-xl font-bold text-white">Social media links</h2>
+          <p className="text-sm text-white/60 mt-1">Add links to your social media profiles to connect with your fans</p>
           <div className="mt-5 grid md:grid-cols-2 gap-5">
             <SocialInput icon={<Youtube className="w-4 h-4 text-primary" />} label="YouTube" />
             <SocialInput icon={<Facebook className="w-4 h-4 text-secondary" />} label="Facebook" />
