@@ -52,14 +52,14 @@ function ArtistPage() {
               <button
                 onClick={() => setTab("home")}
                 className={`px-6 py-2 rounded-lg text-sm font-semibold transition ${
-                  tab === "home" ? "bg-secondary text-secondary-foreground" : "text-foreground/70"
+                  tab === "home" ? "bg-secondary text-secondary-foreground" : "text-white/70"
                 }`}
               >
                 Home
               </button>
               <Link
                 to="/artist/discography"
-                className="px-6 py-2 rounded-lg text-sm font-semibold text-foreground/70 hover:text-foreground transition"
+                className="px-6 py-2 rounded-lg text-sm font-semibold text-white/70 hover:text-white transition"
               >
                 Music
               </Link>
