@@ -48,7 +48,7 @@ function ArtistPage() {
         <div className="relative max-w-6xl mx-auto px-6 pt-8 pb-12">
           <div className="flex items-center justify-between gap-4 flex-wrap">
             {/* Tabs */}
-            <div className="inline-flex bg-muted/60 backdrop-blur rounded-xl p-1.5 gap-1">
+            <div className="inline-flex bg-white/10 backdrop-blur rounded-xl p-1.5 gap-1">
               <button
                 onClick={() => setTab("home")}
                 className={`px-6 py-2 rounded-lg text-sm font-semibold transition ${
