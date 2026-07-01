@@ -248,7 +248,7 @@ function SingleRow({
 
 function EmptyState({ label }: { label: string }) {
   return (
-    <div className="rounded-2xl border border-dashed border-border py-16 text-center text-muted-foreground">
+    <div className="rounded-2xl border border-dashed border-white/20 py-16 text-center text-white/60">
       {label}
     </div>
   );
