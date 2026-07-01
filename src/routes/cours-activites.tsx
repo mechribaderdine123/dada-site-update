@@ -1,96 +1,145 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check } from "lucide-react";
-import coursImg from "@/assets/dada-cours.jpg";
-import planImg from "@/assets/dada-plan.jpg";
+import { PersonStanding, Dumbbell, Flower2 } from "lucide-react";
+import heroAsset from "@/assets/cours-hero.png.asset.json";
+import planAsset from "@/assets/cours-plan.png.asset.json";
 
 export const Route = createFileRoute("/cours-activites")({
   head: () => ({
     meta: [
       { title: "Nos Cours & Activités — Dada Hip Hop Academy" },
-      { name: "description", content: "Danse, gymnastique, cardio, arts martiaux, cours pour enfants et adultes. Découvrez tous nos programmes à Tunis." },
+      { name: "description", content: "Danse, fitness, bien-être et arts martiaux. Découvrez tous nos programmes à Dada Hip Hop Academy." },
     ],
   }),
   component: CoursPage,
 });
 
-const CATEGORIES = [
-  { title: "Cours collectifs spécial femmes", items: ["Cardio mixte", "Zumba", "Pilates"] },
-  { title: "Cours collectifs mixte", items: ["Cours mixte + CAF", "Renforcement", "Tabata"] },
-  { title: "Danse", items: ["Contemporaine", "Classique", "Hip hop"] },
-  { title: "Bac Sport", items: ["Gymnastique garçons", "Gymnastique filles"] },
-  { title: "Gymnastique Kids", items: ["Gym kids poussins", "Gym kids débutants", "Gym kids avancé", "Gym kids inter"] },
-  { title: "Martial Arts", items: ["Lutte", "Kung Fu"] },
+type Card = {
+  title: string;
+  items: string[];
+  icon: React.ReactNode;
+  accent: "primary" | "secondary";
+};
+
+const CARDS: Card[] = [
+  {
+    title: "COURS DE DANCE",
+    icon: <PersonStanding className="w-6 h-6" />,
+    accent: "primary",
+    items: ["Hip-hop", "Breakdance", "Danse classique", "Danse urbaine & freestyle", "Expression corporelle"],
+  },
+  {
+    title: "COURS DE FITNESS",
+    icon: <Dumbbell className="w-6 h-6" />,
+    accent: "secondary",
+    items: ["Fitness général", "Renforcement musculaire", "Stretching", "Cardio dance"],
+  },
+  {
+    title: "COURS BIEN ETRE",
+    icon: <Flower2 className="w-6 h-6" />,
+    accent: "primary",
+    items: ["Yoga", "Pilates", "Gym douce"],
+  },
+  {
+    title: "ARTS MARTIAUX",
+    icon: <PersonStanding className="w-6 h-6" />,
+    accent: "primary",
+    items: ["Kung Fu", "Lutte", "Self défense"],
+  },
+  {
+    title: "GYM KIDS",
+    icon: <Dumbbell className="w-6 h-6" />,
+    accent: "secondary",
+    items: ["Gym kids poussins", "Gym kids débutants", "Gymnastique filles 13+", "Gymnastique garçons 13+"],
+  },
+  {
+    title: "SPÉCIAL FEMMES",
+    icon: <Flower2 className="w-6 h-6" />,
+    accent: "primary",
+    items: ["Cardio mix + CAF", "Zumba", "Pilates", "Renfo / Pilates"],
+  },
 ];
 
 function CoursPage() {
   return (
-    <>
-      {/* HEADER */}
-      <section className="relative pt-32 pb-20 overflow-hidden border-b border-border/40">
-        <img src={coursImg} alt="Cours de danse" className="absolute inset-0 w-full h-full object-cover opacity-30" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background" />
-        <div className="relative max-w-5xl mx-auto px-6 text-center">
-          <p className="uppercase tracking-[0.4em] text-primary text-xs font-semibold">Programmes</p>
-          <h1 className="mt-4 font-display text-6xl md:text-8xl tracking-wide">Nos Cours & Activités</h1>
-          <p className="mt-6 max-w-2xl mx-auto text-foreground/85 text-lg">
-            Découvrez une variété de cours conçus pour développer votre technique, votre forme physique et votre créativité. Nos coachs qualifiés vous accompagnent à chaque étape.
-          </p>
-          <Link
-            to="/contact"
-            className="mt-8 inline-flex rounded-md bg-primary text-primary-foreground px-6 py-3 text-sm font-bold uppercase tracking-wider hover:opacity-90 transition"
-          >
-            Contactez-nous
-          </Link>
-        </div>
-      </section>
-
-      {/* COURSES */}
-      <section id="cours" className="py-20">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center max-w-2xl mx-auto">
-            <h2 className="font-display text-4xl md:text-5xl tracking-wide">Tous nos cours</h2>
-            <p className="mt-3 text-muted-foreground">Des programmes adaptés à tous les niveaux, du débutant à l'expert.</p>
+    <div className="pt-28 pb-20">
+      <div className="max-w-6xl mx-auto px-6">
+        {/* HERO */}
+        <div className="grid gap-8 md:grid-cols-[320px_1fr] items-center">
+          <img
+            src={heroAsset.url}
+            alt="Dada Hip Hop Academy"
+            className="w-full rounded-2xl object-cover"
+            loading="lazy"
+          />
+          <div>
+            <h1 className="font-display text-5xl md:text-6xl tracking-wide">NOS COURS & ACTIVITÉS</h1>
+            <p className="mt-4 text-foreground/85 leading-relaxed">
+              Découvrez une variété de cours conçus pour développer votre technique, votre forme physique et votre créativité. Nos coachs qualifiés vous accompagnent à chaque étape.
+            </p>
+            <Link
+              to="/contact"
+              className="mt-6 inline-flex rounded-md bg-primary text-primary-foreground px-6 py-3 text-sm font-bold hover:opacity-90 transition"
+            >
+              Contacter Nous
+            </Link>
           </div>
+        </div>
 
-          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {CATEGORIES.map((cat) => (
+        {/* TOUS NOS COURS */}
+        <div className="mt-16">
+          <h2 className="font-display text-3xl tracking-wide">
+            TOUS NOS <span className="text-primary">COURS</span>
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Des programmes adaptés à tous les niveaux, du débutant à l'expert.
+          </p>
+
+          <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {CARDS.map((c) => (
               <article
-                key={cat.title}
-                className="group relative overflow-hidden rounded-xl bg-card border border-border/60 p-7 hover:border-primary transition"
+                key={c.title}
+                className="rounded-2xl border border-border bg-card p-6 shadow-sm"
               >
-                <div className="absolute -top-16 -right-16 w-40 h-40 rounded-full bg-primary/10 blur-3xl group-hover:bg-primary/20 transition" />
-                <h3 className="relative font-display text-2xl tracking-wide text-secondary uppercase">{cat.title}</h3>
-                <ul className="relative mt-5 space-y-3">
-                  {cat.items.map((item) => (
-                    <li key={item} className="flex items-center gap-3 text-sm">
-                      <span className="w-6 h-6 grid place-items-center rounded-full bg-primary/15 text-primary">
-                        <Check className="w-3.5 h-3.5" />
-                      </span>
-                      {item}
-                    </li>
+                <div
+                  className={`w-12 h-12 grid place-items-center rounded-lg ${
+                    c.accent === "primary" ? "bg-primary/10 text-primary" : "bg-secondary/15 text-secondary"
+                  }`}
+                >
+                  {c.icon}
+                </div>
+                <h3
+                  className={`mt-5 font-display text-2xl tracking-wide ${
+                    c.accent === "primary" ? "text-primary" : "text-secondary"
+                  }`}
+                >
+                  {c.title}
+                </h3>
+                <ul className="mt-4 space-y-1.5 text-sm text-foreground/85">
+                  {c.items.map((item) => (
+                    <li key={item}>• {item}</li>
                   ))}
                 </ul>
               </article>
             ))}
           </div>
         </div>
-      </section>
 
-      {/* PLAN */}
-      <section className="py-20 border-t border-border/40 bg-card/30">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center">
-            <p className="uppercase tracking-[0.4em] text-primary text-xs font-semibold">Nos locaux</p>
-            <h2 className="mt-3 font-display text-4xl md:text-5xl tracking-wide">Plan de l'académie</h2>
-            <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
-              Studios de danse, salle de gym, vestiaires, réception — un espace conçu pour votre confort.
-            </p>
-          </div>
-          <div className="mt-10 rounded-2xl overflow-hidden border border-border shadow-2xl">
-            <img src={planImg} alt="Plan de l'académie" width={1600} height={1024} loading="lazy" className="w-full h-auto" />
+        {/* PLAN */}
+        <div className="mt-16">
+          <h2 className="font-display text-3xl tracking-wide">PLAN</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Consultez notre planning hebdomadaire pour trouver le créneau qui vous convient.
+          </p>
+          <div className="mt-6 rounded-2xl overflow-hidden border border-border">
+            <img
+              src={planAsset.url}
+              alt="Planning hebdomadaire Dada Hip Hop Academy"
+              className="w-full h-auto"
+              loading="lazy"
+            />
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </div>
   );
 }
