@@ -24,10 +24,10 @@ function AlbumDetailPage() {
 
   if (!album && albums.length > 0) {
     return (
-      <div className="min-h-screen bg-background text-foreground flex">
+      <div className="min-h-screen bg-[#393939] text-white flex">
         <ArtistSidebar />
         <main className="flex-1 p-12">
-          <p className="text-muted-foreground">Album not found.</p>
+          <p className="text-white/60">Album not found.</p>
           <Link to="/artist/music" className="text-secondary underline">Back to music</Link>
         </main>
       </div>
