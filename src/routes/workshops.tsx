@@ -1,8 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
 import event1 from "@/assets/event-1.jpg";
 import event2 from "@/assets/event-2.jpg";
 import event3 from "@/assets/event-3.jpg";
@@ -86,99 +84,95 @@ function WorkshopsPage() {
     : EVENTS.filter((e) => e.category === category);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <SiteHeader />
-      <main className="flex-1 pt-32 pb-20 px-4">
-        <div className="max-w-5xl mx-auto">
-          <header className="text-center mb-10">
-            <h1 className="font-display tracking-wider text-5xl md:text-7xl leading-[0.9]">
-              WORKSHOPS &amp;
-              <br />
-              ÉVÉNEMENTS
-            </h1>
-            <p className="mt-6 max-w-2xl mx-auto text-muted-foreground">
-              Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs,
-              beatmakers et créateurs de contenu. Il permet d'enregistrer, produire,
-              mixer, filmer et expérimenter dans un cadre moderne.
-            </p>
-          </header>
+    <div className="pt-32 pb-20 px-4">
+      <div className="max-w-5xl mx-auto">
+        <header className="text-center mb-10">
+          <h1 className="font-display tracking-wider text-5xl md:text-7xl leading-[0.9]">
+            WORKSHOPS &amp;
+            <br />
+            ÉVÉNEMENTS
+          </h1>
+          <p className="mt-6 max-w-2xl mx-auto text-muted-foreground">
+            Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs,
+            beatmakers et créateurs de contenu. Il permet d'enregistrer, produire,
+            mixer, filmer et expérimenter dans un cadre moderne.
+          </p>
+        </header>
 
-          <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
-            <h2 className="font-display tracking-widest text-xl md:text-2xl">
-              PROCHAINS <span className="text-primary">EVENEMENTS</span>
-            </h2>
+        <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <h2 className="font-display tracking-widest text-xl md:text-2xl">
+            PROCHAINS <span className="text-primary">EVENEMENTS</span>
+          </h2>
 
-            <div className="relative">
-              <button
-                onClick={() => setOpen((v) => !v)}
-                className="min-w-[280px] flex items-center justify-between gap-3 rounded-2xl border border-border bg-background px-5 py-3 text-left shadow-sm"
-              >
-                <span>{category}</span>
-                <ChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
-              </button>
-              {open && (
-                <div className="absolute right-0 top-full mt-2 w-[420px] max-w-[90vw] rounded-2xl border border-border bg-background shadow-xl p-2 z-20">
-                  {CATEGORIES.map((c) => (
-                    <button
-                      key={c}
-                      onClick={() => { setCategory(c); setOpen(false); }}
-                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left hover:bg-muted ${
-                        category === c ? "text-primary" : ""
-                      }`}
-                    >
-                      <span className="w-4 h-4 rounded-sm bg-primary/20 shrink-0" />
-                      <span>{c}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+          <div className="relative">
+            <button
+              onClick={() => setOpen((v) => !v)}
+              className="min-w-[280px] flex items-center justify-between gap-3 rounded-2xl border border-border bg-background px-5 py-3 text-left shadow-sm"
+            >
+              <span>{category}</span>
+              <ChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
+            </button>
+            {open && (
+              <div className="absolute right-0 top-full mt-2 w-[420px] max-w-[90vw] rounded-2xl border border-border bg-background shadow-xl p-2 z-20">
+                {CATEGORIES.map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => { setCategory(c); setOpen(false); }}
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left hover:bg-muted ${
+                      category === c ? "text-primary" : ""
+                    }`}
+                  >
+                    <span className="w-4 h-4 rounded-sm bg-primary/20 shrink-0" />
+                    <span>{c}</span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-
-          <ul className="space-y-5">
-            {events.map((e) => (
-              <li
-                key={e.id}
-                className="rounded-2xl border border-border bg-card p-3 md:p-4 flex flex-col md:flex-row gap-4 md:gap-6 shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div className="relative w-full md:w-56 h-48 md:h-44 shrink-0 rounded-xl overflow-hidden">
-                  <img
-                    src={e.image}
-                    alt={e.name}
-                    loading="lazy"
-                    width={1024}
-                    height={1024}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-2 left-2 bg-primary text-primary-foreground rounded-md px-2 py-1 text-center leading-none font-display tracking-wider">
-                    <div className="text-[10px]">{e.month}</div>
-                    <div className="text-xl">{e.day}</div>
-                  </div>
-                </div>
-
-                <div className="flex-1 min-w-0 py-1">
-                  <h3 className="font-display tracking-wider text-2xl md:text-3xl">{e.name}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{e.category}</p>
-                  <p className="mt-3 text-sm md:text-base text-foreground/80">
-                    {e.description}
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-x-8 gap-y-1 text-sm">
-                    <span>place : <span className="text-muted-foreground">{e.place}</span></span>
-                    <span>time : <span className="text-muted-foreground">{e.time}</span></span>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-
-          {events.length === 0 && (
-            <p className="text-center text-muted-foreground py-16">
-              Aucun événement dans cette catégorie pour le moment.
-            </p>
-          )}
         </div>
-      </main>
-      <SiteFooter />
+
+        <ul className="space-y-5">
+          {events.map((e) => (
+            <li
+              key={e.id}
+              className="rounded-2xl border border-border bg-card p-3 md:p-4 flex flex-col md:flex-row gap-4 md:gap-6 shadow-sm hover:shadow-md transition-shadow"
+            >
+              <div className="relative w-full md:w-56 h-48 md:h-44 shrink-0 rounded-xl overflow-hidden">
+                <img
+                  src={e.image}
+                  alt={e.name}
+                  loading="lazy"
+                  width={1024}
+                  height={1024}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-2 left-2 bg-primary text-primary-foreground rounded-md px-2 py-1 text-center leading-none font-display tracking-wider">
+                  <div className="text-[10px]">{e.month}</div>
+                  <div className="text-xl">{e.day}</div>
+                </div>
+              </div>
+
+              <div className="flex-1 min-w-0 py-1">
+                <h3 className="font-display tracking-wider text-2xl md:text-3xl">{e.name}</h3>
+                <p className="text-sm text-muted-foreground mt-1">{e.category}</p>
+                <p className="mt-3 text-sm md:text-base text-foreground/80">
+                  {e.description}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-x-8 gap-y-1 text-sm">
+                  <span>place : <span className="text-muted-foreground">{e.place}</span></span>
+                  <span>time : <span className="text-muted-foreground">{e.time}</span></span>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        {events.length === 0 && (
+          <p className="text-center text-muted-foreground py-16">
+            Aucun événement dans cette catégorie pour le moment.
+          </p>
+        )}
+      </div>
     </div>
   );
 }
