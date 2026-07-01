@@ -224,24 +224,24 @@ function SingleRow({
     <button
       onClick={onPlay}
       className={`w-full grid grid-cols-[32px_56px_1fr_auto] items-center gap-4 rounded-xl px-4 py-3 text-left transition ${
-        isPlaying ? "bg-secondary/20 ring-1 ring-secondary" : "bg-muted/60 hover:bg-muted"
+        isPlaying ? "bg-secondary/20 ring-1 ring-secondary" : "bg-white/10 hover:bg-white/20"
       }`}
     >
-      <span className="text-sm text-muted-foreground">{index}</span>
-      <div className="w-14 h-14 rounded-lg bg-background overflow-hidden">
+      <span className="text-sm text-white/60">{index}</span>
+      <div className="w-14 h-14 rounded-lg bg-[#4a4a4a] overflow-hidden">
         {cover ? (
           <img src={cover} alt={t.title} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full grid place-items-center">
-            <MusicIcon className="w-5 h-5 text-muted-foreground" />
+            <MusicIcon className="w-5 h-5 text-white/50" />
           </div>
         )}
       </div>
       <div className="min-w-0">
-        <p className="font-bold truncate">{t.title}</p>
-        <p className="text-sm text-muted-foreground truncate">{t.genre}</p>
+        <p className="font-bold truncate text-white">{t.title}</p>
+        <p className="text-sm text-white/60 truncate">{t.genre}</p>
       </div>
-      <span className="text-sm text-muted-foreground tabular-nums">—:—</span>
+      <span className="text-sm text-white/60 tabular-nums">—:—</span>
     </button>
   );
 }
