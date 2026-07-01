@@ -104,11 +104,11 @@ function ArtistPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-muted/40 py-12 px-6">
+      <footer className="bg-[#2d2d2d] py-12 px-6">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12">
           <div>
             <h3 className="text-2xl font-black">Social media</h3>
-            <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
+            <div className="mt-6 grid grid-cols-2 gap-4 text-sm text-white/90">
               <a className="flex items-center gap-3 hover:text-secondary transition"><Youtube className="w-5 h-5 text-primary" /> DADA_TN</a>
               <a className="flex items-center gap-3 hover:text-secondary transition"><Facebook className="w-5 h-5 text-secondary" /> DADA_TN</a>
               <a className="flex items-center gap-3 hover:text-secondary transition"><svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" fill="oklch(0.7 0.18 150)"/></svg> DADA_TN</a>
@@ -118,14 +118,14 @@ function ArtistPage() {
           </div>
           <div className="md:text-right">
             <h3 className="text-2xl font-black">Contact Information</h3>
-            <div className="mt-6 space-y-3 text-sm">
+            <div className="mt-6 space-y-3 text-sm text-white/90">
               <div className="flex items-center gap-3 md:justify-end"><Mail className="w-5 h-5 text-primary" /> DADA_TN</div>
               <div className="flex items-center gap-3 md:justify-end"><Phone className="w-5 h-5 text-secondary" /> +216 22 222 222</div>
             </div>
           </div>
         </div>
-        <div className="max-w-6xl mx-auto mt-8 pt-6 border-t border-border/50">
-          <Link to="/" className="text-sm text-muted-foreground hover:text-secondary transition">← Back to home</Link>
+        <div className="max-w-6xl mx-auto mt-8 pt-6 border-t border-white/10">
+          <Link to="/" className="text-sm text-white/60 hover:text-secondary transition">← Back to home</Link>
         </div>
       </footer>
     </div>
