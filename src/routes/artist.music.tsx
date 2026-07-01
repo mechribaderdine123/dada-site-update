@@ -291,11 +291,11 @@ export function TrackModal({
       <form onSubmit={submit} className="space-y-4">
         <Field label="Title">
           <input value={title} onChange={(e) => setTitle(e.target.value)} required
-            className="w-full rounded-lg bg-background border border-border px-4 py-2.5 text-sm outline-none focus:border-secondary" />
+            className="w-full rounded-lg bg-[#4a4a4a] border border-white/10 px-4 py-2.5 text-sm outline-none focus:border-secondary text-white" />
         </Field>
         <Field label="Genre">
           <select value={genre} onChange={(e) => setGenre(e.target.value)}
-            className="w-full rounded-lg bg-background border border-border px-4 py-2.5 text-sm outline-none focus:border-secondary">
+            className="w-full rounded-lg bg-[#4a4a4a] border border-white/10 px-4 py-2.5 text-sm outline-none focus:border-secondary text-white">
             <option>Hip hop</option><option>Trap</option><option>R&B</option><option>Rap</option><option>Drill</option>
           </select>
         </Field>
@@ -304,19 +304,19 @@ export function TrackModal({
           <button
             type="button"
             onClick={() => audioRef.current?.click()}
-            className="w-full rounded-lg border-2 border-dashed border-border hover:border-secondary px-4 py-4 bg-background flex flex-col items-center gap-1 text-sm"
+            className="w-full rounded-lg border-2 border-dashed border-white/10 hover:border-secondary px-4 py-4 bg-[#4a4a4a] flex flex-col items-center gap-1 text-sm"
           >
             {uploading ? (
-              <span className="text-muted-foreground">Uploading…</span>
+              <span className="text-white/60">Uploading…</span>
             ) : audioPreview ? (
               <>
                 <span className="font-semibold">{audioName || "Audio attached"}</span>
-                <span className="text-xs text-muted-foreground">Click to replace</span>
+                <span className="text-xs text-white/60">Click to replace</span>
               </>
             ) : (
               <>
-                <Upload className="w-5 h-5 text-muted-foreground" />
-                <span className="text-muted-foreground">Upload mp3 file</span>
+                <Upload className="w-5 h-5 text-white/60" />
+                <span className="text-white/60">Upload mp3 file</span>
               </>
             )}
           </button>
@@ -348,7 +348,7 @@ export function TrackModal({
           <select
             value={albumId ?? ""}
             onChange={(e) => setAlbumId(e.target.value || null)}
-            className="w-full rounded-lg bg-background border border-border px-4 py-2.5 text-sm outline-none focus:border-secondary"
+            className="w-full rounded-lg bg-[#4a4a4a] border border-white/10 px-4 py-2.5 text-sm outline-none focus:border-secondary text-white"
           >
             <option value="">Publish as single</option>
             {albums.map((a) => (
@@ -361,17 +361,17 @@ export function TrackModal({
           <button
             type="button"
             onClick={() => coverRef.current?.click()}
-            className="w-full h-32 rounded-lg border-2 border-dashed border-border hover:border-secondary flex items-center justify-center overflow-hidden bg-background"
+            className="w-full h-32 rounded-lg border-2 border-dashed border-white/10 hover:border-secondary flex items-center justify-center overflow-hidden bg-[#4a4a4a]"
           >
             {coverPreview ? <img src={coverPreview} alt="" className="w-full h-full object-cover" /> : (
-              <div className="flex flex-col items-center gap-2 text-muted-foreground"><Upload className="w-5 h-5" /> Upload cover</div>
+              <div className="flex flex-col items-center gap-2 text-white/60"><Upload className="w-5 h-5" /> Upload cover</div>
             )}
           </button>
           <input ref={coverRef} type="file" accept="image/*" className="hidden"
             onChange={async (e) => { const f = e.target.files?.[0]; if (f) setCoverKey(await idbPut(f)); }} />
         </Field>
         <div className="flex gap-3 pt-2">
-          <button type="button" onClick={onClose} className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold hover:bg-muted">Cancel</button>
+          <button type="button" onClick={onClose} className="flex-1 rounded-lg border border-white/10 px-4 py-2.5 text-sm font-semibold hover:bg-white/10">Cancel</button>
           <button type="submit" className="flex-1 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-bold hover:opacity-90">
             {track ? "Save" : "Publish"}
           </button>
