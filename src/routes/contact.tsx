@@ -30,6 +30,15 @@ function ContactPage() {
   return (
     <div className="pt-28 pb-20">
       <div className="max-w-3xl mx-auto px-6">
+        <div className="text-center mb-10">
+          <h1 className="font-display text-5xl md:text-6xl tracking-wide text-foreground">
+            CONTACTEZ-NOUS
+          </h1>
+          <p className="mt-4 text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            Pour toute demande d'information, d'inscription ou de collaboration, contactez-nous par téléphone ou directement sur nos réseaux sociaux.
+          </p>
+        </div>
+
         <div className="rounded-2xl border border-border p-6 md:p-8 space-y-4">
           {ROWS.map((row) => {
             const Wrapper: React.ElementType = row.href ? "a" : "div";
