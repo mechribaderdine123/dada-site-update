@@ -89,28 +89,28 @@ function EditProfilePage() {
         </section>
 
         {/* Contact */}
-        <section className="mt-6 bg-muted/30 rounded-2xl p-6 border border-border/50 mb-12">
-          <h2 className="text-xl font-bold">Contact Information</h2>
-          <p className="text-sm text-muted-foreground mt-1">Provide contact details for booking and inquiries</p>
+        <section className="mt-6 bg-white/10 rounded-2xl p-6 border border-white/10 mb-12">
+          <h2 className="text-xl font-bold text-white">Contact Information</h2>
+          <p className="text-sm text-white/60 mt-1">Provide contact details for booking and inquiries</p>
           <div className="mt-5 grid md:grid-cols-2 gap-5">
             <div>
-              <label className="flex items-center gap-2 text-sm font-semibold mb-2">
+              <label className="flex items-center gap-2 text-sm font-semibold mb-2 text-white">
                 <Mail className="w-4 h-4 text-primary" /> Management Email
               </label>
               <input
                 type="email"
                 placeholder="gmail.com"
-                className="w-full rounded-lg bg-background/70 border border-border px-4 py-2.5 text-sm outline-none focus:border-secondary transition"
+                className="w-full rounded-lg bg-[#4a4a4a]/70 border border-white/10 px-4 py-2.5 text-sm outline-none focus:border-secondary transition text-white placeholder:text-white/50"
               />
             </div>
             <div>
-              <label className="flex items-center gap-2 text-sm font-semibold mb-2">
+              <label className="flex items-center gap-2 text-sm font-semibold mb-2 text-white">
                 <Phone className="w-4 h-4 text-secondary" /> Phone
               </label>
               <input
                 type="tel"
                 placeholder="22 222 222"
-                className="w-full rounded-lg bg-background/70 border border-border px-4 py-2.5 text-sm outline-none focus:border-secondary transition"
+                className="w-full rounded-lg bg-[#4a4a4a]/70 border border-white/10 px-4 py-2.5 text-sm outline-none focus:border-secondary transition text-white placeholder:text-white/50"
               />
             </div>
           </div>
