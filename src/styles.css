@@ -64,42 +64,42 @@
 
 :root {
   --radius: 0.5rem;
-  --background: oklch(0.14 0.01 20);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.19 0.01 20);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.19 0.01 20);
-  --popover-foreground: oklch(0.98 0 0);
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.15 0 0);
+  --card: oklch(0.98 0 0);
+  --card-foreground: oklch(0.15 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0 0);
   /* Coral red like dadahiphop.com CTA */
   --primary: oklch(0.68 0.19 25);
-  --primary-foreground: oklch(0.98 0 0);
+  --primary-foreground: oklch(1 0 0);
   /* Teal / cyan accent (from the Dada logo outline) */
-  --secondary: oklch(0.78 0.10 195);
-  --secondary-foreground: oklch(0.14 0.01 20);
-  --muted: oklch(0.24 0.01 20);
-  --muted-foreground: oklch(0.72 0.01 20);
+  --secondary: oklch(0.68 0.12 195);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.95 0 0);
+  --muted-foreground: oklch(0.5 0 0);
   --accent: oklch(0.78 0.10 195);
-  --accent-foreground: oklch(0.14 0.01 20);
+  --accent-foreground: oklch(0.15 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.28 0.01 20);
-  --input: oklch(0.24 0.01 20);
+  --border: oklch(0.88 0 0);
+  --input: oklch(0.95 0 0);
   --ring: oklch(0.68 0.19 25);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.19 0.01 20);
-  --sidebar-foreground: oklch(0.98 0 0);
+  --sidebar: oklch(0.98 0 0);
+  --sidebar-foreground: oklch(0.15 0 0);
   --sidebar-primary: oklch(0.68 0.19 25);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.24 0.01 20);
-  --sidebar-accent-foreground: oklch(0.98 0 0);
-  --sidebar-border: oklch(0.28 0.01 20);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.95 0 0);
+  --sidebar-accent-foreground: oklch(0.15 0 0);
+  --sidebar-border: oklch(0.88 0 0);
   --sidebar-ring: oklch(0.68 0.19 25);
-  --glow-red: radial-gradient(ellipse at center, oklch(0.68 0.19 25 / 0.45), transparent 70%);
-  --glow-teal: radial-gradient(ellipse at center, oklch(0.78 0.10 195 / 0.35), transparent 70%);
+  --glow-red: radial-gradient(ellipse at center, oklch(0.68 0.19 25 / 0.18), transparent 70%);
+  --glow-teal: radial-gradient(ellipse at center, oklch(0.68 0.12 195 / 0.14), transparent 70%);
 }
 
 
