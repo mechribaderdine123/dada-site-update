@@ -29,13 +29,13 @@ function SignUpPage() {
       <div className="relative hidden md:block overflow-hidden">
         <img src={authImg} alt="" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-br from-background/70 via-background/40 to-primary/40" />
-        <div className="relative h-full flex flex-col justify-between p-10">
+        <div className="relative h-full flex flex-col justify-between p-10 text-white">
           <Link to="/" className="inline-flex">
             <img src={logo.url} alt="Dada Hip Hop Academy" className="h-20 w-auto drop-shadow-2xl" />
           </Link>
           <div>
-            <h2 className="font-display text-5xl tracking-wide leading-none">Rejoignez<br />l'aventure.</h2>
-            <p className="mt-4 text-foreground/85 max-w-sm">Créez votre profil artiste et mettez votre talent en lumière.</p>
+            <h2 className="font-display text-5xl tracking-wide leading-none drop-shadow-lg">Rejoignez<br />l'aventure.</h2>
+            <p className="mt-4 text-white/90 max-w-sm drop-shadow">Créez votre profil artiste et mettez votre talent en lumière.</p>
           </div>
         </div>
       </div>
