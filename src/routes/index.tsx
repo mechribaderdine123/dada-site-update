@@ -1,121 +1,114 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
-import heroImg from "@/assets/dada-hero.jpg";
+import { ArrowRight, Users, Radio } from "lucide-react";
+import heroAsset from "@/assets/dada-hero-new.png.asset.json";
+import handstandAsset from "@/assets/dada-handstand.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Dada Hip Hop Academy — Danse. Culture. Création." },
-      { name: "description", content: "L'espace où chaque talent trouve son expression. Cours de danse, gymnastique, arts martiaux à Tunis." },
+      { name: "description", content: "L'espace où chaque talent trouve son expression. Cours de danse, studio musique et création artistique." },
     ],
   }),
   component: HomePage,
 });
 
-const PARTNERS = Array.from({ length: 12 }, (_, i) => `P${String(i + 1).padStart(2, "0")}`);
-
 function HomePage() {
   return (
     <>
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
-        <img
-          src={heroImg}
-          alt="Danseurs Dada Hip Hop Academy"
-          className="absolute inset-0 w-full h-full object-cover"
-          width={1920}
-          height={1280}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/85 via-background/60 to-background" />
-        <div className="absolute inset-0" style={{ background: "var(--glow-red)" }} />
+      <section className="relative overflow-hidden">
+        <div className="relative h-[85vh] min-h-[600px] w-full overflow-hidden">
+          <img
+            src={heroAsset.url}
+            alt="Danseurs Dada Hip Hop Academy"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          {/* red left / teal right cinematic wash */}
+          <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, hsl(var(--primary) / 0.55) 0%, transparent 30%, transparent 70%, hsl(var(--primary) / 0.55) 100%)" }} />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-transparent to-background/80" />
 
-        <div className="relative max-w-6xl mx-auto px-6 py-32 text-center w-full">
-          <p className="uppercase tracking-[0.4em] text-primary text-xs font-semibold">Hip Hop Academy</p>
-          <h1 className="mt-6 font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.9] tracking-wide">
-            DADA HIP HOP<br />ACADEMY
-          </h1>
-          <h2 className="mt-6 font-display text-2xl md:text-3xl tracking-widest text-secondary">
-            Danse. Culture. Création.
-          </h2>
-          <p className="mt-6 max-w-xl mx-auto text-base md:text-lg text-foreground/85">
-            L'espace où chaque talent trouve son expression.
-          </p>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              to="/cours-activites"
-              className="group inline-flex items-center gap-2 rounded-md bg-secondary text-secondary-foreground px-6 py-3 text-sm font-bold uppercase tracking-wider hover:opacity-90 transition shadow-xl shadow-secondary/30"
-            >
-              Découvrir nos cours
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link
-              to="/sign-in"
-              className="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-6 py-3 text-sm font-bold uppercase tracking-wider hover:opacity-90 transition shadow-xl shadow-primary/30"
-            >
-              Se connecter artiste
-            </Link>
-          </div>
-        </div>
-
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-xs text-muted-foreground animate-bounce">
-          <div className="w-px h-8 bg-foreground/40" />
-          scroll
-        </div>
-      </section>
-
-      {/* PARTNERS */}
-      <section className="py-20 border-t border-border/40">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center">
-            <p className="uppercase tracking-[0.4em] text-primary text-xs font-semibold">Ensemble</p>
-            <h2 className="mt-3 font-display text-5xl md:text-6xl tracking-wide">Nos Partenaires</h2>
-            <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
-              Ils nous font confiance et soutiennent l'aventure Dada Hip Hop Academy.
+          <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
+            <h1 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.9] tracking-wide text-white drop-shadow-2xl">
+              DADA HIP HOP<br />ACADEMY
+            </h1>
+            <h2 className="mt-8 font-display text-3xl md:text-4xl tracking-wide text-white">
+              Danse. Culture. Création.
+            </h2>
+            <p className="mt-3 text-base md:text-lg text-white/90">
+              L'espace où chaque talent trouve son expression.
             </p>
-          </div>
-
-          <div className="mt-12 overflow-hidden relative">
-            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10" />
-            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10" />
-            <div className="flex gap-6 animate-[marquee_35s_linear_infinite]">
-              {[...PARTNERS, ...PARTNERS].map((p, i) => (
-                <div
-                  key={i}
-                  className="shrink-0 w-40 h-24 rounded-lg bg-card border border-border/60 grid place-items-center font-display text-2xl tracking-widest text-muted-foreground hover:text-secondary hover:border-secondary transition"
-                >
-                  {p}
-                </div>
-              ))}
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+              <Link
+                to="/cours-activites"
+                className="rounded-md bg-secondary text-secondary-foreground px-8 py-3 text-sm font-semibold hover:opacity-90 transition"
+              >
+                Découvrir nos cours
+              </Link>
+              <Link
+                to="/sign-in"
+                className="rounded-md bg-primary text-primary-foreground px-8 py-3 text-sm font-semibold hover:opacity-90 transition"
+              >
+                Sign in artist
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* PROMO STRIP */}
-      <section className="relative py-24 border-t border-border/40 overflow-hidden">
-        <div className="absolute inset-0" style={{ background: "var(--glow-red)" }} />
-        <div className="relative max-w-4xl mx-auto text-center px-6">
-          <h2 className="font-display text-5xl md:text-7xl tracking-wide">Rejoignez la famille</h2>
-          <p className="mt-5 text-foreground/85 max-w-2xl mx-auto">
-            Que vous soyez débutant curieux, athlète confirmé ou artiste en devenir — trouvez votre discipline et donnez vie à votre énergie.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <Link to="/cours-activites" className="rounded-md bg-primary text-primary-foreground px-6 py-3 text-sm font-bold uppercase tracking-wider hover:opacity-90 transition">
-              Voir les cours
-            </Link>
-            <Link to="/contact" className="rounded-md border border-foreground/40 px-6 py-3 text-sm font-bold uppercase tracking-wider hover:bg-foreground hover:text-background transition">
-              Contactez-nous
-            </Link>
+      {/* WELCOME + IMAGE */}
+      <section className="py-20 md:py-28">
+        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-start">
+          <div className="space-y-6 font-sans text-foreground/90 leading-relaxed">
+            <p>
+              Bienvenue à <strong className="font-semibold">Dada Hip Hop Academy,</strong> un lieu unique dédié à la danse, au mouvement, au bien-être et à la création artistique.
+            </p>
+            <p>
+              Nous réunissons cours, clubs, studio musique, ateliers créatifs et espace digital pour offrir à chacun un véritable terrain d'expression.
+            </p>
+            <p>
+              Rejoignez une communauté dynamique, artistique et passionnée.
+            </p>
+            <p className="font-semibold">Bougez. Créez. Exprimez-vous</p>
+
+            <div className="grid sm:grid-cols-2 gap-5 pt-4">
+              <div className="rounded-xl border border-primary/40 bg-card/50 p-6">
+                <div className="w-11 h-11 rounded-lg bg-primary/15 grid place-items-center mb-4">
+                  <Users className="w-5 h-5 text-primary" />
+                </div>
+                <h3 className="font-display text-2xl tracking-wide text-primary">Rejoindre un club</h3>
+                <p className="mt-3 text-sm text-foreground/80">
+                  Explorez nos styles de danse et trouvez votre rythme.
+                </p>
+                <Link to="/cours-activites" className="mt-5 inline-flex items-center gap-2 text-primary font-semibold text-sm">
+                  Explorer <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+
+              <div className="rounded-xl border border-primary/40 bg-card/50 p-6">
+                <div className="w-11 h-11 rounded-lg bg-primary/15 grid place-items-center mb-4">
+                  <Radio className="w-5 h-5 text-primary" />
+                </div>
+                <h3 className="font-display text-2xl tracking-wide text-primary">Réserver au studio musique</h3>
+                <p className="mt-3 text-sm text-foreground/80">
+                  Un studio musique pro pour enregistrer vos sons.
+                </p>
+                <Link to="/contact" className="mt-5 inline-flex items-center gap-2 text-primary font-semibold text-sm">
+                  Explorer <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="relative">
+            <img
+              src={handstandAsset.url}
+              alt="Danseur breakdance sous logo Dada"
+              className="w-full h-full max-h-[640px] object-cover rounded-2xl"
+            />
           </div>
         </div>
       </section>
-
-      <style>{`
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-      `}</style>
     </>
   );
 }
