@@ -52,7 +52,7 @@ function EditProfilePage() {
                   <Upload className="w-5 h-5" />
                 </div>
                 <p className="font-medium">Click to upload or drag and drop</p>
-                <p className="text-sm text-muted-foreground mt-1">PNG, JPG max (800, 400 px)</p>
+                <p className="text-sm text-white/60 mt-1">PNG, JPG max (800, 400 px)</p>
               </>
             )}
           </button>
