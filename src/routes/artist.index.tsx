@@ -91,7 +91,7 @@ function ArtistPage() {
       </section>
 
       {/* Featured */}
-      <section className="bg-background py-16 px-6">
+      <section className="bg-[#393939] py-16 px-6">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-black">{tab === "music" ? "Music" : "Featured"}</h2>
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
