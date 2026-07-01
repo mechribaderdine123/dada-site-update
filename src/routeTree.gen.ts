@@ -16,6 +16,7 @@ import { Route as DadaReseauxArtistRouteImport } from './routes/dada-reseaux-art
 import { Route as CoursActivitesRouteImport } from './routes/cours-activites'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ArtistRouteImport } from './routes/artist'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ArtistIndexRouteImport } from './routes/artist.index'
@@ -60,6 +61,11 @@ const ArtistRoute = ArtistRouteImport.update({
   path: '/artist',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AProposRoute = AProposRouteImport.update({
   id: '/a-propos',
   path: '/a-propos',
@@ -91,9 +97,9 @@ const ArtistDiscographyRoute = ArtistDiscographyRouteImport.update({
   getParentRoute: () => ArtistRoute,
 } as any)
 const AdminSignInRoute = AdminSignInRouteImport.update({
-  id: '/admin/sign-in',
-  path: '/admin/sign-in',
-  getParentRoute: () => rootRouteImport,
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => AdminRoute,
 } as any)
 const ArtistAlbumAlbumIdRoute = ArtistAlbumAlbumIdRouteImport.update({
   id: '/album/$albumId',
@@ -104,6 +110,7 @@ const ArtistAlbumAlbumIdRoute = ArtistAlbumAlbumIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/admin': typeof AdminRouteWithChildren
   '/artist': typeof ArtistRouteWithChildren
   '/contact': typeof ContactRoute
   '/cours-activites': typeof CoursActivitesRoute
@@ -121,6 +128,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/admin': typeof AdminRouteWithChildren
   '/contact': typeof ContactRoute
   '/cours-activites': typeof CoursActivitesRoute
   '/dada-reseaux-artist': typeof DadaReseauxArtistRoute
@@ -138,6 +146,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/admin': typeof AdminRouteWithChildren
   '/artist': typeof ArtistRouteWithChildren
   '/contact': typeof ContactRoute
   '/cours-activites': typeof CoursActivitesRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/a-propos'
+    | '/admin'
     | '/artist'
     | '/contact'
     | '/cours-activites'
@@ -174,6 +184,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/a-propos'
+    | '/admin'
     | '/contact'
     | '/cours-activites'
     | '/dada-reseaux-artist'
@@ -190,6 +201,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/a-propos'
+    | '/admin'
     | '/artist'
     | '/contact'
     | '/cours-activites'
@@ -208,6 +220,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AProposRoute: typeof AProposRoute
+  AdminRoute: typeof AdminRouteWithChildren
   ArtistRoute: typeof ArtistRouteWithChildren
   ContactRoute: typeof ContactRoute
   CoursActivitesRoute: typeof CoursActivitesRoute
@@ -215,7 +228,6 @@ export interface RootRouteChildren {
   SignInRoute: typeof SignInRoute
   SignUpRoute: typeof SignUpRoute
   WorkshopsRoute: typeof WorkshopsRoute
-  AdminSignInRoute: typeof AdminSignInRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -269,6 +281,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArtistRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/a-propos': {
       id: '/a-propos'
       path: '/a-propos'
@@ -313,10 +332,10 @@ declare module '@tanstack/react-router' {
     }
     '/admin/sign-in': {
       id: '/admin/sign-in'
-      path: '/admin/sign-in'
+      path: '/sign-in'
       fullPath: '/admin/sign-in'
       preLoaderRoute: typeof AdminSignInRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/artist/album/$albumId': {
       id: '/artist/album/$albumId'
@@ -327,6 +346,16 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AdminRouteChildren {
+  AdminSignInRoute: typeof AdminSignInRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminSignInRoute: AdminSignInRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface ArtistRouteChildren {
   ArtistDiscographyRoute: typeof ArtistDiscographyRoute
@@ -350,6 +379,7 @@ const ArtistRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AProposRoute: AProposRoute,
+  AdminRoute: AdminRouteWithChildren,
   ArtistRoute: ArtistRouteWithChildren,
   ContactRoute: ContactRoute,
   CoursActivitesRoute: CoursActivitesRoute,
@@ -357,7 +387,6 @@ const rootRouteChildren: RootRouteChildren = {
   SignInRoute: SignInRoute,
   SignUpRoute: SignUpRoute,
   WorkshopsRoute: WorkshopsRoute,
-  AdminSignInRoute: AdminSignInRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
