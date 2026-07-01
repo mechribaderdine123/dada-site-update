@@ -65,7 +65,7 @@ function MusicPage() {
           <button
             onClick={() => setView("single")}
             className={`px-8 py-2.5 rounded-lg font-bold text-sm transition ${
-              view === "single" ? "bg-secondary text-secondary-foreground" : "bg-muted text-foreground/70"
+              view === "single" ? "bg-secondary text-secondary-foreground" : "bg-white/10 text-white/70"
             }`}
           >
             SINGLE
@@ -73,7 +73,7 @@ function MusicPage() {
           <button
             onClick={() => setView("album")}
             className={`px-8 py-2.5 rounded-lg font-bold text-sm transition ${
-              view === "album" ? "bg-secondary text-secondary-foreground" : "bg-muted text-foreground/70"
+              view === "album" ? "bg-secondary text-secondary-foreground" : "bg-white/10 text-white/70"
             }`}
           >
             ALBUM
