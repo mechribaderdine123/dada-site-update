@@ -118,7 +118,7 @@ function TrackList({
 }) {
   if (tracks.length === 0) {
     return (
-      <div className="text-center py-16 text-muted-foreground">
+      <div className="text-center py-16 text-white/60">
         No singles yet. Click "Upload new track" to get started.
       </div>
     );
