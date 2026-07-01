@@ -78,7 +78,7 @@ function ArtistPage() {
             <div className="aspect-square w-full max-w-[280px] rounded-2xl overflow-hidden">
               <img src={artistPortrait} alt="Artist" width={560} height={560} className="w-full h-full object-cover" />
             </div>
-            <div className="space-y-4 text-foreground/90 leading-relaxed">
+            <div className="space-y-4 text-white/90 leading-relaxed">
               <p>{bio}</p>
               <p>{bio}</p>
               <p>{bio}</p>
