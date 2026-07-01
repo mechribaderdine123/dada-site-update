@@ -35,25 +35,25 @@ function MusicPage() {
   const singles = tracks.filter((t) => !t.albumId);
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex">
+    <div className="min-h-screen bg-[#393939] text-white flex">
       <ArtistSidebar />
 
       <main className="flex-1 p-8 md:p-12">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
             <h1 className="text-4xl md:text-5xl font-black text-secondary">Music management</h1>
-            <p className="mt-2 text-foreground/80">Upload new track and manage your discography</p>
+            <p className="mt-2 text-white/80">Upload new track and manage your discography</p>
           </div>
           <div className="flex gap-3">
             <button
               onClick={() => setAlbumModal("new")}
-              className="flex items-center gap-2 rounded-xl bg-background border border-border px-4 py-2.5 text-sm font-semibold hover:bg-muted transition"
+              className="flex items-center gap-2 rounded-xl bg-white/10 border border-white/10 px-4 py-2.5 text-sm font-semibold hover:bg-white/20 transition"
             >
               <Plus className="w-4 h-4" /> Add new album
             </button>
             <button
               onClick={() => setTrackModal("new")}
-              className="flex items-center gap-2 rounded-xl bg-background border border-border px-4 py-2.5 text-sm font-semibold hover:bg-muted transition"
+              className="flex items-center gap-2 rounded-xl bg-white/10 border border-white/10 px-4 py-2.5 text-sm font-semibold hover:bg-white/20 transition"
             >
               <Plus className="w-4 h-4" /> Upload new track
             </button>
@@ -65,7 +65,7 @@ function MusicPage() {
           <button
             onClick={() => setView("single")}
             className={`px-8 py-2.5 rounded-lg font-bold text-sm transition ${
-              view === "single" ? "bg-secondary text-secondary-foreground" : "bg-muted text-foreground/70"
+              view === "single" ? "bg-secondary text-secondary-foreground" : "bg-white/10 text-white/70"
             }`}
           >
             SINGLE
@@ -73,7 +73,7 @@ function MusicPage() {
           <button
             onClick={() => setView("album")}
             className={`px-8 py-2.5 rounded-lg font-bold text-sm transition ${
-              view === "album" ? "bg-secondary text-secondary-foreground" : "bg-muted text-foreground/70"
+              view === "album" ? "bg-secondary text-secondary-foreground" : "bg-white/10 text-white/70"
             }`}
           >
             ALBUM
@@ -118,14 +118,14 @@ function TrackList({
 }) {
   if (tracks.length === 0) {
     return (
-      <div className="text-center py-16 text-muted-foreground">
+      <div className="text-center py-16 text-white/60">
         No singles yet. Click "Upload new track" to get started.
       </div>
     );
   }
   return (
     <div>
-      <div className="grid grid-cols-[1fr_120px_180px_100px] gap-4 px-4 pb-3 text-sm font-bold">
+      <div className="grid grid-cols-[1fr_120px_180px_100px] gap-4 px-4 pb-3 text-sm font-bold text-white/70">
         <div>track</div>
         <div>Genre</div>
         <div>Publish to album</div>
@@ -151,7 +151,7 @@ function AlbumList({
 }) {
   if (albums.length === 0) {
     return (
-      <div className="text-center py-16 text-muted-foreground">
+      <div className="text-center py-16 text-white/60">
         No albums yet. Click "Add new album" to get started.
       </div>
     );
@@ -170,26 +170,26 @@ function TrackRow({ t, albums, onEdit }: { t: Track; albums: Album[]; onEdit: (t
   const coverUrl = useBlobUrl(t.coverKey, t.cover);
   const audioUrl = useBlobUrl(t.audioKey, t.audioUrl);
   return (
-    <div className="grid grid-cols-[1fr_120px_180px_100px] items-center gap-4 bg-muted/50 rounded-xl p-3">
+    <div className="grid grid-cols-[1fr_120px_180px_100px] items-center gap-4 bg-white/10 rounded-xl p-3">
       <div className="flex items-center gap-4 min-w-0">
-        <div className="w-12 h-12 rounded-lg bg-background overflow-hidden shrink-0">
+        <div className="w-12 h-12 rounded-lg bg-[#4a4a4a] overflow-hidden shrink-0">
           {coverUrl ? (
             <img src={coverUrl} alt={t.title} className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-full grid place-items-center"><MusicIcon className="w-5 h-5 text-muted-foreground" /></div>
+            <div className="w-full h-full grid place-items-center"><MusicIcon className="w-5 h-5 text-white/50" /></div>
           )}
         </div>
         <div className="min-w-0">
-          <p className="font-bold truncate">{t.title}</p>
+          <p className="font-bold truncate text-white">{t.title}</p>
           {audioUrl && <audio src={audioUrl} controls className="h-7 mt-1 max-w-[260px]" />}
         </div>
       </div>
-      <div className="text-foreground/80">{t.genre}</div>
+      <div className="text-white/80">{t.genre}</div>
       <div>
         <select
           value={t.albumId ?? ""}
           onChange={(e) => tracksApi.update(t.id, { albumId: e.target.value || null })}
-          className="w-full rounded-lg bg-background border border-border px-2 py-1.5 text-xs"
+          className="w-full rounded-lg bg-[#4a4a4a] border border-white/10 px-2 py-1.5 text-xs text-white"
           disabled={albums.length === 0}
         >
           <option value="">— Single —</option>
@@ -197,7 +197,7 @@ function TrackRow({ t, albums, onEdit }: { t: Track; albums: Album[]; onEdit: (t
         </select>
       </div>
       <div className="flex items-center gap-3">
-        <button onClick={() => onEdit(t)} className="hover:text-secondary transition" aria-label="Edit"><Pencil className="w-4 h-4" /></button>
+        <button onClick={() => onEdit(t)} className="hover:text-secondary transition text-white" aria-label="Edit"><Pencil className="w-4 h-4" /></button>
         <button
           onClick={() => { if (confirm(`Delete "${t.title}"?`)) tracksApi.remove(t.id); }}
           className="text-primary hover:opacity-70 transition" aria-label="Delete"
@@ -212,18 +212,18 @@ function TrackRow({ t, albums, onEdit }: { t: Track; albums: Album[]; onEdit: (t
 function AlbumTile({ a, count, onEdit }: { a: Album; count: number; onEdit: (a: Album) => void }) {
   const coverUrl = useBlobUrl(a.coverKey, a.cover);
   return (
-    <div className="bg-muted/40 rounded-xl overflow-hidden group">
-      <Link to="/artist/album/$albumId" params={{ albumId: a.id }} className="block aspect-square bg-background overflow-hidden relative">
+    <div className="bg-white/10 rounded-xl overflow-hidden group">
+      <Link to="/artist/album/$albumId" params={{ albumId: a.id }} className="block aspect-square bg-[#4a4a4a] overflow-hidden relative">
         {coverUrl && <img src={coverUrl} alt={a.title} className="w-full h-full object-cover group-hover:scale-105 transition" />}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition grid place-items-center opacity-0 group-hover:opacity-100">
           <Play className="w-10 h-10 text-white" />
         </div>
       </Link>
       <div className="p-3">
-        <Link to="/artist/album/$albumId" params={{ albumId: a.id }} className="font-bold truncate block hover:text-secondary">{a.title}</Link>
-        <p className="text-sm text-muted-foreground">{a.year} · {count} track{count !== 1 ? "s" : ""}</p>
+        <Link to="/artist/album/$albumId" params={{ albumId: a.id }} className="font-bold truncate block hover:text-secondary text-white">{a.title}</Link>
+        <p className="text-sm text-white/60">{a.year} · {count} track{count !== 1 ? "s" : ""}</p>
         <div className="mt-3 flex gap-3">
-          <button onClick={() => onEdit(a)} className="hover:text-secondary"><Pencil className="w-4 h-4" /></button>
+          <button onClick={() => onEdit(a)} className="hover:text-secondary text-white"><Pencil className="w-4 h-4" /></button>
           <button
             onClick={() => { if (confirm(`Delete album "${a.title}"? Tracks will become singles.`)) albumsApi.remove(a.id); }}
             className="text-primary"
@@ -238,9 +238,9 @@ function AlbumTile({ a, count, onEdit }: { a: Album; count: number; onEdit: (a: 
 
 function ModalShell({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm grid place-items-center p-4 overflow-y-auto">
-      <div className="w-full max-w-md bg-card rounded-2xl border border-border p-6 relative my-8">
-        <button onClick={onClose} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm grid place-items-center p-4 overflow-y-auto">
+      <div className="w-full max-w-md bg-[#2d2d2d] rounded-2xl border border-white/10 p-6 relative my-8 text-white">
+        <button onClick={onClose} className="absolute top-4 right-4 text-white/60 hover:text-white"><X className="w-5 h-5" /></button>
         <h2 className="text-xl font-black mb-5">{title}</h2>
         {children}
       </div>
@@ -291,11 +291,11 @@ export function TrackModal({
       <form onSubmit={submit} className="space-y-4">
         <Field label="Title">
           <input value={title} onChange={(e) => setTitle(e.target.value)} required
-            className="w-full rounded-lg bg-background border border-border px-4 py-2.5 text-sm outline-none focus:border-secondary" />
+            className="w-full rounded-lg bg-[#4a4a4a] border border-white/10 px-4 py-2.5 text-sm outline-none focus:border-secondary text-white" />
         </Field>
         <Field label="Genre">
           <select value={genre} onChange={(e) => setGenre(e.target.value)}
-            className="w-full rounded-lg bg-background border border-border px-4 py-2.5 text-sm outline-none focus:border-secondary">
+            className="w-full rounded-lg bg-[#4a4a4a] border border-white/10 px-4 py-2.5 text-sm outline-none focus:border-secondary text-white">
             <option>Hip hop</option><option>Trap</option><option>R&B</option><option>Rap</option><option>Drill</option>
           </select>
         </Field>
@@ -304,19 +304,19 @@ export function TrackModal({
           <button
             type="button"
             onClick={() => audioRef.current?.click()}
-            className="w-full rounded-lg border-2 border-dashed border-border hover:border-secondary px-4 py-4 bg-background flex flex-col items-center gap-1 text-sm"
+            className="w-full rounded-lg border-2 border-dashed border-white/10 hover:border-secondary px-4 py-4 bg-[#4a4a4a] flex flex-col items-center gap-1 text-sm"
           >
             {uploading ? (
-              <span className="text-muted-foreground">Uploading…</span>
+              <span className="text-white/60">Uploading…</span>
             ) : audioPreview ? (
               <>
                 <span className="font-semibold">{audioName || "Audio attached"}</span>
-                <span className="text-xs text-muted-foreground">Click to replace</span>
+                <span className="text-xs text-white/60">Click to replace</span>
               </>
             ) : (
               <>
-                <Upload className="w-5 h-5 text-muted-foreground" />
-                <span className="text-muted-foreground">Upload mp3 file</span>
+                <Upload className="w-5 h-5 text-white/60" />
+                <span className="text-white/60">Upload mp3 file</span>
               </>
             )}
           </button>
@@ -348,7 +348,7 @@ export function TrackModal({
           <select
             value={albumId ?? ""}
             onChange={(e) => setAlbumId(e.target.value || null)}
-            className="w-full rounded-lg bg-background border border-border px-4 py-2.5 text-sm outline-none focus:border-secondary"
+            className="w-full rounded-lg bg-[#4a4a4a] border border-white/10 px-4 py-2.5 text-sm outline-none focus:border-secondary text-white"
           >
             <option value="">Publish as single</option>
             {albums.map((a) => (
@@ -361,17 +361,17 @@ export function TrackModal({
           <button
             type="button"
             onClick={() => coverRef.current?.click()}
-            className="w-full h-32 rounded-lg border-2 border-dashed border-border hover:border-secondary flex items-center justify-center overflow-hidden bg-background"
+            className="w-full h-32 rounded-lg border-2 border-dashed border-white/10 hover:border-secondary flex items-center justify-center overflow-hidden bg-[#4a4a4a]"
           >
             {coverPreview ? <img src={coverPreview} alt="" className="w-full h-full object-cover" /> : (
-              <div className="flex flex-col items-center gap-2 text-muted-foreground"><Upload className="w-5 h-5" /> Upload cover</div>
+              <div className="flex flex-col items-center gap-2 text-white/60"><Upload className="w-5 h-5" /> Upload cover</div>
             )}
           </button>
           <input ref={coverRef} type="file" accept="image/*" className="hidden"
             onChange={async (e) => { const f = e.target.files?.[0]; if (f) setCoverKey(await idbPut(f)); }} />
         </Field>
         <div className="flex gap-3 pt-2">
-          <button type="button" onClick={onClose} className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold hover:bg-muted">Cancel</button>
+          <button type="button" onClick={onClose} className="flex-1 rounded-lg border border-white/10 px-4 py-2.5 text-sm font-semibold hover:bg-white/10">Cancel</button>
           <button type="submit" className="flex-1 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-bold hover:opacity-90">
             {track ? "Save" : "Publish"}
           </button>
@@ -406,27 +406,27 @@ function AlbumModal({ album, onClose }: { album: Album | null; onClose: () => vo
       <form onSubmit={submit} className="space-y-4">
         <Field label="Album title">
           <input value={title} onChange={(e) => setTitle(e.target.value)} required
-            className="w-full rounded-lg bg-background border border-border px-4 py-2.5 text-sm outline-none focus:border-secondary" />
+            className="w-full rounded-lg bg-[#4a4a4a] border border-white/10 px-4 py-2.5 text-sm outline-none focus:border-secondary text-white" />
         </Field>
         <Field label="Year">
           <input value={year} onChange={(e) => setYear(e.target.value)} required
-            className="w-full rounded-lg bg-background border border-border px-4 py-2.5 text-sm outline-none focus:border-secondary" />
+            className="w-full rounded-lg bg-[#4a4a4a] border border-white/10 px-4 py-2.5 text-sm outline-none focus:border-secondary text-white" />
         </Field>
         <Field label="Cover image">
           <button
             type="button"
             onClick={() => coverRef.current?.click()}
-            className="w-full h-32 rounded-lg border-2 border-dashed border-border hover:border-secondary flex items-center justify-center overflow-hidden bg-background"
+            className="w-full h-32 rounded-lg border-2 border-dashed border-white/10 hover:border-secondary flex items-center justify-center overflow-hidden bg-[#4a4a4a]"
           >
             {coverPreview ? <img src={coverPreview} alt="" className="w-full h-full object-cover" /> : (
-              <div className="flex flex-col items-center gap-2 text-muted-foreground"><Upload className="w-5 h-5" /> Upload cover</div>
+              <div className="flex flex-col items-center gap-2 text-white/60"><Upload className="w-5 h-5" /> Upload cover</div>
             )}
           </button>
           <input ref={coverRef} type="file" accept="image/*" className="hidden"
             onChange={async (e) => { const f = e.target.files?.[0]; if (f) setCoverKey(await idbPut(f)); }} />
         </Field>
         <div className="flex gap-3 pt-2">
-          <button type="button" onClick={onClose} className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold hover:bg-muted">Cancel</button>
+          <button type="button" onClick={onClose} className="flex-1 rounded-lg border border-white/10 px-4 py-2.5 text-sm font-semibold hover:bg-white/10">Cancel</button>
           <button type="submit" className="flex-1 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-bold hover:opacity-90">
             {album ? "Save" : "Create"}
           </button>

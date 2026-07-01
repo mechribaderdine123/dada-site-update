@@ -20,7 +20,7 @@ function EditProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex">
+    <div className="min-h-screen bg-[#393939] text-white flex">
       <ArtistSidebar />
 
 
@@ -29,20 +29,20 @@ function EditProfilePage() {
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
             <h1 className="text-4xl md:text-5xl font-black text-secondary">Profil management</h1>
-            <p className="mt-2 text-foreground/80">Update Your biography profile picture and contact information</p>
+            <p className="mt-2 text-white/80">Update Your biography profile picture and contact information</p>
           </div>
-          <button className="rounded-lg bg-muted hover:bg-muted/70 px-5 py-2.5 text-sm font-semibold border border-border transition">
+          <button className="rounded-lg bg-white/10 hover:bg-white/20 px-5 py-2.5 text-sm font-semibold border border-white/10 transition">
             Save changes
           </button>
         </div>
 
         {/* Profile image */}
-        <section className="mt-8 bg-muted/30 rounded-2xl p-6 border border-border/50">
-          <h2 className="text-xl font-bold">Profile and header image</h2>
-          <p className="text-sm text-muted-foreground mt-1">Upload your image to personalize your profile</p>
+        <section className="mt-8 bg-white/10 rounded-2xl p-6 border border-white/10">
+          <h2 className="text-xl font-bold text-white">Profile and header image</h2>
+          <p className="text-sm text-white/60 mt-1">Upload your image to personalize your profile</p>
           <button
             onClick={() => fileRef.current?.click()}
-            className="mt-5 w-full h-56 rounded-xl border-2 border-dashed border-border/70 hover:border-secondary transition flex flex-col items-center justify-center bg-background/50 overflow-hidden"
+            className="mt-5 w-full h-56 rounded-xl border-2 border-dashed border-white/20 hover:border-secondary transition flex flex-col items-center justify-center bg-[#4a4a4a]/50 overflow-hidden"
           >
             {preview ? (
               <img src={preview} alt="Preview" className="w-full h-full object-cover" />
@@ -52,7 +52,7 @@ function EditProfilePage() {
                   <Upload className="w-5 h-5" />
                 </div>
                 <p className="font-medium">Click to upload or drag and drop</p>
-                <p className="text-sm text-muted-foreground mt-1">PNG, JPG max (800, 400 px)</p>
+                <p className="text-sm text-white/60 mt-1">PNG, JPG max (800, 400 px)</p>
               </>
             )}
           </button>
@@ -66,19 +66,19 @@ function EditProfilePage() {
         </section>
 
         {/* Biography */}
-        <section className="mt-6 bg-muted/30 rounded-2xl p-6 border border-border/50">
-          <h2 className="text-xl font-bold">Biography</h2>
+        <section className="mt-6 bg-white/10 rounded-2xl p-6 border border-white/10">
+          <h2 className="text-xl font-bold text-white">Biography</h2>
           <textarea
             placeholder="Tell your story...."
             rows={8}
-            className="mt-4 w-full rounded-xl border-2 border-dashed border-border/70 bg-background/50 p-4 outline-none focus:border-secondary transition resize-none"
+            className="mt-4 w-full rounded-xl border-2 border-dashed border-white/20 bg-[#4a4a4a]/50 p-4 outline-none focus:border-secondary transition resize-none text-white placeholder:text-white/50"
           />
         </section>
 
         {/* Socials */}
-        <section className="mt-6 bg-muted/30 rounded-2xl p-6 border border-border/50">
-          <h2 className="text-xl font-bold">Social media links</h2>
-          <p className="text-sm text-muted-foreground mt-1">Add links to your social media profiles to connect with your fans</p>
+        <section className="mt-6 bg-white/10 rounded-2xl p-6 border border-white/10">
+          <h2 className="text-xl font-bold text-white">Social media links</h2>
+          <p className="text-sm text-white/60 mt-1">Add links to your social media profiles to connect with your fans</p>
           <div className="mt-5 grid md:grid-cols-2 gap-5">
             <SocialInput icon={<Youtube className="w-4 h-4 text-primary" />} label="YouTube" />
             <SocialInput icon={<Facebook className="w-4 h-4 text-secondary" />} label="Facebook" />
@@ -89,28 +89,28 @@ function EditProfilePage() {
         </section>
 
         {/* Contact */}
-        <section className="mt-6 bg-muted/30 rounded-2xl p-6 border border-border/50 mb-12">
-          <h2 className="text-xl font-bold">Contact Information</h2>
-          <p className="text-sm text-muted-foreground mt-1">Provide contact details for booking and inquiries</p>
+        <section className="mt-6 bg-white/10 rounded-2xl p-6 border border-white/10 mb-12">
+          <h2 className="text-xl font-bold text-white">Contact Information</h2>
+          <p className="text-sm text-white/60 mt-1">Provide contact details for booking and inquiries</p>
           <div className="mt-5 grid md:grid-cols-2 gap-5">
             <div>
-              <label className="flex items-center gap-2 text-sm font-semibold mb-2">
+              <label className="flex items-center gap-2 text-sm font-semibold mb-2 text-white">
                 <Mail className="w-4 h-4 text-primary" /> Management Email
               </label>
               <input
                 type="email"
                 placeholder="gmail.com"
-                className="w-full rounded-lg bg-background/70 border border-border px-4 py-2.5 text-sm outline-none focus:border-secondary transition"
+                className="w-full rounded-lg bg-[#4a4a4a]/70 border border-white/10 px-4 py-2.5 text-sm outline-none focus:border-secondary transition text-white placeholder:text-white/50"
               />
             </div>
             <div>
-              <label className="flex items-center gap-2 text-sm font-semibold mb-2">
+              <label className="flex items-center gap-2 text-sm font-semibold mb-2 text-white">
                 <Phone className="w-4 h-4 text-secondary" /> Phone
               </label>
               <input
                 type="tel"
                 placeholder="22 222 222"
-                className="w-full rounded-lg bg-background/70 border border-border px-4 py-2.5 text-sm outline-none focus:border-secondary transition"
+                className="w-full rounded-lg bg-[#4a4a4a]/70 border border-white/10 px-4 py-2.5 text-sm outline-none focus:border-secondary transition text-white placeholder:text-white/50"
               />
             </div>
           </div>
@@ -123,13 +123,13 @@ function EditProfilePage() {
 function SocialInput({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
     <div>
-      <label className="flex items-center gap-2 text-sm font-semibold mb-2">
+      <label className="flex items-center gap-2 text-sm font-semibold mb-2 text-white">
         {icon} {label}
       </label>
       <input
         type="url"
         placeholder="https://www.youtube.com/@your artist"
-        className="w-full rounded-lg bg-background/70 border border-border px-4 py-2.5 text-sm outline-none focus:border-secondary transition"
+        className="w-full rounded-lg bg-[#4a4a4a]/70 border border-white/10 px-4 py-2.5 text-sm outline-none focus:border-secondary transition text-white placeholder:text-white/50"
       />
     </div>
   );
