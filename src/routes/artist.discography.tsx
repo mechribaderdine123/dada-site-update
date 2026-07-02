@@ -151,8 +151,9 @@ function DiscographyPage() {
   );
 }
 
-function LatestAlbumHero({ album, trackCount }: { album: Album; trackCount: number }) {
+function LatestAlbumHero({ album, trackCount, isPublic }: { album: Album; trackCount: number; isPublic: boolean }) {
   const cover = useBlobUrl(album.coverKey, album.cover);
+  const search = isPublic ? { view: "public" as const } : {};
   return (
     <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-8 items-center">
       <div className="aspect-square rounded-2xl overflow-hidden bg-[#4a4a4a] shadow-2xl">
@@ -172,6 +173,7 @@ function LatestAlbumHero({ album, trackCount }: { album: Album; trackCount: numb
           <Link
             to="/artist/album/$albumId"
             params={{ albumId: album.id }}
+            search={search}
             className="inline-flex items-center gap-2 rounded-xl bg-secondary text-secondary-foreground px-5 py-2.5 text-sm font-bold hover:opacity-90"
           >
             <Play className="w-4 h-4" /> Listen know
@@ -179,6 +181,7 @@ function LatestAlbumHero({ album, trackCount }: { album: Album; trackCount: numb
           <Link
             to="/artist/album/$albumId"
             params={{ albumId: album.id }}
+            search={search}
             className="rounded-xl border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-semibold hover:bg-white/20"
           >
             View tracklist
@@ -189,12 +192,13 @@ function LatestAlbumHero({ album, trackCount }: { album: Album; trackCount: numb
   );
 }
 
-function AlbumCard({ album }: { album: Album }) {
+function AlbumCard({ album, isPublic }: { album: Album; isPublic: boolean }) {
   const cover = useBlobUrl(album.coverKey, album.cover);
   return (
     <Link
       to="/artist/album/$albumId"
       params={{ albumId: album.id }}
+      search={isPublic ? { view: "public" } : {}}
       className="group block"
     >
       <div className="aspect-square rounded-2xl overflow-hidden bg-[#4a4a4a]">
