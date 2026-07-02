@@ -30,6 +30,8 @@ const fallbackFeatured = [
 
 
 function ArtistPage() {
+  const { view } = Route.useSearch();
+  const isPublic = view === "public";
   const [tab, setTab] = useState<"home" | "music">("home");
   const tracks = useTracks();
   const albums = useAlbums();
