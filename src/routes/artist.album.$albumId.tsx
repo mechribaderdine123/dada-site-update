@@ -154,7 +154,7 @@ function SingleAddRow({ s, onAdd }: { s: Track; onAdd: () => void }) {
   );
 }
 
-function AlbumTrackRow({ t, index, onEdit }: { t: Track; index: number; onEdit: () => void }) {
+function AlbumTrackRow({ t, index, isPublic, onEdit }: { t: Track; index: number; isPublic: boolean; onEdit: () => void }) {
   const cover = useBlobUrl(t.coverKey, t.cover);
   const audio = useBlobUrl(t.audioKey, t.audioUrl);
   return (
@@ -169,20 +169,24 @@ function AlbumTrackRow({ t, index, onEdit }: { t: Track; index: number; onEdit: 
         <p className="text-xs text-white/60">{t.genre}</p>
         {audio && <audio src={audio} controls className="h-7 mt-1 max-w-full" />}
       </div>
-      <button onClick={onEdit} className="hover:text-secondary text-white" aria-label="Edit track"><Pencil className="w-4 h-4" /></button>
-      <button
-        onClick={() => tracksApi.update(t.id, { albumId: null })}
-        className="text-white/70 hover:text-white text-xs font-semibold border border-white/10 rounded-lg px-2 py-1"
-        title="Remove from album (keeps as single)"
-      >
-        Remove
-      </button>
-      <button
-        onClick={() => { if (confirm(`Delete "${t.title}" permanently?`)) tracksApi.remove(t.id); }}
-        className="text-primary hover:opacity-70" aria-label="Delete track"
-      >
-        <Trash2 className="w-4 h-4" />
-      </button>
+      {!isPublic && (
+        <>
+          <button onClick={onEdit} className="hover:text-secondary text-white" aria-label="Edit track"><Pencil className="w-4 h-4" /></button>
+          <button
+            onClick={() => tracksApi.update(t.id, { albumId: null })}
+            className="text-white/70 hover:text-white text-xs font-semibold border border-white/10 rounded-lg px-2 py-1"
+            title="Remove from album (keeps as single)"
+          >
+            Remove
+          </button>
+          <button
+            onClick={() => { if (confirm(`Delete "${t.title}" permanently?`)) tracksApi.remove(t.id); }}
+            className="text-primary hover:opacity-70" aria-label="Delete track"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </>
+      )}
     </div>
   );
 }
