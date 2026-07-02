@@ -80,7 +80,7 @@ function DadaReseauxArtistPage() {
 
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {filtered.map((artist) => (
-              <div key={artist.id} className="group cursor-pointer">
+              <Link to="/artist" key={artist.id} className="group cursor-pointer block">
                 <div className="aspect-[3/4] overflow-hidden rounded-2xl border border-white/10">
                   <img
                     src={artist.image}
@@ -91,9 +91,9 @@ function DadaReseauxArtistPage() {
                     height={533}
                   />
                 </div>
-                <h4 className="mt-4 font-display text-2xl tracking-wide text-white">{artist.name}</h4>
+                <h4 className="mt-4 font-display text-2xl tracking-wide text-white group-hover:text-primary transition">{artist.name}</h4>
                 <p className="text-sm text-white/60">{artist.genre}</p>
-              </div>
+              </Link>
             ))}
           </div>
 
