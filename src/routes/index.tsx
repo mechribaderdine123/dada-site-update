@@ -38,7 +38,6 @@ function HomePage() {
         <div className="relative h-[85vh] min-h-[600px] w-full overflow-hidden">
           <img src={heroImage} alt="Danseurs Dada Hip Hop Academy" className="absolute inset-0 w-full h-full object-cover" />
           <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, color-mix(in oklch, var(--primary) 55%, transparent) 0%, transparent 30%, transparent 70%, color-mix(in oklch, var(--primary) 55%, transparent) 100%)" }} />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-transparent to-background/80" />
 
           <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
             <h1 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.9] tracking-wide text-white drop-shadow-2xl">
