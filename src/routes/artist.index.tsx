@@ -8,6 +8,9 @@ import album3 from "@/assets/album-3.jpg";
 import { useTracks, useAlbums, useBlobUrl } from "@/lib/music-store";
 
 export const Route = createFileRoute("/artist/")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    view: s.view === "public" ? ("public" as const) : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Artist Profile — Dada Réseaux Artist" },
