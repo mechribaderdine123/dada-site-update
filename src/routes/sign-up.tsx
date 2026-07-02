@@ -25,7 +25,7 @@ function SignUpPage() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => navigate({ to: "/dada-reseaux-artist" }), 500);
+    setTimeout(() => navigate({ to: "/artist" }), 500);
   };
 
   return (

@@ -87,7 +87,7 @@ export function SiteHeader() {
         </ul>
 
         <Link
-          to="/sign-in"
+          to="/dada-reseaux-artist"
           className="hidden md:inline-flex items-center rounded-full border-2 border-primary text-primary px-5 py-2 font-display tracking-widest text-base hover:bg-primary hover:text-primary-foreground transition"
         >
           Dada Réseaux Artiste
@@ -132,7 +132,7 @@ export function SiteHeader() {
             </li>
             <li>
               <Link
-                to="/sign-in"
+                to="/dada-reseaux-artist"
                 onClick={() => setOpen(false)}
                 className="block mt-2 text-center rounded-lg border-2 border-primary text-primary px-4 py-2"
               >
