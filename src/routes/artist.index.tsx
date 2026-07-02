@@ -70,12 +70,14 @@ function ArtistPage() {
               </Link>
             </div>
 
-            <Link
-              to="/artist/edit"
-              className="rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-bold hover:opacity-90 transition shadow-lg"
-            >
-              Edit profil
-            </Link>
+            {!isPublic && (
+              <Link
+                to="/artist/edit"
+                className="rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-bold hover:opacity-90 transition shadow-lg"
+              >
+                Edit profil
+              </Link>
+            )}
           </div>
 
           {/* Profile */}
