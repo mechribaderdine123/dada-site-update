@@ -5,6 +5,9 @@ import { useTracks, useAlbums, useBlobUrl, resetMusicStore, type Track, type Alb
 import { DEMO_ALBUMS, DEMO_TRACKS, DEMO_ALBUM_TRACK_COUNT } from "@/lib/demo-music";
 
 export const Route = createFileRoute("/artist/discography")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    view: s.view === "public" ? ("public" as const) : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Music — Dada Réseaux Artist" },
