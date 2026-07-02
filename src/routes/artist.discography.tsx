@@ -53,6 +53,7 @@ function DiscographyPage() {
         <div className="inline-flex bg-white/10 backdrop-blur rounded-xl p-1.5 gap-1">
           <Link
             to="/artist"
+            search={isPublic ? { view: "public" } : {}}
             className="px-6 py-2 rounded-lg text-sm font-semibold text-white/70 hover:text-white"
           >
             Home
@@ -61,12 +62,14 @@ function DiscographyPage() {
             Music
           </span>
         </div>
-        <Link
-          to="/artist/edit"
-          className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-sm font-semibold hover:bg-white/20"
-        >
-          <Pencil className="w-4 h-4 text-secondary" /> Edit
-        </Link>
+        {!isPublic && (
+          <Link
+            to="/artist/edit"
+            className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-sm font-semibold hover:bg-white/20"
+          >
+            <Pencil className="w-4 h-4 text-secondary" /> Edit
+          </Link>
+        )}
       </header>
 
       {/* Title */}
