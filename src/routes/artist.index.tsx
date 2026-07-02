@@ -8,6 +8,9 @@ import album3 from "@/assets/album-3.jpg";
 import { useTracks, useAlbums, useBlobUrl } from "@/lib/music-store";
 
 export const Route = createFileRoute("/artist/")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    view: s.view === "public" ? ("public" as const) : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Artist Profile — Dada Réseaux Artist" },
@@ -27,6 +30,8 @@ const fallbackFeatured = [
 
 
 function ArtistPage() {
+  const { view } = Route.useSearch();
+  const isPublic = view === "public";
   const [tab, setTab] = useState<"home" | "music">("home");
   const tracks = useTracks();
   const albums = useAlbums();
@@ -65,12 +70,14 @@ function ArtistPage() {
               </Link>
             </div>
 
-            <Link
-              to="/artist/edit"
-              className="rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-bold hover:opacity-90 transition shadow-lg"
-            >
-              Edit profil
-            </Link>
+            {!isPublic && (
+              <Link
+                to="/artist/edit"
+                className="rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-bold hover:opacity-90 transition shadow-lg"
+              >
+                Edit profil
+              </Link>
+            )}
           </div>
 
           {/* Profile */}

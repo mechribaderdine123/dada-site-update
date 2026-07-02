@@ -80,7 +80,7 @@ function DadaReseauxArtistPage() {
 
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {filtered.map((artist) => (
-              <Link to="/artist" key={artist.id} className="group cursor-pointer block">
+              <Link to="/artist" search={{ view: "public" }} key={artist.id} className="group cursor-pointer block">
                 <div className="aspect-[3/4] overflow-hidden rounded-2xl border border-white/10">
                   <img
                     src={artist.image}
