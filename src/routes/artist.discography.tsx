@@ -83,7 +83,7 @@ function DiscographyPage() {
       {/* Latest album hero */}
       {latest && (
         <section className="max-w-4xl mx-auto px-6 mt-12">
-          <LatestAlbumHero album={latest} trackCount={latestTrackCount} />
+          <LatestAlbumHero album={latest} trackCount={latestTrackCount} isPublic={isPublic} />
         </section>
       )}
 
@@ -115,7 +115,7 @@ function DiscographyPage() {
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                 {albums.map((a) => (
-                  <AlbumCard key={a.id} album={a} />
+                  <AlbumCard key={a.id} album={a} isPublic={isPublic} />
                 ))}
               </div>
             )}
