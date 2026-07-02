@@ -64,6 +64,7 @@ function ArtistPage() {
               </button>
               <Link
                 to="/artist/discography"
+                search={isPublic ? { view: "public" } : {}}
                 className="px-6 py-2 rounded-lg text-sm font-semibold text-white/70 hover:text-white transition"
               >
                 Music
