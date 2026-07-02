@@ -5,6 +5,9 @@ import { useTracks, useAlbums, useBlobUrl, resetMusicStore, type Track, type Alb
 import { DEMO_ALBUMS, DEMO_TRACKS, DEMO_ALBUM_TRACK_COUNT } from "@/lib/demo-music";
 
 export const Route = createFileRoute("/artist/discography")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    view: s.view === "public" ? ("public" as const) : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Music — Dada Réseaux Artist" },
@@ -18,6 +21,8 @@ type Filter = "all" | "albums" | "single";
 
 function DiscographyPage() {
   useEffect(() => { resetMusicStore(); }, []);
+  const { view } = Route.useSearch();
+  const isPublic = view === "public";
   const userTracks = useTracks();
   const userAlbums = useAlbums();
 
@@ -48,6 +53,7 @@ function DiscographyPage() {
         <div className="inline-flex bg-white/10 backdrop-blur rounded-xl p-1.5 gap-1">
           <Link
             to="/artist"
+            search={isPublic ? { view: "public" } : {}}
             className="px-6 py-2 rounded-lg text-sm font-semibold text-white/70 hover:text-white"
           >
             Home
@@ -56,12 +62,14 @@ function DiscographyPage() {
             Music
           </span>
         </div>
-        <Link
-          to="/artist/edit"
-          className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-sm font-semibold hover:bg-white/20"
-        >
-          <Pencil className="w-4 h-4 text-secondary" /> Edit
-        </Link>
+        {!isPublic && (
+          <Link
+            to="/artist/edit"
+            className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-sm font-semibold hover:bg-white/20"
+          >
+            <Pencil className="w-4 h-4 text-secondary" /> Edit
+          </Link>
+        )}
       </header>
 
       {/* Title */}
@@ -75,7 +83,7 @@ function DiscographyPage() {
       {/* Latest album hero */}
       {latest && (
         <section className="max-w-4xl mx-auto px-6 mt-12">
-          <LatestAlbumHero album={latest} trackCount={latestTrackCount} />
+          <LatestAlbumHero album={latest} trackCount={latestTrackCount} isPublic={isPublic} />
         </section>
       )}
 
@@ -107,7 +115,7 @@ function DiscographyPage() {
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                 {albums.map((a) => (
-                  <AlbumCard key={a.id} album={a} />
+                  <AlbumCard key={a.id} album={a} isPublic={isPublic} />
                 ))}
               </div>
             )}
@@ -143,8 +151,9 @@ function DiscographyPage() {
   );
 }
 
-function LatestAlbumHero({ album, trackCount }: { album: Album; trackCount: number }) {
+function LatestAlbumHero({ album, trackCount, isPublic }: { album: Album; trackCount: number; isPublic: boolean }) {
   const cover = useBlobUrl(album.coverKey, album.cover);
+  const search = isPublic ? { view: "public" as const } : {};
   return (
     <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-8 items-center">
       <div className="aspect-square rounded-2xl overflow-hidden bg-[#4a4a4a] shadow-2xl">
@@ -164,6 +173,7 @@ function LatestAlbumHero({ album, trackCount }: { album: Album; trackCount: numb
           <Link
             to="/artist/album/$albumId"
             params={{ albumId: album.id }}
+            search={search}
             className="inline-flex items-center gap-2 rounded-xl bg-secondary text-secondary-foreground px-5 py-2.5 text-sm font-bold hover:opacity-90"
           >
             <Play className="w-4 h-4" /> Listen know
@@ -171,6 +181,7 @@ function LatestAlbumHero({ album, trackCount }: { album: Album; trackCount: numb
           <Link
             to="/artist/album/$albumId"
             params={{ albumId: album.id }}
+            search={search}
             className="rounded-xl border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-semibold hover:bg-white/20"
           >
             View tracklist
@@ -181,12 +192,13 @@ function LatestAlbumHero({ album, trackCount }: { album: Album; trackCount: numb
   );
 }
 
-function AlbumCard({ album }: { album: Album }) {
+function AlbumCard({ album, isPublic }: { album: Album; isPublic: boolean }) {
   const cover = useBlobUrl(album.coverKey, album.cover);
   return (
     <Link
       to="/artist/album/$albumId"
       params={{ albumId: album.id }}
+      search={isPublic ? { view: "public" } : {}}
       className="group block"
     >
       <div className="aspect-square rounded-2xl overflow-hidden bg-[#4a4a4a]">

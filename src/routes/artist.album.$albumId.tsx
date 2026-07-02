@@ -6,12 +6,17 @@ import { useTracks, useAlbums, tracksApi, useBlobUrl, type Track } from "@/lib/m
 import { TrackModal } from "./artist.music";
 
 export const Route = createFileRoute("/artist/album/$albumId")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    view: s.view === "public" ? ("public" as const) : undefined,
+  }),
   head: () => ({ meta: [{ title: "Album — Dada Réseaux Artist" }] }),
   component: AlbumDetailPage,
 });
 
 function AlbumDetailPage() {
   const { albumId } = Route.useParams();
+  const { view } = Route.useSearch();
+  const isPublic = view === "public";
   const albums = useAlbums();
   const tracks = useTracks();
 
@@ -22,13 +27,16 @@ function AlbumDetailPage() {
   const [trackModal, setTrackModal] = useState<Track | "new" | null>(null);
   const [addExisting, setAddExisting] = useState(false);
 
+  const backTo = isPublic ? "/artist/discography" : "/artist/music";
+  const backSearch = isPublic ? { view: "public" as const } : {};
+
   if (!album && albums.length > 0) {
     return (
       <div className="min-h-screen bg-[#393939] text-white flex">
-        <ArtistSidebar />
+        {!isPublic && <ArtistSidebar />}
         <main className="flex-1 p-12">
           <p className="text-white/60">Album not found.</p>
-          <Link to="/artist/music" className="text-secondary underline">Back to music</Link>
+          <Link to={backTo} search={backSearch} className="text-secondary underline">Back to music</Link>
         </main>
       </div>
     );
@@ -36,11 +44,12 @@ function AlbumDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#393939] text-white flex">
-      <ArtistSidebar />
+      {!isPublic && <ArtistSidebar />}
 
       <main className="flex-1 p-8 md:p-12">
         <Link
-          to="/artist/music"
+          to={backTo}
+          search={backSearch}
           className="inline-flex items-center gap-2 text-sm text-white/60 hover:text-white mb-6"
         >
           <ArrowLeft className="w-4 h-4" /> Back to music
@@ -54,27 +63,29 @@ function AlbumDetailPage() {
             <p className="text-sm uppercase tracking-widest text-white/60">Album</p>
             <h1 className="mt-1 text-4xl md:text-5xl font-black text-secondary">{album?.title}</h1>
             <p className="mt-2 text-white/80">{album?.year} · {albumTracks.length} track{albumTracks.length !== 1 ? "s" : ""}</p>
-            <div className="mt-5 flex gap-3 flex-wrap">
-              <button
-                onClick={() => setTrackModal("new")}
-                className="flex items-center gap-2 rounded-xl bg-primary text-primary-foreground px-4 py-2.5 text-sm font-bold hover:opacity-90"
-              >
-                <Plus className="w-4 h-4" /> Add new track
-              </button>
-              {availableSingles.length > 0 && (
+            {!isPublic && (
+              <div className="mt-5 flex gap-3 flex-wrap">
                 <button
-                  onClick={() => setAddExisting((v) => !v)}
-                  className="flex items-center gap-2 rounded-xl bg-white/10 border border-white/10 px-4 py-2.5 text-sm font-semibold hover:bg-white/20"
+                  onClick={() => setTrackModal("new")}
+                  className="flex items-center gap-2 rounded-xl bg-primary text-primary-foreground px-4 py-2.5 text-sm font-bold hover:opacity-90"
                 >
-                  <Plus className="w-4 h-4" /> Add existing single
+                  <Plus className="w-4 h-4" /> Add new track
                 </button>
-              )}
-            </div>
+                {availableSingles.length > 0 && (
+                  <button
+                    onClick={() => setAddExisting((v) => !v)}
+                    className="flex items-center gap-2 rounded-xl bg-white/10 border border-white/10 px-4 py-2.5 text-sm font-semibold hover:bg-white/20"
+                  >
+                    <Plus className="w-4 h-4" /> Add existing single
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
         {/* Add existing singles panel */}
-        {addExisting && availableSingles.length > 0 && (
+        {!isPublic && addExisting && availableSingles.length > 0 && (
           <div className="mt-6 rounded-xl border border-white/10 bg-white/10 p-4">
             <p className="text-sm font-bold mb-3 text-white">Pick singles to add to this album</p>
             <div className="space-y-2">
@@ -90,19 +101,19 @@ function AlbumDetailPage() {
           <h2 className="text-xl font-black mb-4 text-white">Tracks</h2>
           {albumTracks.length === 0 ? (
             <div className="text-center py-12 text-white/60 rounded-xl border border-dashed border-white/20">
-              No tracks in this album yet. Add a new track or attach an existing single.
+              {isPublic ? "No tracks in this album yet." : "No tracks in this album yet. Add a new track or attach an existing single."}
             </div>
           ) : (
             <div className="space-y-3">
               {albumTracks.map((t, i) => (
-                <AlbumTrackRow key={t.id} t={t} index={i} onEdit={() => setTrackModal(t)} />
+                <AlbumTrackRow key={t.id} t={t} index={i} isPublic={isPublic} onEdit={() => setTrackModal(t)} />
               ))}
             </div>
           )}
         </div>
       </main>
 
-      {trackModal && (
+      {!isPublic && trackModal && (
         <TrackModal
           track={trackModal === "new" ? null : trackModal}
           albums={albums}
@@ -113,6 +124,7 @@ function AlbumDetailPage() {
     </div>
   );
 }
+
 
 function AlbumCover({ album }: { album: { title?: string; cover?: string; coverKey?: string } | undefined }) {
   const url = useBlobUrl(album?.coverKey, album?.cover);
@@ -142,7 +154,7 @@ function SingleAddRow({ s, onAdd }: { s: Track; onAdd: () => void }) {
   );
 }
 
-function AlbumTrackRow({ t, index, onEdit }: { t: Track; index: number; onEdit: () => void }) {
+function AlbumTrackRow({ t, index, isPublic, onEdit }: { t: Track; index: number; isPublic: boolean; onEdit: () => void }) {
   const cover = useBlobUrl(t.coverKey, t.cover);
   const audio = useBlobUrl(t.audioKey, t.audioUrl);
   return (
@@ -157,20 +169,24 @@ function AlbumTrackRow({ t, index, onEdit }: { t: Track; index: number; onEdit: 
         <p className="text-xs text-white/60">{t.genre}</p>
         {audio && <audio src={audio} controls className="h-7 mt-1 max-w-full" />}
       </div>
-      <button onClick={onEdit} className="hover:text-secondary text-white" aria-label="Edit track"><Pencil className="w-4 h-4" /></button>
-      <button
-        onClick={() => tracksApi.update(t.id, { albumId: null })}
-        className="text-white/70 hover:text-white text-xs font-semibold border border-white/10 rounded-lg px-2 py-1"
-        title="Remove from album (keeps as single)"
-      >
-        Remove
-      </button>
-      <button
-        onClick={() => { if (confirm(`Delete "${t.title}" permanently?`)) tracksApi.remove(t.id); }}
-        className="text-primary hover:opacity-70" aria-label="Delete track"
-      >
-        <Trash2 className="w-4 h-4" />
-      </button>
+      {!isPublic && (
+        <>
+          <button onClick={onEdit} className="hover:text-secondary text-white" aria-label="Edit track"><Pencil className="w-4 h-4" /></button>
+          <button
+            onClick={() => tracksApi.update(t.id, { albumId: null })}
+            className="text-white/70 hover:text-white text-xs font-semibold border border-white/10 rounded-lg px-2 py-1"
+            title="Remove from album (keeps as single)"
+          >
+            Remove
+          </button>
+          <button
+            onClick={() => { if (confirm(`Delete "${t.title}" permanently?`)) tracksApi.remove(t.id); }}
+            className="text-primary hover:opacity-70" aria-label="Delete track"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </>
+      )}
     </div>
   );
 }
