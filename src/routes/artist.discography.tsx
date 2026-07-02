@@ -21,6 +21,8 @@ type Filter = "all" | "albums" | "single";
 
 function DiscographyPage() {
   useEffect(() => { resetMusicStore(); }, []);
+  const { view } = Route.useSearch();
+  const isPublic = view === "public";
   const userTracks = useTracks();
   const userAlbums = useAlbums();
 
