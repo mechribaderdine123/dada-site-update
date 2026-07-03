@@ -133,16 +133,57 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_profiles: {
+        Row: {
+          artist_name: string | null
+          avatar_url: string | null
+          bio: string | null
+          city: string | null
+          created_at: string | null
+          facebook: string | null
+          genre: string | null
+          id: string | null
+          instagram: string | null
+          spotify: string | null
+          tiktok: string | null
+          twitter: string | null
+          youtube: string | null
+        }
+        Insert: {
+          artist_name?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          created_at?: string | null
+          facebook?: string | null
+          genre?: string | null
+          id?: string | null
+          instagram?: string | null
+          spotify?: string | null
+          tiktok?: string | null
+          twitter?: string | null
+          youtube?: string | null
+        }
+        Update: {
+          artist_name?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          created_at?: string | null
+          facebook?: string | null
+          genre?: string | null
+          id?: string | null
+          instagram?: string | null
+          spotify?: string | null
+          tiktok?: string | null
+          twitter?: string | null
+          youtube?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
       app_role: "admin" | "artist"
