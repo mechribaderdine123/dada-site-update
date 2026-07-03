@@ -23,7 +23,6 @@ import { Route as ArtistIndexRouteImport } from './routes/artist.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ArtistMusicRouteImport } from './routes/artist.music'
 import { Route as ArtistEditRouteImport } from './routes/artist.edit'
-import { Route as ArtistDiscographyRouteImport } from './routes/artist.discography'
 import { Route as AdminWorkshopsRouteImport } from './routes/admin.workshops'
 import { Route as AdminTracksRouteImport } from './routes/admin.tracks'
 import { Route as AdminSignInRouteImport } from './routes/admin.sign-in'
@@ -31,7 +30,6 @@ import { Route as AdminCoursRouteImport } from './routes/admin.cours'
 import { Route as AdminContactRouteImport } from './routes/admin.contact'
 import { Route as AdminAccountsRouteImport } from './routes/admin.accounts'
 import { Route as AdminAboutRouteImport } from './routes/admin.about'
-import { Route as ArtistAlbumAlbumIdRouteImport } from './routes/artist.album.$albumId'
 
 const WorkshopsRoute = WorkshopsRouteImport.update({
   id: '/workshops',
@@ -103,11 +101,6 @@ const ArtistEditRoute = ArtistEditRouteImport.update({
   path: '/edit',
   getParentRoute: () => ArtistRoute,
 } as any)
-const ArtistDiscographyRoute = ArtistDiscographyRouteImport.update({
-  id: '/discography',
-  path: '/discography',
-  getParentRoute: () => ArtistRoute,
-} as any)
 const AdminWorkshopsRoute = AdminWorkshopsRouteImport.update({
   id: '/workshops',
   path: '/workshops',
@@ -143,11 +136,6 @@ const AdminAboutRoute = AdminAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => AdminRoute,
 } as any)
-const ArtistAlbumAlbumIdRoute = ArtistAlbumAlbumIdRouteImport.update({
-  id: '/album/$albumId',
-  path: '/album/$albumId',
-  getParentRoute: () => ArtistRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -167,12 +155,10 @@ export interface FileRoutesByFullPath {
   '/admin/sign-in': typeof AdminSignInRoute
   '/admin/tracks': typeof AdminTracksRoute
   '/admin/workshops': typeof AdminWorkshopsRoute
-  '/artist/discography': typeof ArtistDiscographyRoute
   '/artist/edit': typeof ArtistEditRoute
   '/artist/music': typeof ArtistMusicRoute
   '/admin/': typeof AdminIndexRoute
   '/artist/': typeof ArtistIndexRoute
-  '/artist/album/$albumId': typeof ArtistAlbumAlbumIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -190,12 +176,10 @@ export interface FileRoutesByTo {
   '/admin/sign-in': typeof AdminSignInRoute
   '/admin/tracks': typeof AdminTracksRoute
   '/admin/workshops': typeof AdminWorkshopsRoute
-  '/artist/discography': typeof ArtistDiscographyRoute
   '/artist/edit': typeof ArtistEditRoute
   '/artist/music': typeof ArtistMusicRoute
   '/admin': typeof AdminIndexRoute
   '/artist': typeof ArtistIndexRoute
-  '/artist/album/$albumId': typeof ArtistAlbumAlbumIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -216,12 +200,10 @@ export interface FileRoutesById {
   '/admin/sign-in': typeof AdminSignInRoute
   '/admin/tracks': typeof AdminTracksRoute
   '/admin/workshops': typeof AdminWorkshopsRoute
-  '/artist/discography': typeof ArtistDiscographyRoute
   '/artist/edit': typeof ArtistEditRoute
   '/artist/music': typeof ArtistMusicRoute
   '/admin/': typeof AdminIndexRoute
   '/artist/': typeof ArtistIndexRoute
-  '/artist/album/$albumId': typeof ArtistAlbumAlbumIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -243,12 +225,10 @@ export interface FileRouteTypes {
     | '/admin/sign-in'
     | '/admin/tracks'
     | '/admin/workshops'
-    | '/artist/discography'
     | '/artist/edit'
     | '/artist/music'
     | '/admin/'
     | '/artist/'
-    | '/artist/album/$albumId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -266,12 +246,10 @@ export interface FileRouteTypes {
     | '/admin/sign-in'
     | '/admin/tracks'
     | '/admin/workshops'
-    | '/artist/discography'
     | '/artist/edit'
     | '/artist/music'
     | '/admin'
     | '/artist'
-    | '/artist/album/$albumId'
   id:
     | '__root__'
     | '/'
@@ -291,12 +269,10 @@ export interface FileRouteTypes {
     | '/admin/sign-in'
     | '/admin/tracks'
     | '/admin/workshops'
-    | '/artist/discography'
     | '/artist/edit'
     | '/artist/music'
     | '/admin/'
     | '/artist/'
-    | '/artist/album/$albumId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -412,13 +388,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArtistEditRouteImport
       parentRoute: typeof ArtistRoute
     }
-    '/artist/discography': {
-      id: '/artist/discography'
-      path: '/discography'
-      fullPath: '/artist/discography'
-      preLoaderRoute: typeof ArtistDiscographyRouteImport
-      parentRoute: typeof ArtistRoute
-    }
     '/admin/workshops': {
       id: '/admin/workshops'
       path: '/workshops'
@@ -468,13 +437,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAboutRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/artist/album/$albumId': {
-      id: '/artist/album/$albumId'
-      path: '/album/$albumId'
-      fullPath: '/artist/album/$albumId'
-      preLoaderRoute: typeof ArtistAlbumAlbumIdRouteImport
-      parentRoute: typeof ArtistRoute
-    }
   }
 }
 
@@ -503,19 +465,15 @@ const AdminRouteChildren: AdminRouteChildren = {
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface ArtistRouteChildren {
-  ArtistDiscographyRoute: typeof ArtistDiscographyRoute
   ArtistEditRoute: typeof ArtistEditRoute
   ArtistMusicRoute: typeof ArtistMusicRoute
   ArtistIndexRoute: typeof ArtistIndexRoute
-  ArtistAlbumAlbumIdRoute: typeof ArtistAlbumAlbumIdRoute
 }
 
 const ArtistRouteChildren: ArtistRouteChildren = {
-  ArtistDiscographyRoute: ArtistDiscographyRoute,
   ArtistEditRoute: ArtistEditRoute,
   ArtistMusicRoute: ArtistMusicRoute,
   ArtistIndexRoute: ArtistIndexRoute,
-  ArtistAlbumAlbumIdRoute: ArtistAlbumAlbumIdRoute,
 }
 
 const ArtistRouteWithChildren =
