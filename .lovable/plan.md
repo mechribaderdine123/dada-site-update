@@ -1,54 +1,48 @@
-## Goal
-Replace the existing artist demo with a full clone of dadahiphop.com — same page structure, French copy, and hip-hop academy aesthetic. Original placeholder images (no hotlinking).
+# Secure login + admin approval system
 
-## Pages to build
+## What changes
 
-1. **`/` — Home**
-   - Hero (full-bleed dark image + "DADA HIP HOP ACADEMY" / "Danse. Culture. Création." / tagline + CTAs "Découvrir nos cours" / "Se connecter artiste")
-   - "Nos Partenaires" — auto-scrolling sponsor logo marquee (13 generated logo tiles)
+### 1. Enable Lovable Cloud (backend)
+Required for real authentication, database, and file storage. Replaces the current fake sign-in and the hardcoded admin password (`dada2026`) currently stored in client code — a critical security issue today.
 
-2. **`/cours-activites` — Nos Cours & Activités**
-   - Header banner + intro + "Contactez Nous" CTA
-   - Grid of 6 categories with bulleted class lists (Cours spécial femmes, Mixte, Danse, Bac Sport, Gym Kids, Martial Arts)
-   - "Plan" section with generated facility floor-plan image
+### 2. Real authentication
+- Artists sign up / sign in via email + password through Cloud Auth (sessions, hashed passwords, secure tokens — all managed).
+- Admin is no longer a hardcoded password. Admin becomes a **role** assigned to specific accounts in the database.
+- Sign-up form keeps its 3 steps (info, artistic profile, socials) — data saved to a `profiles` table.
 
-3. **`/a-propos` — Qui sommes-nous ?**
-   - Founder story (Ghada Belgacem)
-   - Mission / Vision / Valeurs cards
+### 3. Database tables
+- `profiles` — artist info (name, bio, genre, city, socials, avatar) + `status` ('pending' | 'approved' | 'rejected')
+- `user_roles` — separates roles from profiles (secure pattern, no privilege escalation)
+- `tracks` — music uploads with `status` ('pending' | 'approved' | 'rejected') + audio file in storage
+- `albums` — same approval flow if kept
 
-4. **`/contact`**
-   - Intro + Facebook + Instagram cards
-   - Email / Téléphone / Adresse info (contact.dadahiphop@gmail.com, 97 800 464, Tunis)
+Row-Level Security policies:
+- Artists see/edit only their own profile & tracks
+- Public site shows only `approved` profiles and `approved` tracks
+- Admins see everything and can change status
 
-5. **`/sign-in` — Bienvenue de retour**
-   - Split-screen with generated background, logo, email + password form, link to `/sign-up` and `/dada-reseaux-artist`
+### 4. Approval flow
+- **New artist signs up** → account created with `status = pending` → sees "En attente de validation" screen instead of the artist dashboard
+- **Artist uploads a track** → track saved with `status = pending` → not visible on public pages until approved
+- **Admin dashboard** gets two new sections:
+  - "Comptes en attente" — list of pending artists with Approve / Reject buttons
+  - "Musiques en attente" — list of pending tracks with preview + Approve / Reject buttons
 
-6. **`/sign-up` — Créer un compte** (mirrors sign-in with name/email/password fields)
+### 5. Public site
+- Artist directory / discography pages only show approved content.
+- Existing static/editorial pages (home, about, cours, contact, workshops) are unchanged.
 
-7. **`/dada-reseaux-artist`** — keep existing artist profile flow (already built: `/artist`, `/artist/edit`, `/artist/music`, `/artist/discography`, `/artist/album/$id`). Rewire top-level entry link.
+## Kept as-is
+- Visual design, colors, fonts, page layouts
+- Site content editor in admin (localStorage-based text overrides)
+- All public marketing pages
 
-## Shared shell
-- **Header**: transparent-over-hero nav — Logo left, links (Accueil, À propos, Cours & Activités, Contact) center, "Se connecter" button right. Mobile hamburger.
-- **Footer**: brand blurb, quick links, social icons, contact line, copyright.
-- Applied via `__root.tsx` `<Outlet />` wrapper.
+## Not included (ask if you want them)
+- Email notifications when approved/rejected
+- Password reset flow
+- Google / social login
+- Admin ability to edit artist profiles directly
 
-## Design system
-- Dark theme: near-black background, off-white text, bold red/orange accent (hip-hop energy).
-- Bebas Neue display + Poppins body (already set up).
-- Framer-motion for hero fade-in and sponsor marquee.
+---
 
-## Assets to generate (imagegen fast tier)
-- `hero-home.jpg` — dancers silhouette, dark cinematic
-- `about-founder.jpg` — dance studio portrait vibe
-- `cours-hero.jpg` — dance class action shot
-- `signin-bg.jpg` — moody urban dance
-- `logo-white.png` — "DADA HIP HOP ACADEMY" wordmark, transparent
-- `plan-facility.jpg` — architectural floor plan illustration
-- `sponsor-1..8.png` — abstract brand-mark tiles, transparent
-
-## Out of scope for this pass
-- Real authentication backend (sign-in form is UI-only; wiring to Lovable Cloud can be a follow-up).
-- Course booking / payments.
-- CMS for editing content.
-
-Confirm and I'll build it in one pass.
+**Confirm and I'll enable Cloud and implement everything above.** Once Cloud is on, the first account you create — tell me the email — I'll grant it the admin role so the old `admin / dada2026` login is fully removed.
