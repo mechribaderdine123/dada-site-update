@@ -4,6 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 import bgAsset from "@/assets/auth-bg.png.asset.json";
 const bg = bgAsset.url;
 import logo from "@/assets/dada-logo.png.asset.json";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/sign-in")({
   head: () => ({
@@ -19,11 +20,28 @@ function SignInPage() {
   const navigate = useNavigate();
   const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     setLoading(true);
-    setTimeout(() => navigate({ to: "/artist" }), 500);
+    const { error: err } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
+    setLoading(false);
+    if (err) {
+      setError(
+        err.message === "Invalid login credentials"
+          ? "E-mail ou mot de passe incorrect."
+          : err.message,
+      );
+      return;
+    }
+    navigate({ to: "/artist" });
   };
 
   return (
@@ -43,6 +61,8 @@ function SignInPage() {
             <input
               type="email"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="e-mail@gmail.com"
               className="mt-2 w-full h-12 px-4 rounded-lg bg-white text-black placeholder:text-black/40 outline-none focus:ring-2 focus:ring-secondary"
             />
@@ -54,6 +74,8 @@ function SignInPage() {
                 type={showPwd ? "text" : "password"}
                 required
                 minLength={6}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="***********"
                 className="w-full h-12 px-4 pr-11 rounded-lg bg-white text-black placeholder:text-black/40 outline-none focus:ring-2 focus:ring-secondary"
               />
@@ -62,6 +84,12 @@ function SignInPage() {
               </button>
             </div>
           </div>
+
+          {error && (
+            <p className="text-sm text-red-200 bg-red-900/40 border border-red-400/30 rounded-lg px-3 py-2">
+              {error}
+            </p>
+          )}
 
           <button
             type="submit"
