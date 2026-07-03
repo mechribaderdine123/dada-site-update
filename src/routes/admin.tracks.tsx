@@ -28,12 +28,22 @@ function AdminTracks() {
 
   const load = async () => {
     setLoading(true);
-    const { data } = await supabase
+    const { data: tracks } = await supabase
       .from("tracks")
-      .select("*, profiles!inner(artist_name, email)")
+      .select("*")
       .eq("status", filter)
       .order("created_at", { ascending: false });
-    setRows((data as TrackRow[]) ?? []);
+    const list = (tracks as Omit<TrackRow, "profiles">[]) ?? [];
+    const ids = Array.from(new Set(list.map((t) => t.user_id)));
+    let byId = new Map<string, { artist_name: string; email: string }>();
+    if (ids.length) {
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("id, artist_name, email")
+        .in("id", ids);
+      byId = new Map((profs ?? []).map((p) => [p.id, { artist_name: p.artist_name, email: p.email }]));
+    }
+    setRows(list.map((t) => ({ ...t, profiles: byId.get(t.user_id) ?? null })));
     setLoading(false);
   };
 
