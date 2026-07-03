@@ -1,7 +1,6 @@
 import { useSyncExternalStore } from "react";
 
 const STORAGE_KEY = "dada.site-content.v1";
-const AUTH_KEY = "dada.admin.auth.v1";
 
 type Store = Record<string, string>;
 
@@ -58,27 +57,6 @@ export function useContent(key: string, fallback: string): string {
     () => getContent(key, fallback),
     () => fallback,
   );
-}
-
-// ---- Admin auth (client-only demo) ----
-export const ADMIN_USERNAME = "admin";
-export const ADMIN_PASSWORD = "dada2026";
-
-export function adminLogin(username: string, password: string): boolean {
-  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-    if (typeof window !== "undefined") localStorage.setItem(AUTH_KEY, "1");
-    return true;
-  }
-  return false;
-}
-
-export function adminLogout() {
-  if (typeof window !== "undefined") localStorage.removeItem(AUTH_KEY);
-}
-
-export function isAdmin(): boolean {
-  if (typeof window === "undefined") return false;
-  return localStorage.getItem(AUTH_KEY) === "1";
 }
 
 // ---- Image helpers: store as data URL in same store ----

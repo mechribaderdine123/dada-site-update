@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Search, User as UserIcon } from "lucide-react";
 import heroAsset from "@/assets/dada-hero-new.png.asset.json";
-import artistPortrait from "@/assets/artist-portrait.png";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/dada-reseaux-artist")({
   head: () => ({
@@ -14,29 +14,43 @@ export const Route = createFileRoute("/dada-reseaux-artist")({
   component: DadaReseauxArtistPage,
 });
 
+type PublicArtist = {
+  id: string;
+  artist_name: string;
+  genre: string | null;
+  city: string | null;
+  avatar_url: string | null;
+};
+
 function DadaReseauxArtistPage() {
   const [search, setSearch] = useState("");
+  const [artists, setArtists] = useState<PublicArtist[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const artists = [
-    { id: 1, name: "Artist name", genre: "under ground", image: artistPortrait },
-    { id: 2, name: "Artist name", genre: "under ground", image: artistPortrait },
-    { id: 3, name: "Artist name", genre: "under ground", image: artistPortrait },
-    { id: 4, name: "Artist name", genre: "under ground", image: artistPortrait },
-  ];
+  useEffect(() => {
+    supabase
+      .from("profiles")
+      .select("id, artist_name, genre, city, avatar_url")
+      .eq("status", "approved")
+      .order("created_at", { ascending: false })
+      .then(({ data }) => {
+        setArtists((data as PublicArtist[]) ?? []);
+        setLoading(false);
+      });
+  }, []);
 
+  const q = search.toLowerCase();
   const filtered = artists.filter(
-    (a) => a.name.toLowerCase().includes(search.toLowerCase()) || a.genre.toLowerCase().includes(search.toLowerCase())
+    (a) =>
+      a.artist_name.toLowerCase().includes(q) ||
+      (a.genre ?? "").toLowerCase().includes(q) ||
+      (a.city ?? "").toLowerCase().includes(q),
   );
 
   return (
     <div className="min-h-screen bg-[#1a1a1a] text-white">
-      {/* Hero */}
       <section className="relative h-[75vh] min-h-[520px] w-full overflow-hidden">
-        <img
-          src={heroAsset.url}
-          alt="Danseurs Dada Hip Hop Academy"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+        <img src={heroAsset.url} alt="Danseurs Dada Hip Hop Academy" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-primary/45" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#1a1a1a]" />
 
@@ -47,20 +61,21 @@ function DadaReseauxArtistPage() {
           <p className="mt-6 text-lg md:text-2xl font-medium text-white/90 max-w-2xl">
             Un espace conçu pour vous mettre en lumière
           </p>
-          <Link
-            to="/sign-in"
-            className="mt-8 rounded-md bg-primary text-primary-foreground px-8 py-3 text-sm font-semibold hover:opacity-90 transition"
-          >
-            Sign in artist
-          </Link>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link to="/sign-in" className="rounded-md bg-primary text-primary-foreground px-8 py-3 text-sm font-semibold hover:opacity-90 transition">
+              Se connecter
+            </Link>
+            <Link to="/sign-up" className="rounded-md bg-white/10 border border-white/20 text-white px-8 py-3 text-sm font-semibold hover:bg-white/20 transition">
+              Créer un compte
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Artists section */}
       <section className="py-16 md:py-24 px-6">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-center font-display text-4xl md:text-6xl tracking-wide">
-            DECOUVRER <span className="text-primary">NOS ARTIST</span>
+            DECOUVRIR <span className="text-primary">NOS ARTISTES</span>
           </h2>
 
           <div className="mt-10 flex justify-center">
@@ -70,35 +85,34 @@ function DadaReseauxArtistPage() {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="search artist"
+                placeholder="Rechercher un artiste"
                 className="w-full h-14 pl-12 pr-4 rounded-full bg-transparent border border-white/30 text-white placeholder:text-white/50 outline-none focus:border-primary transition"
               />
             </div>
           </div>
 
-          <h3 className="mt-12 font-semibold text-lg text-white/90">Featured Artist</h3>
-
-          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filtered.map((artist) => (
-              <Link to="/artist" search={{ view: "public" }} key={artist.id} className="group cursor-pointer block">
-                <div className="aspect-[3/4] overflow-hidden rounded-2xl border border-white/10">
-                  <img
-                    src={artist.image}
-                    alt={artist.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    loading="lazy"
-                    width={400}
-                    height={533}
-                  />
+          {loading ? (
+            <p className="mt-16 text-center text-white/70">Chargement…</p>
+          ) : filtered.length === 0 ? (
+            <p className="mt-16 text-center text-white/70">
+              {artists.length === 0 ? "Aucun artiste approuvé pour le moment." : "Aucun résultat."}
+            </p>
+          ) : (
+            <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+              {filtered.map((a) => (
+                <div key={a.id} className="group">
+                  <div className="aspect-square rounded-2xl overflow-hidden bg-white/5 grid place-items-center">
+                    {a.avatar_url ? (
+                      <img src={a.avatar_url} alt={a.artist_name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                    ) : (
+                      <UserIcon className="w-12 h-12 text-white/40" />
+                    )}
+                  </div>
+                  <p className="mt-3 font-bold">{a.artist_name}</p>
+                  <p className="text-sm text-white/60">{a.genre || "—"}{a.city ? ` · ${a.city}` : ""}</p>
                 </div>
-                <h4 className="mt-4 font-display text-2xl tracking-wide text-white group-hover:text-primary transition">{artist.name}</h4>
-                <p className="text-sm text-white/60">{artist.genre}</p>
-              </Link>
-            ))}
-          </div>
-
-          {filtered.length === 0 && (
-            <p className="mt-12 text-center text-white/60">Aucun artiste trouvé.</p>
+              ))}
+            </div>
           )}
         </div>
       </section>
