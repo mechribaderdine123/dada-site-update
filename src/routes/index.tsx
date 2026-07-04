@@ -36,7 +36,7 @@ function HomePage() {
   return (
     <>
       <section className="relative overflow-hidden">
-        <div className="relative h-[85vh] min-h-[600px] w-full overflow-hidden">
+        <div className="relative h-screen w-full overflow-hidden">
           <img src={heroImage} alt="Danseurs Dada Hip Hop Academy" className="absolute inset-0 w-full h-full object-cover" />
           <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, color-mix(in oklch, var(--primary) 55%, transparent) 0%, transparent 30%, transparent 70%, color-mix(in oklch, var(--primary) 55%, transparent) 100%)" }} />
 
