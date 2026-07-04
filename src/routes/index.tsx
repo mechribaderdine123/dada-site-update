@@ -3,6 +3,7 @@ import { ArrowRight, Users, Radio } from "lucide-react";
 import heroAsset from "@/assets/dada-hero-new.png.asset.json";
 import handstandAsset from "@/assets/dada-handstand.png.asset.json";
 import { useContent } from "@/lib/site-content";
+import { useSponsors } from "@/lib/sponsors";
 
 export const Route = createFileRoute("/")({
   head: () => ({
