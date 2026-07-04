@@ -96,7 +96,7 @@ function WorkshopsPage() {
             >
               <div className="relative w-full md:w-56 h-48 md:h-44 shrink-0 rounded-xl overflow-hidden">
                 <img
-                  src={e.image}
+                  src={e.image_url}
                   alt={e.name}
                   loading="lazy"
                   width={1024}
