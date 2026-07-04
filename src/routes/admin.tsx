@@ -38,6 +38,8 @@ function AdminLayout() {
       ? "__accounts"
       : pathname === "/admin/tracks"
       ? "__tracks"
+      : pathname === "/admin/sponsors"
+      ? "__sponsors"
       : pathname.replace("/admin/", "");
 
   return (
