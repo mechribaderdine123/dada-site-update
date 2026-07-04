@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { Trash2, Plus, Loader2, Upload, X, Pencil, Save } from "lucide-react";
+import PageEditor from "@/components/admin/PageEditor";
 import {
   useWorkshops,
   addWorkshop,
