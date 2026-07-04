@@ -96,7 +96,9 @@ function AdminWorkshops() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      <PageEditor pageId="workshops" />
+
       <div>
         <h1 className="font-display tracking-wide text-3xl">Workshops & événements</h1>
         <p className="text-sm text-muted-foreground">
