@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, useNavigate, Link, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { LogOut, Home as HomeIcon, Users, Music as MusicIcon, FileText } from "lucide-react";
+import { LogOut, Home as HomeIcon, Users, Music as MusicIcon, FileText, Award } from "lucide-react";
 import logo from "@/assets/dada-logo.png.asset.json";
 import { PAGE_SCHEMAS } from "@/lib/content-schema";
 import { useAuth } from "@/lib/auth";
@@ -38,6 +38,8 @@ function AdminLayout() {
       ? "__accounts"
       : pathname === "/admin/tracks"
       ? "__tracks"
+      : pathname === "/admin/sponsors"
+      ? "__sponsors"
       : pathname.replace("/admin/", "");
 
   return (
@@ -92,6 +94,14 @@ function AdminLayout() {
                 }`}
               >
                 <MusicIcon className="w-4 h-4" /> Musiques
+              </Link>
+              <Link
+                to="/admin/sponsors"
+                className={`px-3 py-2 rounded-lg text-sm inline-flex items-center gap-2 ${
+                  activeId === "__sponsors" ? "bg-primary text-primary-foreground" : "hover:bg-muted"
+                }`}
+              >
+                <Award className="w-4 h-4" /> Sponsors
               </Link>
             </nav>
           </div>
