@@ -107,17 +107,17 @@ function SponsorsStrip() {
   return (
     <section className="py-12 md:py-16 border-b border-border/60 bg-muted/20">
       <div className="max-w-6xl mx-auto px-6">
-        <p className="text-center text-xs uppercase tracking-[0.25em] text-muted-foreground mb-8">
+        <p className="text-center text-xs uppercase tracking-[0.25em] text-muted-foreground mb-10">
           Avec le soutien de
         </p>
-        <div className="group relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_8%,black_92%,transparent)]">
-          <div className="flex w-max animate-marquee gap-16 md:gap-20 group-hover:[animation-play-state:paused]">
+        <div className="group relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_6%,black_94%,transparent)]">
+          <div className="flex w-max animate-marquee gap-20 md:gap-28 group-hover:[animation-play-state:paused]">
             {doubled.map((s, i) => {
               const img = (
                 <img
                   src={s.image_url}
                   alt={s.name}
-                  className="h-20 md:h-24 w-auto object-contain opacity-90 hover:opacity-100 transition"
+                  className="h-32 md:h-44 w-auto object-contain opacity-90 hover:opacity-100 transition"
                 />
               );
               return (
