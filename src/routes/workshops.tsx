@@ -90,7 +90,7 @@ function WorkshopsPage() {
 
         <ul className="space-y-5">
           {events.map((e) => {
-            const finished = "is_finished" in e ? e.is_finished : false;
+            const finished = Boolean((e as { is_finished?: boolean }).is_finished);
             return (
             <li
               key={e.id}
