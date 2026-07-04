@@ -76,61 +76,75 @@ function WorkshopsPage() {
           </div>
         </div>
 
-        <ul className="space-y-5">
-          {events.map((e) => {
-            const finished = Boolean((e as { is_finished?: boolean }).is_finished);
-            return (
-            <li
-              key={e.id}
-              className={`rounded-2xl border border-border bg-card p-3 md:p-4 flex flex-col md:flex-row gap-4 md:gap-6 shadow-sm hover:shadow-md transition-shadow ${finished ? "opacity-70" : ""}`}
-            >
-              <div className="relative w-full md:w-56 h-48 md:h-44 shrink-0 rounded-xl overflow-hidden">
-                <img
-                  src={e.image_url}
-                  alt={e.name}
-                  loading="lazy"
-                  width={1024}
-                  height={1024}
-                  className={`w-full h-full object-cover ${finished ? "grayscale" : ""}`}
-                />
-                <div className="absolute top-2 left-2 bg-primary text-primary-foreground rounded-md px-2 py-1 text-center leading-none font-display tracking-wider">
-                  <div className="text-[10px]">{e.month}</div>
-                  <div className="text-xl">{e.day}</div>
+        {loading ? (
+          <ul className="space-y-5">
+            {[0, 1, 2].map((i) => (
+              <li key={i} className="rounded-2xl border border-border bg-card p-3 md:p-4 flex flex-col md:flex-row gap-4 md:gap-6 shadow-sm animate-pulse">
+                <div className="w-full md:w-56 h-48 md:h-44 shrink-0 rounded-xl bg-muted" />
+                <div className="flex-1 space-y-3 py-1">
+                  <div className="h-6 w-1/2 bg-muted rounded" />
+                  <div className="h-3 w-1/4 bg-muted rounded" />
+                  <div className="h-3 w-full bg-muted rounded" />
+                  <div className="h-3 w-5/6 bg-muted rounded" />
                 </div>
-                {finished && (
-                  <div className="absolute top-2 right-2 bg-foreground text-background rounded-md px-2 py-1 text-[10px] uppercase tracking-widest font-semibold">
-                    Terminé
-                  </div>
-                )}
-              </div>
-
-              <div className="flex-1 min-w-0 py-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="font-display tracking-wider text-2xl md:text-3xl">{e.name}</h3>
-                  {finished && (
-                    <span className="text-[10px] uppercase tracking-widest bg-muted text-muted-foreground px-2 py-1 rounded font-semibold">
-                      Événement terminé
-                    </span>
-                  )}
-                </div>
-                <p className="text-sm text-muted-foreground mt-1">{e.category}</p>
-                <p className="mt-3 text-sm md:text-base text-foreground/80">
-                  {e.description}
-                </p>
-                <div className="mt-4 flex flex-wrap gap-x-8 gap-y-1 text-sm">
-                  <span>place : <span className="text-muted-foreground">{e.place}</span></span>
-                  <span>time : <span className="text-muted-foreground">{e.time}</span></span>
-                </div>
-              </div>
-            </li>
-            );
-          })}
-        </ul>
-
-        {events.length === 0 && (
+              </li>
+            ))}
+          </ul>
+        ) : events.length === 0 ? (
           <p className="text-center text-muted-foreground py-16">
             Aucun événement dans cette catégorie pour le moment.
           </p>
+        ) : (
+          <ul className="space-y-5">
+            {events.map((e) => {
+              const finished = Boolean((e as { is_finished?: boolean }).is_finished);
+              return (
+              <li
+                key={e.id}
+                className={`rounded-2xl border border-border bg-card p-3 md:p-4 flex flex-col md:flex-row gap-4 md:gap-6 shadow-sm hover:shadow-md transition-shadow ${finished ? "opacity-70" : ""}`}
+              >
+                <div className="relative w-full md:w-56 h-48 md:h-44 shrink-0 rounded-xl overflow-hidden">
+                  <img
+                    src={e.image_url}
+                    alt={e.name}
+                    loading="lazy"
+                    width={1024}
+                    height={1024}
+                    className={`w-full h-full object-cover ${finished ? "grayscale" : ""}`}
+                  />
+                  <div className="absolute top-2 left-2 bg-primary text-primary-foreground rounded-md px-2 py-1 text-center leading-none font-display tracking-wider">
+                    <div className="text-[10px]">{e.month}</div>
+                    <div className="text-xl">{e.day}</div>
+                  </div>
+                  {finished && (
+                    <div className="absolute top-2 right-2 bg-foreground text-background rounded-md px-2 py-1 text-[10px] uppercase tracking-widest font-semibold">
+                      Terminé
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex-1 min-w-0 py-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="font-display tracking-wider text-2xl md:text-3xl">{e.name}</h3>
+                    {finished && (
+                      <span className="text-[10px] uppercase tracking-widest bg-muted text-muted-foreground px-2 py-1 rounded font-semibold">
+                        Événement terminé
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-1">{e.category}</p>
+                  <p className="mt-3 text-sm md:text-base text-foreground/80">
+                    {e.description}
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-x-8 gap-y-1 text-sm">
+                    <span>place : <span className="text-muted-foreground">{e.place}</span></span>
+                    <span>time : <span className="text-muted-foreground">{e.time}</span></span>
+                  </div>
+                </div>
+              </li>
+              );
+            })}
+          </ul>
         )}
       </div>
     </div>
