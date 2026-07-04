@@ -169,6 +169,7 @@ export type Database = {
           description: string
           id: string
           image_url: string
+          is_finished: boolean
           month: string
           name: string
           place: string
@@ -183,6 +184,7 @@ export type Database = {
           description?: string
           id?: string
           image_url?: string
+          is_finished?: boolean
           month?: string
           name: string
           place?: string
@@ -197,6 +199,7 @@ export type Database = {
           description?: string
           id?: string
           image_url?: string
+          is_finished?: boolean
           month?: string
           name?: string
           place?: string

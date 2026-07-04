@@ -22,9 +22,10 @@ export type Workshop = {
   place: string;
   time: string;
   sort_order: number;
+  is_finished: boolean;
 };
 
-export type WorkshopInput = Omit<Workshop, "id" | "sort_order"> & { sort_order?: number };
+export type WorkshopInput = Omit<Workshop, "id" | "sort_order" | "is_finished"> & { sort_order?: number; is_finished?: boolean };
 
 export function useWorkshops() {
   const [workshops, setWorkshops] = useState<Workshop[]>([]);
@@ -33,7 +34,7 @@ export function useWorkshops() {
   const load = useCallback(async () => {
     const { data } = await supabase
       .from("workshops")
-      .select("id,name,category,description,image_url,month,day,place,time,sort_order")
+      .select("id,name,category,description,image_url,month,day,place,time,sort_order,is_finished")
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true });
     setWorkshops((data as Workshop[]) ?? []);
