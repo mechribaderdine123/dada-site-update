@@ -54,6 +54,10 @@ function HomePage() {
         </div>
       </section>
 
+      <SponsorsStrip />
+
+
+
       <section className="py-20 md:py-28">
         <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-start">
           <div className="space-y-6 font-sans text-foreground/90 leading-relaxed">
