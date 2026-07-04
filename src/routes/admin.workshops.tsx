@@ -83,10 +83,15 @@ function AdminWorkshops() {
     const { id, sort_order: _s, ...patch } = edit;
     void _s;
     const { error: err } = await updateWorkshop(id, patch);
-    if (err) return setError(err.message);
+    if (err) {
+      console.error("updateWorkshop failed", err);
+      alert(`Impossible d'enregistrer : ${err.message}`);
+      setError(err.message);
+      return;
+    }
     setEditingId(null);
     setEdit(null);
-    reload();
+    await reload();
   };
 
   const doRemove = async (id: string, n: string) => {
