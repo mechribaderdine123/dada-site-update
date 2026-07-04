@@ -19,13 +19,6 @@ export const Route = createFileRoute("/workshops")({
 const CATEGORIES = ["Tous", ...WORKSHOP_CATEGORIES] as const;
 type Category = (typeof CATEGORIES)[number];
 
-const DEFAULT_EVENTS = [
-  { id: "d1", image_url: event1, month: "Nov", day: "12", name: "Urban Night Live", category: "Dance", description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu.", place: "Dada Studio", time: "08:00 pm" },
-  { id: "d2", image_url: event2, month: "Nov", day: "18", name: "Cypher Battle", category: "Battles et spectacles", description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu.", place: "Salle principale", time: "08:00 pm" },
-  { id: "d3", image_url: event3, month: "Nov", day: "22", name: "Master Class Live", category: "Master class", description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu.", place: "Studio A", time: "08:00 pm" },
-  { id: "d4", image_url: event4, month: "Dec", day: "05", name: "Family Groove Night", category: "Activités spéciales pour les clubs et les familles", description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu.", place: "Dada Hall", time: "08:00 pm" },
-  { id: "d5", image_url: event5, month: "Dec", day: "12", name: "Beatmakers Session", category: "Ateliers musique & création digitale", description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu.", place: "Studio B", time: "08:00 pm" },
-];
 
 function WorkshopsPage() {
   const [category, setCategory] = useState<Category>("Tous");
