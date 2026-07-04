@@ -109,24 +109,27 @@ function SponsorsStrip() {
         <p className="text-center text-xs uppercase tracking-[0.25em] text-muted-foreground mb-8">
           Avec le soutien de
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-8">
-          {sponsors.map((s) => {
-            const img = (
-              <img
-                src={s.image}
-                alt={s.name}
-                className="h-20 md:h-24 w-auto object-contain opacity-90 hover:opacity-100 transition"
-              />
-            );
-            return s.url ? (
-              <a key={s.id} href={s.url} target="_blank" rel="noreferrer" title={s.name}>
-                {img}
-              </a>
-            ) : (
-              <div key={s.id} title={s.name}>{img}</div>
-            );
-          })}
+        <div className="group relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_8%,black_92%,transparent)]">
+          <div className="flex w-max animate-marquee gap-16 md:gap-20 group-hover:[animation-play-state:paused]">
+            {[...sponsors, ...sponsors].map((s, i) => {
+              const img = (
+                <img
+                  src={s.image}
+                  alt={s.name}
+                  className="h-20 md:h-24 w-auto object-contain opacity-90 hover:opacity-100 transition"
+                />
+              );
+              return (
+                <div key={`${s.id}-${i}`} className="shrink-0 flex items-center" title={s.name}>
+                  {s.url ? (
+                    <a href={s.url} target="_blank" rel="noreferrer">{img}</a>
+                  ) : img}
+                </div>
+              );
+            })}
+          </div>
         </div>
+
       </div>
     </section>
   );
