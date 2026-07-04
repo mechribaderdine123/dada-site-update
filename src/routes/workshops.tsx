@@ -1,11 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import event1 from "@/assets/event-1.jpg";
-import event2 from "@/assets/event-2.jpg";
-import event3 from "@/assets/event-3.jpg";
-import event4 from "@/assets/event-4.jpg";
-import event5 from "@/assets/event-5.jpg";
 import { useContent } from "@/lib/site-content";
 import { useWorkshops, WORKSHOP_CATEGORIES } from "@/lib/workshops";
 
@@ -24,13 +19,6 @@ export const Route = createFileRoute("/workshops")({
 const CATEGORIES = ["Tous", ...WORKSHOP_CATEGORIES] as const;
 type Category = (typeof CATEGORIES)[number];
 
-const DEFAULT_EVENTS = [
-  { id: "d1", image_url: event1, month: "Nov", day: "12", name: "Urban Night Live", category: "Dance", description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu.", place: "Dada Studio", time: "08:00 pm" },
-  { id: "d2", image_url: event2, month: "Nov", day: "18", name: "Cypher Battle", category: "Battles et spectacles", description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu.", place: "Salle principale", time: "08:00 pm" },
-  { id: "d3", image_url: event3, month: "Nov", day: "22", name: "Master Class Live", category: "Master class", description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu.", place: "Studio A", time: "08:00 pm" },
-  { id: "d4", image_url: event4, month: "Dec", day: "05", name: "Family Groove Night", category: "Activités spéciales pour les clubs et les familles", description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu.", place: "Dada Hall", time: "08:00 pm" },
-  { id: "d5", image_url: event5, month: "Dec", day: "12", name: "Beatmakers Session", category: "Ateliers musique & création digitale", description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu.", place: "Studio B", time: "08:00 pm" },
-];
 
 function WorkshopsPage() {
   const [category, setCategory] = useState<Category>("Tous");
@@ -40,8 +28,8 @@ function WorkshopsPage() {
   const intro = useContent("workshops.intro", "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu. Il permet d'enregistrer, produire, mixer, filmer et expérimenter dans un cadre moderne.");
   const section = useContent("workshops.section", "PROCHAINS EVENEMENTS");
 
-  const { workshops } = useWorkshops();
-  const source = workshops.length > 0 ? workshops : DEFAULT_EVENTS;
+  const { workshops, loading } = useWorkshops();
+  const source = workshops;
   const events = category === "Tous" ? source : source.filter((e) => e.category === category);
 
   return (
@@ -88,61 +76,75 @@ function WorkshopsPage() {
           </div>
         </div>
 
-        <ul className="space-y-5">
-          {events.map((e) => {
-            const finished = Boolean((e as { is_finished?: boolean }).is_finished);
-            return (
-            <li
-              key={e.id}
-              className={`rounded-2xl border border-border bg-card p-3 md:p-4 flex flex-col md:flex-row gap-4 md:gap-6 shadow-sm hover:shadow-md transition-shadow ${finished ? "opacity-70" : ""}`}
-            >
-              <div className="relative w-full md:w-56 h-48 md:h-44 shrink-0 rounded-xl overflow-hidden">
-                <img
-                  src={e.image_url}
-                  alt={e.name}
-                  loading="lazy"
-                  width={1024}
-                  height={1024}
-                  className={`w-full h-full object-cover ${finished ? "grayscale" : ""}`}
-                />
-                <div className="absolute top-2 left-2 bg-primary text-primary-foreground rounded-md px-2 py-1 text-center leading-none font-display tracking-wider">
-                  <div className="text-[10px]">{e.month}</div>
-                  <div className="text-xl">{e.day}</div>
+        {loading ? (
+          <ul className="space-y-5">
+            {[0, 1, 2].map((i) => (
+              <li key={i} className="rounded-2xl border border-border bg-card p-3 md:p-4 flex flex-col md:flex-row gap-4 md:gap-6 shadow-sm animate-pulse">
+                <div className="w-full md:w-56 h-48 md:h-44 shrink-0 rounded-xl bg-muted" />
+                <div className="flex-1 space-y-3 py-1">
+                  <div className="h-6 w-1/2 bg-muted rounded" />
+                  <div className="h-3 w-1/4 bg-muted rounded" />
+                  <div className="h-3 w-full bg-muted rounded" />
+                  <div className="h-3 w-5/6 bg-muted rounded" />
                 </div>
-                {finished && (
-                  <div className="absolute top-2 right-2 bg-foreground text-background rounded-md px-2 py-1 text-[10px] uppercase tracking-widest font-semibold">
-                    Terminé
-                  </div>
-                )}
-              </div>
-
-              <div className="flex-1 min-w-0 py-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="font-display tracking-wider text-2xl md:text-3xl">{e.name}</h3>
-                  {finished && (
-                    <span className="text-[10px] uppercase tracking-widest bg-muted text-muted-foreground px-2 py-1 rounded font-semibold">
-                      Événement terminé
-                    </span>
-                  )}
-                </div>
-                <p className="text-sm text-muted-foreground mt-1">{e.category}</p>
-                <p className="mt-3 text-sm md:text-base text-foreground/80">
-                  {e.description}
-                </p>
-                <div className="mt-4 flex flex-wrap gap-x-8 gap-y-1 text-sm">
-                  <span>place : <span className="text-muted-foreground">{e.place}</span></span>
-                  <span>time : <span className="text-muted-foreground">{e.time}</span></span>
-                </div>
-              </div>
-            </li>
-            );
-          })}
-        </ul>
-
-        {events.length === 0 && (
+              </li>
+            ))}
+          </ul>
+        ) : events.length === 0 ? (
           <p className="text-center text-muted-foreground py-16">
             Aucun événement dans cette catégorie pour le moment.
           </p>
+        ) : (
+          <ul className="space-y-5">
+            {events.map((e) => {
+              const finished = Boolean((e as { is_finished?: boolean }).is_finished);
+              return (
+              <li
+                key={e.id}
+                className={`rounded-2xl border border-border bg-card p-3 md:p-4 flex flex-col md:flex-row gap-4 md:gap-6 shadow-sm hover:shadow-md transition-shadow ${finished ? "opacity-70" : ""}`}
+              >
+                <div className="relative w-full md:w-56 h-48 md:h-44 shrink-0 rounded-xl overflow-hidden">
+                  <img
+                    src={e.image_url}
+                    alt={e.name}
+                    loading="lazy"
+                    width={1024}
+                    height={1024}
+                    className={`w-full h-full object-cover ${finished ? "grayscale" : ""}`}
+                  />
+                  <div className="absolute top-2 left-2 bg-primary text-primary-foreground rounded-md px-2 py-1 text-center leading-none font-display tracking-wider">
+                    <div className="text-[10px]">{e.month}</div>
+                    <div className="text-xl">{e.day}</div>
+                  </div>
+                  {finished && (
+                    <div className="absolute top-2 right-2 bg-foreground text-background rounded-md px-2 py-1 text-[10px] uppercase tracking-widest font-semibold">
+                      Terminé
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex-1 min-w-0 py-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="font-display tracking-wider text-2xl md:text-3xl">{e.name}</h3>
+                    {finished && (
+                      <span className="text-[10px] uppercase tracking-widest bg-muted text-muted-foreground px-2 py-1 rounded font-semibold">
+                        Événement terminé
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-1">{e.category}</p>
+                  <p className="mt-3 text-sm md:text-base text-foreground/80">
+                    {e.description}
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-x-8 gap-y-1 text-sm">
+                    <span>place : <span className="text-muted-foreground">{e.place}</span></span>
+                    <span>time : <span className="text-muted-foreground">{e.time}</span></span>
+                  </div>
+                </div>
+              </li>
+              );
+            })}
+          </ul>
         )}
       </div>
     </div>
