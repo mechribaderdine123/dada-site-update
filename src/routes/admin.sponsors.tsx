@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { Trash2, Plus, Loader2 } from "lucide-react";
+import { Trash2, Plus, Loader2, Upload, X } from "lucide-react";
 import { useSponsors, addSponsor, removeSponsor, updateSponsor, fileToDataUrl } from "@/lib/sponsors";
 
 export const Route = createFileRoute("/admin/sponsors")({
