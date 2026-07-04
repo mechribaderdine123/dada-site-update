@@ -95,6 +95,14 @@ function AdminLayout() {
               >
                 <MusicIcon className="w-4 h-4" /> Musiques
               </Link>
+              <Link
+                to="/admin/sponsors"
+                className={`px-3 py-2 rounded-lg text-sm inline-flex items-center gap-2 ${
+                  activeId === "__sponsors" ? "bg-primary text-primary-foreground" : "hover:bg-muted"
+                }`}
+              >
+                <Award className="w-4 h-4" /> Sponsors
+              </Link>
             </nav>
           </div>
 
