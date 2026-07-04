@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { Trash2, Plus, Loader2 } from "lucide-react";
+import { Trash2, Plus, Loader2, Upload, X } from "lucide-react";
 import { useSponsors, addSponsor, removeSponsor, updateSponsor, fileToDataUrl } from "@/lib/sponsors";
 
 export const Route = createFileRoute("/admin/sponsors")({
@@ -76,17 +76,38 @@ function AdminSponsors() {
           </div>
           <div className="space-y-3">
             <div>
-              <label className="text-xs font-semibold">Logo (PNG/JPG, max 1,5 Mo)</label>
+              <label className="text-xs font-semibold block mb-1">Logo (PNG/JPG/SVG, max 1,5 Mo)</label>
               <input
                 ref={fileRef}
                 type="file"
                 accept="image/*"
+                className="hidden"
                 onChange={(e) => {
                   const f = e.target.files?.[0];
                   if (f) handleFile(f);
                 }}
-                className="mt-1 block w-full text-sm"
               />
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  className="inline-flex items-center gap-2 rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-semibold hover:opacity-90"
+                >
+                  <Upload className="w-4 h-4" /> {image ? "Changer le logo" : "Choisir un logo"}
+                </button>
+                {image && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setImage("");
+                      if (fileRef.current) fileRef.current.value = "";
+                    }}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm hover:bg-muted"
+                  >
+                    <X className="w-4 h-4" /> Retirer
+                  </button>
+                )}
+              </div>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
