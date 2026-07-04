@@ -40,8 +40,8 @@ function WorkshopsPage() {
   const intro = useContent("workshops.intro", "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu. Il permet d'enregistrer, produire, mixer, filmer et expérimenter dans un cadre moderne.");
   const section = useContent("workshops.section", "PROCHAINS EVENEMENTS");
 
-  const { workshops } = useWorkshops();
-  const source = workshops.length > 0 ? workshops : DEFAULT_EVENTS;
+  const { workshops, loading } = useWorkshops();
+  const source = workshops;
   const events = category === "Tous" ? source : source.filter((e) => e.category === category);
 
   return (
