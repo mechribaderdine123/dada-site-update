@@ -95,6 +95,11 @@ function AdminWorkshops() {
     reload();
   };
 
+  const toggleFinished = async (w: Workshop) => {
+    await updateWorkshop(w.id, { is_finished: !w.is_finished });
+    reload();
+  };
+
   return (
     <div className="space-y-8">
       <PageEditor pageId="workshops" />
