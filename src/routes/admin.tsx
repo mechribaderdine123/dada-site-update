@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, useNavigate, Link, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { LogOut, Home as HomeIcon, Users, Music as MusicIcon, FileText } from "lucide-react";
+import { LogOut, Home as HomeIcon, Users, Music as MusicIcon, FileText, Award } from "lucide-react";
 import logo from "@/assets/dada-logo.png.asset.json";
 import { PAGE_SCHEMAS } from "@/lib/content-schema";
 import { useAuth } from "@/lib/auth";

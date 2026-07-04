@@ -99,3 +99,36 @@ function HomePage() {
     </>
   );
 }
+
+function SponsorsStrip() {
+  const sponsors = useSponsors();
+  if (sponsors.length === 0) return null;
+  return (
+    <section className="py-12 md:py-16 border-b border-border/60 bg-muted/20">
+      <div className="max-w-6xl mx-auto px-6">
+        <p className="text-center text-xs uppercase tracking-[0.25em] text-muted-foreground mb-8">
+          Avec le soutien de
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-8">
+          {sponsors.map((s) => {
+            const img = (
+              <img
+                src={s.image}
+                alt={s.name}
+                className="h-20 md:h-24 w-auto object-contain opacity-90 hover:opacity-100 transition"
+              />
+            );
+            return s.url ? (
+              <a key={s.id} href={s.url} target="_blank" rel="noreferrer" title={s.name}>
+                {img}
+              </a>
+            ) : (
+              <div key={s.id} title={s.name}>{img}</div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
