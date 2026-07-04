@@ -101,8 +101,9 @@ function HomePage() {
 }
 
 function SponsorsStrip() {
-  const sponsors = useSponsors();
-  if (sponsors.length === 0) return null;
+  const { sponsors, loading } = useSponsors();
+  if (loading || sponsors.length === 0) return null;
+  const doubled = [...sponsors, ...sponsors];
   return (
     <section className="py-12 md:py-16 border-b border-border/60 bg-muted/20">
       <div className="max-w-6xl mx-auto px-6">
@@ -111,27 +112,27 @@ function SponsorsStrip() {
         </p>
         <div className="group relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_8%,black_92%,transparent)]">
           <div className="flex w-max animate-marquee gap-16 md:gap-20 group-hover:[animation-play-state:paused]">
-            {[...sponsors, ...sponsors].map((s, i) => {
+            {doubled.map((s, i) => {
               const img = (
                 <img
-                  src={s.image}
+                  src={s.image_url}
                   alt={s.name}
                   className="h-20 md:h-24 w-auto object-contain opacity-90 hover:opacity-100 transition"
                 />
               );
               return (
                 <div key={`${s.id}-${i}`} className="shrink-0 flex items-center" title={s.name}>
-                  {s.url ? (
-                    <a href={s.url} target="_blank" rel="noreferrer">{img}</a>
+                  {s.link_url ? (
+                    <a href={s.link_url} target="_blank" rel="noreferrer">{img}</a>
                   ) : img}
                 </div>
               );
             })}
           </div>
         </div>
-
       </div>
     </section>
   );
 }
+
 
