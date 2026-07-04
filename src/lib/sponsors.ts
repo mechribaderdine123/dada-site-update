@@ -1,71 +1,56 @@
-import { useSyncExternalStore } from "react";
-import eu4youth from "@/assets/sponsor-eu4youth.png.asset.json";
-import redstart from "@/assets/sponsor-redstart.png.asset.json";
-import eu from "@/assets/sponsor-eu.png.asset.json";
-import maghroumin from "@/assets/sponsor-maghroumin.png.asset.json";
+import { useEffect, useState, useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
-export type Sponsor = { id: string; name: string; image: string; url?: string };
+export type Sponsor = {
+  id: string;
+  name: string;
+  image_url: string;
+  link_url: string | null;
+  sort_order: number;
+};
 
-const STORAGE_KEY = "dada.sponsors.v1";
+export function useSponsors() {
+  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+  const [loading, setLoading] = useState(true);
 
-const DEFAULTS: Sponsor[] = [
-  { id: "eu4youth", name: "EU4Youth", image: eu4youth.url },
-  { id: "redstart", name: "Redstart Tunisie", image: redstart.url },
-  { id: "eu", name: "Union européenne", image: eu.url },
-  { id: "maghroumin", name: "Maghroum'in", image: maghroumin.url },
-];
+  const load = useCallback(async () => {
+    const { data } = await supabase
+      .from("sponsors")
+      .select("id,name,image_url,link_url,sort_order")
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: true });
+    setSponsors((data as Sponsor[]) ?? []);
+    setLoading(false);
+  }, []);
 
-const listeners = new Set<() => void>();
-let cache: Sponsor[] | null = null;
+  useEffect(() => {
+    load();
+  }, [load]);
 
-function read(): Sponsor[] {
-  if (cache) return cache;
-  if (typeof window === "undefined") return DEFAULTS;
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    cache = raw ? (JSON.parse(raw) as Sponsor[]) : DEFAULTS;
-  } catch {
-    cache = DEFAULTS;
-  }
-  return cache!;
+  return { sponsors, loading, reload: load };
 }
 
-function write(next: Sponsor[]) {
-  cache = next;
-  if (typeof window !== "undefined") {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-  }
-  listeners.forEach((l) => l());
+export async function addSponsor(input: { name: string; image_url: string; link_url?: string | null }) {
+  return supabase.from("sponsors").insert({
+    name: input.name,
+    image_url: input.image_url,
+    link_url: input.link_url || null,
+  });
 }
 
-export function getSponsors(): Sponsor[] {
-  return read();
+export async function updateSponsor(id: string, patch: Partial<Pick<Sponsor, "name" | "link_url" | "sort_order" | "image_url">>) {
+  return supabase.from("sponsors").update(patch).eq("id", id);
 }
 
-export function addSponsor(s: Omit<Sponsor, "id">) {
-  const item: Sponsor = { ...s, id: crypto.randomUUID() };
-  write([...read(), item]);
+export async function removeSponsor(id: string) {
+  return supabase.from("sponsors").delete().eq("id", id);
 }
 
-export function removeSponsor(id: string) {
-  write(read().filter((s) => s.id !== id));
-}
-
-export function updateSponsor(id: string, patch: Partial<Sponsor>) {
-  write(read().map((s) => (s.id === id ? { ...s, ...patch } : s)));
-}
-
-export function resetSponsors() {
-  write(DEFAULTS);
-}
-
-export function useSponsors(): Sponsor[] {
-  return useSyncExternalStore(
-    (cb) => {
-      listeners.add(cb);
-      return () => listeners.delete(cb);
-    },
-    () => read(),
-    () => DEFAULTS,
-  );
+export async function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
