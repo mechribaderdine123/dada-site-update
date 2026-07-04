@@ -303,12 +303,28 @@ function AdminWorkshops() {
                       {w.image_url ? <img src={w.image_url} alt={w.name} className="w-full h-full object-cover" /> : <span className="text-[10px] text-muted-foreground">—</span>}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="font-semibold truncate">{w.name}</div>
+                      <div className="flex items-center gap-2">
+                        <div className="font-semibold truncate">{w.name}</div>
+                        {w.is_finished && (
+                          <span className="text-[10px] uppercase tracking-wider bg-muted text-muted-foreground px-2 py-0.5 rounded">Terminé</span>
+                        )}
+                      </div>
                       <div className="text-xs text-muted-foreground">{w.category}</div>
                       <div className="text-xs text-muted-foreground mt-0.5">
                         {[w.month, w.day].filter(Boolean).join(" ")} · {w.place} · {w.time}
                       </div>
                     </div>
+                    <button
+                      onClick={() => toggleFinished(w)}
+                      className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-semibold border ${
+                        w.is_finished
+                          ? "border-border hover:bg-muted"
+                          : "border-primary/30 bg-primary/10 text-primary hover:bg-primary/20"
+                      }`}
+                      title={w.is_finished ? "Marquer comme à venir" : "Marquer comme terminé"}
+                    >
+                      {w.is_finished ? <><RotateCcw className="w-3.5 h-3.5" /> Rouvrir</> : <><CheckCircle2 className="w-3.5 h-3.5" /> Terminé</>}
+                    </button>
                     <button onClick={() => startEdit(w)} className="p-2 rounded-md hover:bg-muted" title="Modifier">
                       <Pencil className="w-4 h-4" />
                     </button>
