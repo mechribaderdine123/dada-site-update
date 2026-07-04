@@ -211,7 +211,54 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_profiles: {
+        Row: {
+          artist_name: string | null
+          avatar_url: string | null
+          bio: string | null
+          city: string | null
+          created_at: string | null
+          facebook: string | null
+          genre: string | null
+          id: string | null
+          instagram: string | null
+          spotify: string | null
+          tiktok: string | null
+          twitter: string | null
+          youtube: string | null
+        }
+        Insert: {
+          artist_name?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          created_at?: string | null
+          facebook?: string | null
+          genre?: string | null
+          id?: string | null
+          instagram?: string | null
+          spotify?: string | null
+          tiktok?: string | null
+          twitter?: string | null
+          youtube?: string | null
+        }
+        Update: {
+          artist_name?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          created_at?: string | null
+          facebook?: string | null
+          genre?: string | null
+          id?: string | null
+          instagram?: string | null
+          spotify?: string | null
+          tiktok?: string | null
+          twitter?: string | null
+          youtube?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
