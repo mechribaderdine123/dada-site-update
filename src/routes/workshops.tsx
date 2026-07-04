@@ -7,6 +7,7 @@ import event3 from "@/assets/event-3.jpg";
 import event4 from "@/assets/event-4.jpg";
 import event5 from "@/assets/event-5.jpg";
 import { useContent } from "@/lib/site-content";
+import { useWorkshops, WORKSHOP_CATEGORIES } from "@/lib/workshops";
 
 export const Route = createFileRoute("/workshops")({
   head: () => ({
@@ -20,60 +21,15 @@ export const Route = createFileRoute("/workshops")({
   component: WorkshopsPage,
 });
 
-const CATEGORIES = [
-  "Tous",
-  "Dance",
-  "Master class",
-  "Battles et spectacles",
-  "Activités spéciales pour les clubs et les familles",
-  "Ateliers musique & création digitale",
-] as const;
-
+const CATEGORIES = ["Tous", ...WORKSHOP_CATEGORIES] as const;
 type Category = (typeof CATEGORIES)[number];
 
-type EventItem = {
-  id: string;
-  image: string;
-  month: string;
-  day: string;
-  name: string;
-  category: Exclude<Category, "Tous">;
-  description: string;
-  place: string;
-  time: string;
-};
-
-const EVENTS: EventItem[] = [
-  {
-    id: "1", image: event1, month: "Nov", day: "12",
-    name: "Urban Night Live", category: "Dance",
-    description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu. Il permet d'enregistrer, produire, mixer, filmer et expérimenter dans un cadre moderne.",
-    place: "Dada Studio", time: "08:00 pm",
-  },
-  {
-    id: "2", image: event2, month: "Nov", day: "18",
-    name: "Cypher Battle", category: "Battles et spectacles",
-    description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu. Il permet d'enregistrer, produire, mixer, filmer et expérimenter dans un cadre moderne.",
-    place: "Salle principale", time: "08:00 pm",
-  },
-  {
-    id: "3", image: event3, month: "Nov", day: "22",
-    name: "Master Class Live", category: "Master class",
-    description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu. Il permet d'enregistrer, produire, mixer, filmer et expérimenter dans un cadre moderne.",
-    place: "Studio A", time: "08:00 pm",
-  },
-  {
-    id: "4", image: event4, month: "Dec", day: "05",
-    name: "Family Groove Night", category: "Activités spéciales pour les clubs et les familles",
-    description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu. Il permet d'enregistrer, produire, mixer, filmer et expérimenter dans un cadre moderne.",
-    place: "Dada Hall", time: "08:00 pm",
-  },
-  {
-    id: "5", image: event5, month: "Dec", day: "12",
-    name: "Beatmakers Session", category: "Ateliers musique & création digitale",
-    description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu. Il permet d'enregistrer, produire, mixer, filmer et expérimenter dans un cadre moderne.",
-    place: "Studio B", time: "08:00 pm",
-  },
+const DEFAULT_EVENTS = [
+  { id: "d1", image_url: event1, month: "Nov", day: "12", name: "Urban Night Live", category: "Dance", description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu.", place: "Dada Studio", time: "08:00 pm" },
+  { id: "d2", image_url: event2, month: "Nov", day: "18", name: "Cypher Battle", category: "Battles et spectacles", description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu.", place: "Salle principale", time: "08:00 pm" },
+  { id: "d3", image_url: event3, month: "Nov", day: "22", name: "Master Class Live", category: "Master class", description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu.", place: "Studio A", time: "08:00 pm" },
+  { id: "d4", image_url: event4, month: "Dec", day: "05", name: "Family Groove Night", category: "Activités spéciales pour les clubs et les familles", description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu.", place: "Dada Hall", time: "08:00 pm" },
+  { id: "d5", image_url: event5, month: "Dec", day: "12", name: "Beatmakers Session", category: "Ateliers musique & création digitale", description: "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu.", place: "Studio B", time: "08:00 pm" },
 ];
 
 function WorkshopsPage() {
@@ -84,9 +40,9 @@ function WorkshopsPage() {
   const intro = useContent("workshops.intro", "Notre studio professionnel est ouvert aux chanteurs, rappeurs, danseurs, beatmakers et créateurs de contenu. Il permet d'enregistrer, produire, mixer, filmer et expérimenter dans un cadre moderne.");
   const section = useContent("workshops.section", "PROCHAINS EVENEMENTS");
 
-  const events = category === "Tous"
-    ? EVENTS
-    : EVENTS.filter((e) => e.category === category);
+  const { workshops } = useWorkshops();
+  const source = workshops.length > 0 ? workshops : DEFAULT_EVENTS;
+  const events = category === "Tous" ? source : source.filter((e) => e.category === category);
 
   return (
     <div className="pt-32 pb-20 px-4">
@@ -140,7 +96,7 @@ function WorkshopsPage() {
             >
               <div className="relative w-full md:w-56 h-48 md:h-44 shrink-0 rounded-xl overflow-hidden">
                 <img
-                  src={e.image}
+                  src={e.image_url}
                   alt={e.name}
                   loading="lazy"
                   width={1024}
