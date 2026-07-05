@@ -24,6 +24,11 @@ type Track = {
 function ArtistPage() {
   const { profile } = useAuth();
   const [tracks, setTracks] = useState<Track[]>([]);
+  const [avatar, setAvatar] = useState<string | null>(null);
+
+  useEffect(() => {
+    signedMusicUrl(profile?.avatar_url ?? null).then(setAvatar);
+  }, [profile?.avatar_url]);
 
   useEffect(() => {
     if (!profile) return;
