@@ -104,7 +104,7 @@ function DadaReseauxArtistPage() {
           ) : (
             <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
               {filtered.map((a) => (
-                <div key={a.id} className="group">
+                <Link key={a.id} to="/artists/$id" params={{ id: a.id }} className="group block text-left">
                   <div className="aspect-square rounded-2xl overflow-hidden bg-white/5 grid place-items-center">
                     {a.avatar_url ? (
                       <img src={a.avatar_url} alt={a.artist_name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
@@ -112,9 +112,9 @@ function DadaReseauxArtistPage() {
                       <UserIcon className="w-12 h-12 text-white/40" />
                     )}
                   </div>
-                  <p className="mt-3 font-bold">{a.artist_name}</p>
+                  <p className="mt-3 font-bold group-hover:text-primary transition-colors">{a.artist_name}</p>
                   <p className="text-sm text-white/60">{a.genre || "—"}{a.city ? ` · ${a.city}` : ""}</p>
-                </div>
+                </Link>
               ))}
             </div>
           )}
