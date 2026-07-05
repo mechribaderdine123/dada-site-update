@@ -184,7 +184,7 @@ function TrackModal({ userId, onClose, onSaved }: { userId: string; onClose: () 
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-sm font-semibold">Pochette</label>
-              <button type="button" onClick={() => coverRef.current?.click()} className="mt-1.5 w-full h-24 rounded-lg border-2 border-dashed border-white/20 hover:border-secondary grid place-items-center overflow-hidden">
+              <button type="button" onClick={() => coverRef.current?.click()} className="mt-1.5 w-full aspect-square rounded-2xl border-2 border-dashed border-white/20 hover:border-secondary grid place-items-center overflow-hidden bg-[#4a4a4a]/50">
                 {coverFile ? <img src={URL.createObjectURL(coverFile)} alt="" className="w-full h-full object-cover" /> : <Upload className="w-6 h-6 text-white/60" />}
               </button>
               <input ref={coverRef} type="file" accept="image/*" hidden onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)} />
