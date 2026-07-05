@@ -44,7 +44,15 @@ function AdminTracks() {
         .in("id", ids);
       byId = new Map((profs ?? []).map((p) => [p.id, { artist_name: p.artist_name, email: p.email }]));
     }
-    setRows(list.map((t) => ({ ...t, profiles: byId.get(t.user_id) ?? null })));
+    const enriched = await Promise.all(
+      list.map(async (t) => ({
+        ...t,
+        cover_url: await signedMusicUrl(t.cover_url),
+        audio_url: await signedMusicUrl(t.audio_url),
+        profiles: byId.get(t.user_id) ?? null,
+      })),
+    );
+    setRows(enriched);
     setLoading(false);
   };
 
