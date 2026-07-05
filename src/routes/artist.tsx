@@ -37,7 +37,7 @@ function ArtistGate() {
   if (!session) return null;
 
   return (
-    <div className="min-h-screen bg-[#393939]">
+    <div className="bg-[#393939]">
       <PrivateAccountNotice />
       <Outlet key={pathname} />
     </div>
