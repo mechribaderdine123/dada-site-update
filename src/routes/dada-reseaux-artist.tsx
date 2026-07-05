@@ -29,9 +29,8 @@ function DadaReseauxArtistPage() {
 
   useEffect(() => {
     supabase
-      .from("profiles")
+      .from("public_profiles")
       .select("id, artist_name, genre, city, avatar_url")
-      .eq("status", "approved")
       .order("created_at", { ascending: false })
       .then(({ data }) => {
         setArtists((data as PublicArtist[]) ?? []);
