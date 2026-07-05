@@ -4,6 +4,7 @@ import { Upload, Youtube, Facebook, Instagram, Music2, Twitter } from "lucide-re
 import { ArtistSidebar } from "@/components/ArtistSidebar";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
+import { signedMusicUrl } from "@/lib/music-url";
 
 export const Route = createFileRoute("/artist/edit")({
   head: () => ({ meta: [{ title: "Profil Management — Dada Réseaux Artist" }] }),
@@ -16,6 +17,7 @@ function EditProfilePage() {
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
   const [f, setF] = useState({
     artist_name: "", genre: "", city: "", bio: "", phone: "",
@@ -39,6 +41,7 @@ function EditProfilePage() {
       twitter: profile.twitter ?? "",
       avatar_url: profile.avatar_url ?? "",
     });
+    signedMusicUrl(profile.avatar_url).then(setAvatarPreview);
   }, [profile]);
 
   if (!profile) return null;
@@ -54,8 +57,9 @@ function EditProfilePage() {
       setUploadingAvatar(false);
       return;
     }
-    const { data } = supabase.storage.from("music").getPublicUrl(path);
-    setF((p) => ({ ...p, avatar_url: data.publicUrl }));
+    setF((p) => ({ ...p, avatar_url: path }));
+    const signed = await signedMusicUrl(path);
+    setAvatarPreview(signed);
     setUploadingAvatar(false);
   };
 
@@ -111,8 +115,9 @@ function EditProfilePage() {
             onClick={() => fileRef.current?.click()}
             className="mt-5 w-full h-56 rounded-xl border-2 border-dashed border-white/20 hover:border-secondary transition flex flex-col items-center justify-center bg-[#4a4a4a]/50 overflow-hidden"
           >
-            {f.avatar_url ? (
-              <img src={f.avatar_url} alt="Preview" className="w-full h-full object-cover" />
+            {avatarPreview ? (
+              <img src={avatarPreview} alt="Preview" className="w-full h-full object-cover" />
+
             ) : (
               <>
                 <Upload className="w-8 h-8 mb-2" />

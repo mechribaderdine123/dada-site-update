@@ -24,6 +24,11 @@ type Track = {
 function ArtistPage() {
   const { profile } = useAuth();
   const [tracks, setTracks] = useState<Track[]>([]);
+  const [avatar, setAvatar] = useState<string | null>(null);
+
+  useEffect(() => {
+    signedMusicUrl(profile?.avatar_url ?? null).then(setAvatar);
+  }, [profile?.avatar_url]);
 
   useEffect(() => {
     if (!profile) return;
@@ -64,7 +69,7 @@ function ArtistPage() {
 
           <div className="mt-8 grid md:grid-cols-[280px_1fr] gap-8 items-start">
             <div className="aspect-square w-full max-w-[280px] rounded-2xl overflow-hidden bg-black/30">
-              <img src={profile.avatar_url || artistPortrait} alt={profile.artist_name} className="w-full h-full object-cover" />
+              <img src={avatar || artistPortrait} alt={profile.artist_name} className="w-full h-full object-cover" />
             </div>
             <div className="space-y-4 text-white/90 leading-relaxed">
               <h1 className="text-3xl md:text-4xl font-black text-white">{profile.artist_name}</h1>

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Check, X, Clock, CheckCircle2, XCircle, Mail, MapPin, Music } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { signedMusicUrl } from "@/lib/music-url";
 import type { Profile, ApprovalStatus } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin/accounts")({
@@ -21,7 +22,13 @@ function AdminAccounts() {
       .select("*")
       .eq("status", filter)
       .order("created_at", { ascending: false });
-    if (!error) setRows((data as Profile[]) ?? []);
+    if (!error) {
+      const list = (data as Profile[]) ?? [];
+      const resolved = await Promise.all(
+        list.map(async (p) => ({ ...p, avatar_url: await signedMusicUrl(p.avatar_url) })),
+      );
+      setRows(resolved);
+    }
     setLoading(false);
   };
 
