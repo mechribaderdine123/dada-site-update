@@ -48,14 +48,7 @@ function MusicPage() {
 
   const remove = async (t: Track) => {
     if (!confirm(`Supprimer "${t.title}" ?`)) return;
-    // Best-effort remove of storage files
-    const stripPath = (url: string | null) => {
-      if (!url) return null;
-      const marker = "/object/public/music/";
-      const i = url.indexOf(marker);
-      return i > -1 ? url.slice(i + marker.length) : null;
-    };
-    const paths = [stripPath(t.cover_url), stripPath(t.audio_url)].filter(Boolean) as string[];
+    const paths = [extractMusicPath(t.cover_url), extractMusicPath(t.audio_url)].filter(Boolean) as string[];
     if (paths.length) await supabase.storage.from("music").remove(paths);
     await supabase.from("tracks").delete().eq("id", t.id);
     load();
