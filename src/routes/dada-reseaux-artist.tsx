@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Search, User as UserIcon } from "lucide-react";
 import heroAsset from "@/assets/dada-hero-new.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
+import { signedMusicUrl } from "@/lib/music-url";
 
 export const Route = createFileRoute("/dada-reseaux-artist")({
   head: () => ({
