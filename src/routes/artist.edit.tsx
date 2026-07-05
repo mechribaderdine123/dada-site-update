@@ -41,6 +41,7 @@ function EditProfilePage() {
       twitter: profile.twitter ?? "",
       avatar_url: profile.avatar_url ?? "",
     });
+    signedMusicUrl(profile.avatar_url).then(setAvatarPreview);
   }, [profile]);
 
   if (!profile) return null;
