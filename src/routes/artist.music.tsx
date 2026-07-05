@@ -4,6 +4,7 @@ import { Plus, X, Upload, Music as MusicIcon, Trash2, Clock, CheckCircle2, XCirc
 import { ArtistSidebar } from "@/components/ArtistSidebar";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
+import { signedMusicUrl, extractMusicPath } from "@/lib/music-url";
 
 export const Route = createFileRoute("/artist/music")({
   head: () => ({ meta: [{ title: "Music Management — Dada Réseaux Artist" }] }),
@@ -31,7 +32,15 @@ function MusicPage() {
       .select("id,title,genre,cover_url,audio_url,status,created_at")
       .eq("user_id", profile.id)
       .order("created_at", { ascending: false });
-    setTracks((data as Track[]) ?? []);
+    const list = (data as Track[]) ?? [];
+    const resolved = await Promise.all(
+      list.map(async (t) => ({
+        ...t,
+        cover_url: await signedMusicUrl(t.cover_url),
+        audio_url: await signedMusicUrl(t.audio_url),
+      })),
+    );
+    setTracks(resolved);
     setLoading(false);
   };
 
@@ -39,14 +48,7 @@ function MusicPage() {
 
   const remove = async (t: Track) => {
     if (!confirm(`Supprimer "${t.title}" ?`)) return;
-    // Best-effort remove of storage files
-    const stripPath = (url: string | null) => {
-      if (!url) return null;
-      const marker = "/object/public/music/";
-      const i = url.indexOf(marker);
-      return i > -1 ? url.slice(i + marker.length) : null;
-    };
-    const paths = [stripPath(t.cover_url), stripPath(t.audio_url)].filter(Boolean) as string[];
+    const paths = [extractMusicPath(t.cover_url), extractMusicPath(t.audio_url)].filter(Boolean) as string[];
     if (paths.length) await supabase.storage.from("music").remove(paths);
     await supabase.from("tracks").delete().eq("id", t.id);
     load();
@@ -133,7 +135,7 @@ function TrackModal({ userId, onClose, onSaved }: { userId: string; onClose: () 
     const path = `${userId}/${prefix}-${crypto.randomUUID()}.${ext}`;
     const { error } = await supabase.storage.from("music").upload(path, file, { upsert: false, contentType: file.type });
     if (error) throw error;
-    return supabase.storage.from("music").getPublicUrl(path).data.publicUrl;
+    return path;
   };
 
   const submit = async (e: React.FormEvent) => {

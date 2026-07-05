@@ -4,6 +4,7 @@ import { Mail, Phone, Youtube, Instagram, Facebook, Music as MusicIcon, External
 import artistPortrait from "@/assets/artist-portrait.jpg";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
+import { signedMusicUrl } from "@/lib/music-url";
 
 export const Route = createFileRoute("/artist/")({
   head: () => ({
@@ -31,7 +32,17 @@ function ArtistPage() {
       .select("id,title,genre,cover_url,audio_url,status")
       .eq("user_id", profile.id)
       .order("created_at", { ascending: false })
-      .then(({ data }) => setTracks((data as Track[]) ?? []));
+      .then(async ({ data }) => {
+        const list = (data as Track[]) ?? [];
+        const resolved = await Promise.all(
+          list.map(async (t) => ({
+            ...t,
+            cover_url: await signedMusicUrl(t.cover_url),
+            audio_url: await signedMusicUrl(t.audio_url),
+          })),
+        );
+        setTracks(resolved);
+      });
   }, [profile]);
 
   if (!profile) return null;
