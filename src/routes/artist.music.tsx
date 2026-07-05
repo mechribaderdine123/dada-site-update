@@ -135,7 +135,7 @@ function TrackModal({ userId, onClose, onSaved }: { userId: string; onClose: () 
     const path = `${userId}/${prefix}-${crypto.randomUUID()}.${ext}`;
     const { error } = await supabase.storage.from("music").upload(path, file, { upsert: false, contentType: file.type });
     if (error) throw error;
-    return supabase.storage.from("music").getPublicUrl(path).data.publicUrl;
+    return path;
   };
 
   const submit = async (e: React.FormEvent) => {
