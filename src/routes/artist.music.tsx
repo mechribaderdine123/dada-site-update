@@ -32,7 +32,15 @@ function MusicPage() {
       .select("id,title,genre,cover_url,audio_url,status,created_at")
       .eq("user_id", profile.id)
       .order("created_at", { ascending: false });
-    setTracks((data as Track[]) ?? []);
+    const list = (data as Track[]) ?? [];
+    const resolved = await Promise.all(
+      list.map(async (t) => ({
+        ...t,
+        cover_url: await signedMusicUrl(t.cover_url),
+        audio_url: await signedMusicUrl(t.audio_url),
+      })),
+    );
+    setTracks(resolved);
     setLoading(false);
   };
 
