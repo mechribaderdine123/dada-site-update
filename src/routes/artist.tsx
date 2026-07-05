@@ -6,6 +6,19 @@ export const Route = createFileRoute("/artist")({
   component: ArtistGate,
 });
 
+function PrivateAccountNotice() {
+  const { profile } = useAuth();
+  if (!profile || profile.status === "approved") return null;
+  return (
+    <div className="bg-secondary/10 border border-secondary/30 text-secondary-foreground rounded-xl px-4 py-3 text-sm max-w-6xl mx-auto mt-4 mb-2">
+      <p className="font-semibold">Votre compte est actuellement privé.</p>
+      <p className="opacity-90 mt-1">
+        Vous pouvez gérer votre profil et votre musique, mais seuls vous et l'administrateur pouvez le voir pour l'instant. Il deviendra public après validation par l'administrateur.
+      </p>
+    </div>
+  );
+}
+
 function ArtistGate() {
   const nav = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -23,5 +36,10 @@ function ArtistGate() {
   }
   if (!session) return null;
 
-  return <Outlet key={pathname} />;
+  return (
+    <div className="min-h-screen bg-[#393939]">
+      <PrivateAccountNotice />
+      <Outlet key={pathname} />
+    </div>
+  );
 }
