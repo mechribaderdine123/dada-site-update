@@ -33,8 +33,12 @@ function DadaReseauxArtistPage() {
       .from("public_profiles")
       .select("id, artist_name, genre, city, avatar_url")
       .order("created_at", { ascending: false })
-      .then(({ data }) => {
-        setArtists((data as PublicArtist[]) ?? []);
+      .then(async ({ data }) => {
+        const list = (data as PublicArtist[]) ?? [];
+        const resolved = await Promise.all(
+          list.map(async (a) => ({ ...a, avatar_url: await signedMusicUrl(a.avatar_url) })),
+        );
+        setArtists(resolved);
         setLoading(false);
       });
   }, []);
