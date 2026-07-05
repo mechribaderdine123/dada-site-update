@@ -115,8 +115,9 @@ function EditProfilePage() {
             onClick={() => fileRef.current?.click()}
             className="mt-5 w-full h-56 rounded-xl border-2 border-dashed border-white/20 hover:border-secondary transition flex flex-col items-center justify-center bg-[#4a4a4a]/50 overflow-hidden"
           >
-            {f.avatar_url ? (
-              <img src={f.avatar_url} alt="Preview" className="w-full h-full object-cover" />
+            {avatarPreview ? (
+              <img src={avatarPreview} alt="Preview" className="w-full h-full object-cover" />
+
             ) : (
               <>
                 <Upload className="w-8 h-8 mb-2" />
