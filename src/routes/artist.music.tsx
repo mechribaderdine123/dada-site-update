@@ -4,6 +4,7 @@ import { Plus, X, Upload, Music as MusicIcon, Trash2, Clock, CheckCircle2, XCirc
 import { ArtistSidebar } from "@/components/ArtistSidebar";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
+import { signedMusicUrl, extractMusicPath } from "@/lib/music-url";
 
 export const Route = createFileRoute("/artist/music")({
   head: () => ({ meta: [{ title: "Music Management — Dada Réseaux Artist" }] }),
