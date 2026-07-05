@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Check, X, Clock, CheckCircle2, XCircle, Mail, MapPin, Music } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { signedMusicUrl } from "@/lib/music-url";
 import type { Profile, ApprovalStatus } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin/accounts")({
