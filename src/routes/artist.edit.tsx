@@ -17,6 +17,7 @@ function EditProfilePage() {
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
   const [f, setF] = useState({
     artist_name: "", genre: "", city: "", bio: "", phone: "",
