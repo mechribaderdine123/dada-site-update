@@ -4,6 +4,7 @@ import { Mail, Phone, Youtube, Instagram, Facebook, Music as MusicIcon, External
 import artistPortrait from "@/assets/artist-portrait.jpg";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
+import { signedMusicUrl } from "@/lib/music-url";
 
 export const Route = createFileRoute("/artist/")({
   head: () => ({
