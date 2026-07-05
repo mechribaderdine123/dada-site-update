@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Check, X, Clock, CheckCircle2, XCircle, Music as MusicIcon, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { signedMusicUrl } from "@/lib/music-url";
 import type { ApprovalStatus } from "@/lib/auth";
 
 type TrackRow = {
