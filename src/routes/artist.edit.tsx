@@ -111,21 +111,22 @@ function EditProfilePage() {
 
         <section className="mt-8 bg-white/10 rounded-2xl p-6 border border-white/10">
           <h2 className="text-xl font-bold text-white">Photo de profil</h2>
-          <button
-            onClick={() => fileRef.current?.click()}
-            className="mt-5 w-full h-56 rounded-xl border-2 border-dashed border-white/20 hover:border-secondary transition flex flex-col items-center justify-center bg-[#4a4a4a]/50 overflow-hidden"
-          >
-            {avatarPreview ? (
-              <img src={avatarPreview} alt="Preview" className="w-full h-full object-cover" />
-
-            ) : (
-              <>
-                <Upload className="w-8 h-8 mb-2" />
-                <p className="font-medium">{uploadingAvatar ? "Upload…" : "Cliquer pour choisir une image"}</p>
-                <p className="text-sm text-white/60 mt-1">PNG, JPG</p>
-              </>
-            )}
-          </button>
+          <div className="mt-5 flex justify-center">
+            <button
+              onClick={() => fileRef.current?.click()}
+              className="group relative aspect-square w-full max-w-[280px] rounded-2xl border-2 border-dashed border-white/20 hover:border-secondary transition bg-[#4a4a4a]/50 overflow-hidden"
+            >
+              {avatarPreview ? (
+                <img src={avatarPreview} alt="Preview" className="w-full h-full object-cover" />
+              ) : (
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <Upload className="w-8 h-8 mb-2" />
+                  <p className="font-medium">{uploadingAvatar ? "Upload…" : "Cliquer pour choisir une image"}</p>
+                  <p className="text-sm text-white/60 mt-1">PNG, JPG</p>
+                </div>
+              )}
+            </button>
+          </div>
           <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => handleFile(e.target.files?.[0])} />
         </section>
 
