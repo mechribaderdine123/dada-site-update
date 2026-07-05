@@ -57,8 +57,9 @@ function EditProfilePage() {
       setUploadingAvatar(false);
       return;
     }
-    const { data } = supabase.storage.from("music").getPublicUrl(path);
-    setF((p) => ({ ...p, avatar_url: data.publicUrl }));
+    setF((p) => ({ ...p, avatar_url: path }));
+    const signed = await signedMusicUrl(path);
+    setAvatarPreview(signed);
     setUploadingAvatar(false);
   };
 
