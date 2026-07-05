@@ -32,7 +32,17 @@ function ArtistPage() {
       .select("id,title,genre,cover_url,audio_url,status")
       .eq("user_id", profile.id)
       .order("created_at", { ascending: false })
-      .then(({ data }) => setTracks((data as Track[]) ?? []));
+      .then(async ({ data }) => {
+        const list = (data as Track[]) ?? [];
+        const resolved = await Promise.all(
+          list.map(async (t) => ({
+            ...t,
+            cover_url: await signedMusicUrl(t.cover_url),
+            audio_url: await signedMusicUrl(t.audio_url),
+          })),
+        );
+        setTracks(resolved);
+      });
   }, [profile]);
 
   if (!profile) return null;
