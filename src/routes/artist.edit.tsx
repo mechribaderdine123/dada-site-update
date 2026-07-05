@@ -4,6 +4,7 @@ import { Upload, Youtube, Facebook, Instagram, Music2, Twitter } from "lucide-re
 import { ArtistSidebar } from "@/components/ArtistSidebar";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
+import { signedMusicUrl } from "@/lib/music-url";
 
 export const Route = createFileRoute("/artist/edit")({
   head: () => ({ meta: [{ title: "Profil Management — Dada Réseaux Artist" }] }),
