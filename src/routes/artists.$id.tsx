@@ -130,12 +130,12 @@ function PublicArtistPage() {
   if (missing || !profile) {
     return (
       <div className="min-h-screen grid place-items-center bg-[#1a1a1a] text-white px-6 text-center">
-      <div>
-        <p className="text-xl">Artiste introuvable.</p>
-        <Link to={backLink} className="mt-4 inline-flex items-center gap-2 text-primary hover:underline">
-          <ArrowLeft className="w-4 h-4" /> {backLabel}
-        </Link>
-      </div>
+        <div>
+          <p className="text-xl">Artiste introuvable.</p>
+          <Link to={backLink} className="mt-4 inline-flex items-center gap-2 text-primary hover:underline">
+            <ArrowLeft className="w-4 h-4" /> {backLabel}
+          </Link>
+        </div>
       </div>
     );
   }
