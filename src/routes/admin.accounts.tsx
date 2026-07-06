@@ -46,6 +46,20 @@ function AdminAccounts() {
     load();
   };
 
+  const removeUser = useServerFn(deleteArtistAccount);
+  const onDelete = async (p: Profile) => {
+    if (!confirm(`Supprimer définitivement le compte de ${p.artist_name} ? Cette action est irréversible.`)) return;
+    setBusy(p.id);
+    try {
+      await removeUser({ data: { userId: p.id } });
+      setRows((prev) => prev.filter((r) => r.id !== p.id));
+    } catch (e) {
+      alert(`Erreur: ${(e as Error).message}`);
+    } finally {
+      setBusy(null);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
