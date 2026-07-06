@@ -6,6 +6,7 @@ import heroAsset from "@/assets/dada-hero-new.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { signedMusicUrl } from "@/lib/music-url";
 import { useAuth } from "@/lib/auth";
+import { useContent } from "@/lib/site-content";
 import { deleteArtistAccount } from "@/lib/api/admin-users.functions";
 
 export const Route = createFileRoute("/dada-reseaux-artist")({
