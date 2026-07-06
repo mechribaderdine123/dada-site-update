@@ -136,6 +136,14 @@ function AdminAccounts() {
                     <Clock className="w-4 h-4" /> Remettre en attente
                   </button>
                 )}
+                <button
+                  disabled={busy === p.id}
+                  onClick={() => onDelete(p)}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-destructive text-destructive-foreground text-sm font-semibold hover:opacity-90 disabled:opacity-60"
+                  title="Supprimer définitivement"
+                >
+                  <Trash2 className="w-4 h-4" /> Supprimer
+                </button>
               </div>
             </div>
           ))}
