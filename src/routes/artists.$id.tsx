@@ -49,6 +49,10 @@ type Track = {
 
 function PublicArtistPage() {
   const { id } = Route.useParams();
+  const location = useLocation();
+  const backTo = (location.state as { backTo?: string } | null)?.backTo;
+  const backLink = backTo && backTo.startsWith("/") ? backTo : "/dada-reseaux-artist";
+  const backLabel = backLink === "/admin/accounts" ? "Retour aux comptes" : "Retour aux artistes";
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [loading, setLoading] = useState(true);
