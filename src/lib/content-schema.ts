@@ -96,6 +96,21 @@ export const PAGE_SCHEMAS: PageSchema[] = [
     ],
   },
   {
+    id: "reseaux",
+    label: "Dada Réseaux Artist",
+    path: "/dada-reseaux-artist",
+    fields: [
+      { key: "reseaux.hero.image", label: "Image hero", type: "image", default: heroAsset.url },
+      { key: "reseaux.hero.title", label: "Titre hero", type: "text", default: "DADA RESEAUX ARTIST" },
+      { key: "reseaux.hero.subtitle", label: "Sous-titre hero", type: "text", default: "Un espace conçu pour vous mettre en lumière" },
+      { key: "reseaux.hero.cta1", label: "Bouton 1", type: "text", default: "Se connecter" },
+      { key: "reseaux.hero.cta2", label: "Bouton 2", type: "text", default: "Créer un compte" },
+      { key: "reseaux.section.title1", label: "Section - titre partie 1", type: "text", default: "DECOUVRIR" },
+      { key: "reseaux.section.title2", label: "Section - titre partie 2 (rouge)", type: "text", default: "NOS ARTISTES" },
+      { key: "reseaux.search.placeholder", label: "Recherche - placeholder", type: "text", default: "Rechercher un artiste" },
+    ],
+  },
+  {
     id: "workshops",
     label: "Workshops",
     path: "/workshops",

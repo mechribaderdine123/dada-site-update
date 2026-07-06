@@ -6,6 +6,7 @@ import heroAsset from "@/assets/dada-hero-new.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { signedMusicUrl } from "@/lib/music-url";
 import { useAuth } from "@/lib/auth";
+import { useContent } from "@/lib/site-content";
 import { deleteArtistAccount } from "@/lib/api/admin-users.functions";
 
 export const Route = createFileRoute("/dada-reseaux-artist")({
@@ -33,6 +34,15 @@ function DadaReseauxArtistPage() {
   const { isAdmin } = useAuth();
   const [busy, setBusy] = useState<string | null>(null);
   const removeUser = useServerFn(deleteArtistAccount);
+
+  const heroImage = useContent("reseaux.hero.image", heroAsset.url);
+  const heroTitle = useContent("reseaux.hero.title", "DADA RESEAUX ARTIST");
+  const heroSubtitle = useContent("reseaux.hero.subtitle", "Un espace conçu pour vous mettre en lumière");
+  const cta1 = useContent("reseaux.hero.cta1", "Se connecter");
+  const cta2 = useContent("reseaux.hero.cta2", "Créer un compte");
+  const secTitle1 = useContent("reseaux.section.title1", "DECOUVRIR");
+  const secTitle2 = useContent("reseaux.section.title2", "NOS ARTISTES");
+  const searchPh = useContent("reseaux.search.placeholder", "Rechercher un artiste");
 
   const loadArtists = async () => {
     const { data } = await supabase
@@ -83,23 +93,23 @@ function DadaReseauxArtistPage() {
   return (
     <div className="min-h-screen bg-[#1a1a1a] text-white">
       <section className="relative h-[75vh] min-h-[520px] w-full overflow-hidden">
-        <img src={heroAsset.url} alt="Danseurs Dada Hip Hop Academy" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={heroImage} alt="Danseurs Dada Hip Hop Academy" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-primary/45" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#1a1a1a]" />
 
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6 pt-24">
           <h1 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.9] tracking-wide text-white drop-shadow-2xl">
-            DADA RESEAUX ARTIST
+            {heroTitle}
           </h1>
           <p className="mt-6 text-lg md:text-2xl font-medium text-white/90 max-w-2xl">
-            Un espace conçu pour vous mettre en lumière
+            {heroSubtitle}
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link to="/sign-in" className="rounded-md bg-primary text-primary-foreground px-8 py-3 text-sm font-semibold hover:opacity-90 transition">
-              Se connecter
+              {cta1}
             </Link>
             <Link to="/sign-up" className="rounded-md bg-white/10 border border-white/20 text-white px-8 py-3 text-sm font-semibold hover:bg-white/20 transition">
-              Créer un compte
+              {cta2}
             </Link>
           </div>
         </div>
@@ -108,7 +118,7 @@ function DadaReseauxArtistPage() {
       <section className="py-16 md:py-24 px-6">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-center font-display text-4xl md:text-6xl tracking-wide">
-            DECOUVRIR <span className="text-primary">NOS ARTISTES</span>
+            {secTitle1} <span className="text-primary">{secTitle2}</span>
           </h2>
 
           <div className="mt-10 flex justify-center">
@@ -118,7 +128,7 @@ function DadaReseauxArtistPage() {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Rechercher un artiste"
+                placeholder={searchPh}
                 className="w-full h-14 pl-12 pr-4 rounded-full bg-transparent border border-white/30 text-white placeholder:text-white/50 outline-none focus:border-primary transition"
               />
             </div>
