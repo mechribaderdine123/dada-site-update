@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Search, User as UserIcon } from "lucide-react";
+import { Search, User as UserIcon, Clock, Trash2 } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import heroAsset from "@/assets/dada-hero-new.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { signedMusicUrl } from "@/lib/music-url";
+import { useAuth } from "@/lib/auth";
+import { deleteArtistAccount } from "@/lib/api/admin-users.functions";
 
 export const Route = createFileRoute("/dada-reseaux-artist")({
   head: () => ({
@@ -27,21 +30,47 @@ function DadaReseauxArtistPage() {
   const [search, setSearch] = useState("");
   const [artists, setArtists] = useState<PublicArtist[]>([]);
   const [loading, setLoading] = useState(true);
+  const { isAdmin } = useAuth();
+  const [busy, setBusy] = useState<string | null>(null);
+  const removeUser = useServerFn(deleteArtistAccount);
 
-  useEffect(() => {
-    supabase
+  const loadArtists = async () => {
+    const { data } = await supabase
       .from("public_profiles")
       .select("id, artist_name, genre, city, avatar_url")
-      .order("created_at", { ascending: false })
-      .then(async ({ data }) => {
-        const list = (data as PublicArtist[]) ?? [];
-        const resolved = await Promise.all(
-          list.map(async (a) => ({ ...a, avatar_url: await signedMusicUrl(a.avatar_url) })),
-        );
-        setArtists(resolved);
-        setLoading(false);
-      });
+      .order("created_at", { ascending: false });
+    const list = (data as PublicArtist[]) ?? [];
+    const resolved = await Promise.all(
+      list.map(async (a) => ({ ...a, avatar_url: await signedMusicUrl(a.avatar_url) })),
+    );
+    setArtists(resolved);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadArtists();
   }, []);
+
+  const onUnpublish = async (a: PublicArtist) => {
+    if (!confirm(`Retirer ${a.artist_name} de la vitrine (remettre en attente) ?`)) return;
+    setBusy(a.id);
+    await supabase.from("profiles").update({ status: "pending" }).eq("id", a.id);
+    setArtists((prev) => prev.filter((x) => x.id !== a.id));
+    setBusy(null);
+  };
+
+  const onDelete = async (a: PublicArtist) => {
+    if (!confirm(`Supprimer définitivement le compte de ${a.artist_name} ? Cette action est irréversible.`)) return;
+    setBusy(a.id);
+    try {
+      await removeUser({ data: { userId: a.id } });
+      setArtists((prev) => prev.filter((x) => x.id !== a.id));
+    } catch (e) {
+      alert(`Erreur: ${(e as Error).message}`);
+    } finally {
+      setBusy(null);
+    }
+  };
 
   const q = search.toLowerCase();
   const filtered = artists.filter(
@@ -104,17 +133,41 @@ function DadaReseauxArtistPage() {
           ) : (
             <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
               {filtered.map((a) => (
-                <Link key={a.id} to="/artists/$id" params={{ id: a.id }} className="group block text-left">
-                  <div className="aspect-square rounded-2xl overflow-hidden bg-white/5 grid place-items-center">
-                    {a.avatar_url ? (
-                      <img src={a.avatar_url} alt={a.artist_name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                    ) : (
-                      <UserIcon className="w-12 h-12 text-white/40" />
-                    )}
-                  </div>
-                  <p className="mt-3 font-bold group-hover:text-primary transition-colors">{a.artist_name}</p>
-                  <p className="text-sm text-white/60">{a.genre || "—"}{a.city ? ` · ${a.city}` : ""}</p>
-                </Link>
+                <div key={a.id} className="group block text-left relative">
+                  <Link to="/artists/$id" params={{ id: a.id }} state={isAdmin ? ({ backTo: "/dada-reseaux-artist" } as any) : undefined} className="block">
+                    <div className="aspect-square rounded-2xl overflow-hidden bg-white/5 grid place-items-center">
+                      {a.avatar_url ? (
+                        <img src={a.avatar_url} alt={a.artist_name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                      ) : (
+                        <UserIcon className="w-12 h-12 text-white/40" />
+                      )}
+                    </div>
+                    <p className="mt-3 font-bold group-hover:text-primary transition-colors">{a.artist_name}</p>
+                    <p className="text-sm text-white/60">{a.genre || "—"}{a.city ? ` · ${a.city}` : ""}</p>
+                  </Link>
+                  {isAdmin && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        disabled={busy === a.id}
+                        onClick={() => onUnpublish(a)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-white/10 border border-white/20 text-xs font-semibold hover:bg-white/20 disabled:opacity-60"
+                        title="Retirer de la vitrine"
+                      >
+                        <Clock className="w-3.5 h-3.5" /> Retirer
+                      </button>
+                      <button
+                        type="button"
+                        disabled={busy === a.id}
+                        onClick={() => onDelete(a)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-red-600 text-white text-xs font-semibold hover:opacity-90 disabled:opacity-60"
+                        title="Supprimer définitivement"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" /> Supprimer
+                      </button>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           )}
