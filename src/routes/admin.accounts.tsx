@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Check, X, Clock, CheckCircle2, XCircle, Mail, MapPin, Music } from "lucide-react";
+import { Check, X, Clock, CheckCircle2, XCircle, Mail, MapPin, Music, Trash2 } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { signedMusicUrl } from "@/lib/music-url";
+import { deleteArtistAccount } from "@/lib/api/admin-users.functions";
 import type { Profile, ApprovalStatus } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin/accounts")({
@@ -42,6 +44,20 @@ function AdminAccounts() {
     await supabase.from("profiles").update({ status }).eq("id", id);
     setBusy(null);
     load();
+  };
+
+  const removeUser = useServerFn(deleteArtistAccount);
+  const onDelete = async (p: Profile) => {
+    if (!confirm(`Supprimer définitivement le compte de ${p.artist_name} ? Cette action est irréversible.`)) return;
+    setBusy(p.id);
+    try {
+      await removeUser({ data: { userId: p.id } });
+      setRows((prev) => prev.filter((r) => r.id !== p.id));
+    } catch (e) {
+      alert(`Erreur: ${(e as Error).message}`);
+    } finally {
+      setBusy(null);
+    }
   };
 
   return (
@@ -120,6 +136,14 @@ function AdminAccounts() {
                     <Clock className="w-4 h-4" /> Remettre en attente
                   </button>
                 )}
+                <button
+                  disabled={busy === p.id}
+                  onClick={() => onDelete(p)}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-destructive text-destructive-foreground text-sm font-semibold hover:opacity-90 disabled:opacity-60"
+                  title="Supprimer définitivement"
+                >
+                  <Trash2 className="w-4 h-4" /> Supprimer
+                </button>
               </div>
             </div>
           ))}
