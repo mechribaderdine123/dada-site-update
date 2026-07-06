@@ -145,7 +145,7 @@ function DadaReseauxArtistPage() {
             <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
               {filtered.map((a) => (
                 <div key={a.id} className="group block text-left relative">
-                  <Link to="/artists/$id" params={{ id: a.id }} state={isAdmin ? ({ backTo: "/dada-reseaux-artist" } as any) : undefined} className="block">
+                  <Link to="/artists/$id" params={{ id: a.id }} state={canManage ? ({ backTo: "/dada-reseaux-artist" } as any) : undefined} className="block">
                     <div className="aspect-square rounded-2xl overflow-hidden bg-white/5 grid place-items-center">
                       {a.avatar_url ? (
                         <img src={a.avatar_url} alt={a.artist_name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
