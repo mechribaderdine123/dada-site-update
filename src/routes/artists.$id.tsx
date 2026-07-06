@@ -150,8 +150,8 @@ function PublicArtistPage() {
   return (
     <div className="min-h-screen bg-[#1a1a1a] text-white">
       <div className="max-w-5xl mx-auto px-6 pt-28 pb-16">
-        <Link to="/dada-reseaux-artist" className="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm mb-8">
-          <ArrowLeft className="w-4 h-4" /> Retour aux artistes
+        <Link to={backLink} className="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm mb-8">
+          <ArrowLeft className="w-4 h-4" /> {backLabel}
         </Link>
 
         {privateView && (
