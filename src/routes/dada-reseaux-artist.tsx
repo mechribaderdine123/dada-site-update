@@ -31,7 +31,8 @@ function DadaReseauxArtistPage() {
   const [search, setSearch] = useState("");
   const [artists, setArtists] = useState<PublicArtist[]>([]);
   const [loading, setLoading] = useState(true);
-  const { isAdmin } = useAuth();
+  const { isAdmin, loading: authLoading } = useAuth();
+  const canManage = !authLoading && isAdmin;
   const [busy, setBusy] = useState<string | null>(null);
   const removeUser = useServerFn(deleteArtistAccount);
 
@@ -144,7 +145,7 @@ function DadaReseauxArtistPage() {
             <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
               {filtered.map((a) => (
                 <div key={a.id} className="group block text-left relative">
-                  <Link to="/artists/$id" params={{ id: a.id }} state={isAdmin ? ({ backTo: "/dada-reseaux-artist" } as any) : undefined} className="block">
+                  <Link to="/artists/$id" params={{ id: a.id }} state={canManage ? ({ backTo: "/dada-reseaux-artist" } as any) : undefined} className="block">
                     <div className="aspect-square rounded-2xl overflow-hidden bg-white/5 grid place-items-center">
                       {a.avatar_url ? (
                         <img src={a.avatar_url} alt={a.artist_name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
@@ -155,7 +156,7 @@ function DadaReseauxArtistPage() {
                     <p className="mt-3 font-bold group-hover:text-primary transition-colors">{a.artist_name}</p>
                     <p className="text-sm text-white/60">{a.genre || "—"}{a.city ? ` · ${a.city}` : ""}</p>
                   </Link>
-                  {isAdmin && (
+                  {canManage && (
                     <div className="mt-2 flex flex-wrap gap-2">
                       <button
                         type="button"
