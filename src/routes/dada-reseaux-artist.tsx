@@ -30,21 +30,47 @@ function DadaReseauxArtistPage() {
   const [search, setSearch] = useState("");
   const [artists, setArtists] = useState<PublicArtist[]>([]);
   const [loading, setLoading] = useState(true);
+  const { isAdmin } = useAuth();
+  const [busy, setBusy] = useState<string | null>(null);
+  const removeUser = useServerFn(deleteArtistAccount);
 
-  useEffect(() => {
-    supabase
+  const loadArtists = async () => {
+    const { data } = await supabase
       .from("public_profiles")
       .select("id, artist_name, genre, city, avatar_url")
-      .order("created_at", { ascending: false })
-      .then(async ({ data }) => {
-        const list = (data as PublicArtist[]) ?? [];
-        const resolved = await Promise.all(
-          list.map(async (a) => ({ ...a, avatar_url: await signedMusicUrl(a.avatar_url) })),
-        );
-        setArtists(resolved);
-        setLoading(false);
-      });
+      .order("created_at", { ascending: false });
+    const list = (data as PublicArtist[]) ?? [];
+    const resolved = await Promise.all(
+      list.map(async (a) => ({ ...a, avatar_url: await signedMusicUrl(a.avatar_url) })),
+    );
+    setArtists(resolved);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadArtists();
   }, []);
+
+  const onUnpublish = async (a: PublicArtist) => {
+    if (!confirm(`Retirer ${a.artist_name} de la vitrine (remettre en attente) ?`)) return;
+    setBusy(a.id);
+    await supabase.from("profiles").update({ status: "pending" }).eq("id", a.id);
+    setArtists((prev) => prev.filter((x) => x.id !== a.id));
+    setBusy(null);
+  };
+
+  const onDelete = async (a: PublicArtist) => {
+    if (!confirm(`Supprimer définitivement le compte de ${a.artist_name} ? Cette action est irréversible.`)) return;
+    setBusy(a.id);
+    try {
+      await removeUser({ data: { userId: a.id } });
+      setArtists((prev) => prev.filter((x) => x.id !== a.id));
+    } catch (e) {
+      alert(`Erreur: ${(e as Error).message}`);
+    } finally {
+      setBusy(null);
+    }
+  };
 
   const q = search.toLowerCase();
   const filtered = artists.filter(
