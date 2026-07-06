@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft, User as UserIcon, Music as MusicIcon, Youtube, Instagram, Facebook, Twitter } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
