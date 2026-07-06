@@ -57,11 +57,27 @@ function PublicArtistPage() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const { data: p } = await supabase
+      // Try the public view first (approved profiles, visible to everyone).
+      const { data: pub } = await supabase
         .from("public_profiles")
         .select("id, artist_name, genre, city, bio, avatar_url, youtube, spotify, facebook, instagram, tiktok, twitter")
         .eq("id", id)
         .maybeSingle();
+
+      let p: PublicProfile | null = (pub as PublicProfile | null) ?? null;
+      let isPrivate = false;
+
+      // Fallback: admins (and owners) can read the base profiles table thanks to RLS.
+      if (!p) {
+        const { data: full } = await supabase
+          .from("profiles")
+          .select("id, artist_name, genre, city, bio, avatar_url, youtube, spotify, facebook, instagram, tiktok, twitter")
+          .eq("id", id)
+          .maybeSingle();
+        p = (full as PublicProfile | null) ?? null;
+        isPrivate = !!p;
+      }
+
       if (cancelled) return;
       if (!p) {
         setMissing(true);
@@ -70,13 +86,17 @@ function PublicArtistPage() {
       }
       const avatar_url = await signedMusicUrl(p.avatar_url);
       setProfile({ ...(p as PublicProfile), avatar_url });
+      setPrivateView(isPrivate);
 
-      const { data: t } = await supabase
+      // Approved tracks for public visitors; admins/owners also see pending/rejected via RLS.
+      const trackQuery = supabase
         .from("tracks")
         .select("id, title, genre, cover_url, audio_url")
         .eq("user_id", id)
-        .eq("status", "approved")
         .order("created_at", { ascending: false });
+      const { data: t } = isPrivate
+        ? await trackQuery
+        : await trackQuery.eq("status", "approved");
       const list = (t as Track[]) ?? [];
       const resolved = await Promise.all(
         list.map(async (x) => ({
