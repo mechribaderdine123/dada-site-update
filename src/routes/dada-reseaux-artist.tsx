@@ -133,17 +133,41 @@ function DadaReseauxArtistPage() {
           ) : (
             <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
               {filtered.map((a) => (
-                <Link key={a.id} to="/artists/$id" params={{ id: a.id }} className="group block text-left">
-                  <div className="aspect-square rounded-2xl overflow-hidden bg-white/5 grid place-items-center">
-                    {a.avatar_url ? (
-                      <img src={a.avatar_url} alt={a.artist_name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                    ) : (
-                      <UserIcon className="w-12 h-12 text-white/40" />
-                    )}
-                  </div>
-                  <p className="mt-3 font-bold group-hover:text-primary transition-colors">{a.artist_name}</p>
-                  <p className="text-sm text-white/60">{a.genre || "—"}{a.city ? ` · ${a.city}` : ""}</p>
-                </Link>
+                <div key={a.id} className="group block text-left relative">
+                  <Link to="/artists/$id" params={{ id: a.id }} state={isAdmin ? ({ backTo: "/dada-reseaux-artist" } as any) : undefined} className="block">
+                    <div className="aspect-square rounded-2xl overflow-hidden bg-white/5 grid place-items-center">
+                      {a.avatar_url ? (
+                        <img src={a.avatar_url} alt={a.artist_name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                      ) : (
+                        <UserIcon className="w-12 h-12 text-white/40" />
+                      )}
+                    </div>
+                    <p className="mt-3 font-bold group-hover:text-primary transition-colors">{a.artist_name}</p>
+                    <p className="text-sm text-white/60">{a.genre || "—"}{a.city ? ` · ${a.city}` : ""}</p>
+                  </Link>
+                  {isAdmin && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        disabled={busy === a.id}
+                        onClick={() => onUnpublish(a)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-white/10 border border-white/20 text-xs font-semibold hover:bg-white/20 disabled:opacity-60"
+                        title="Retirer de la vitrine"
+                      >
+                        <Clock className="w-3.5 h-3.5" /> Retirer
+                      </button>
+                      <button
+                        type="button"
+                        disabled={busy === a.id}
+                        onClick={() => onDelete(a)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-red-600 text-white text-xs font-semibold hover:opacity-90 disabled:opacity-60"
+                        title="Supprimer définitivement"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" /> Supprimer
+                      </button>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           )}
