@@ -28,6 +28,7 @@ import { Route as AdminWorkshopsRouteImport } from './routes/admin.workshops'
 import { Route as AdminTracksRouteImport } from './routes/admin.tracks'
 import { Route as AdminSponsorsRouteImport } from './routes/admin.sponsors'
 import { Route as AdminSignInRouteImport } from './routes/admin.sign-in'
+import { Route as AdminReseauxRouteImport } from './routes/admin.reseaux'
 import { Route as AdminCoursRouteImport } from './routes/admin.cours'
 import { Route as AdminContactRouteImport } from './routes/admin.contact'
 import { Route as AdminAccountsRouteImport } from './routes/admin.accounts'
@@ -128,6 +129,11 @@ const AdminSignInRoute = AdminSignInRouteImport.update({
   path: '/sign-in',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminReseauxRoute = AdminReseauxRouteImport.update({
+  id: '/reseaux',
+  path: '/reseaux',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCoursRoute = AdminCoursRouteImport.update({
   id: '/cours',
   path: '/cours',
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/contact': typeof AdminContactRoute
   '/admin/cours': typeof AdminCoursRoute
+  '/admin/reseaux': typeof AdminReseauxRoute
   '/admin/sign-in': typeof AdminSignInRoute
   '/admin/sponsors': typeof AdminSponsorsRoute
   '/admin/tracks': typeof AdminTracksRoute
@@ -187,6 +194,7 @@ export interface FileRoutesByTo {
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/contact': typeof AdminContactRoute
   '/admin/cours': typeof AdminCoursRoute
+  '/admin/reseaux': typeof AdminReseauxRoute
   '/admin/sign-in': typeof AdminSignInRoute
   '/admin/sponsors': typeof AdminSponsorsRoute
   '/admin/tracks': typeof AdminTracksRoute
@@ -213,6 +221,7 @@ export interface FileRoutesById {
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/contact': typeof AdminContactRoute
   '/admin/cours': typeof AdminCoursRoute
+  '/admin/reseaux': typeof AdminReseauxRoute
   '/admin/sign-in': typeof AdminSignInRoute
   '/admin/sponsors': typeof AdminSponsorsRoute
   '/admin/tracks': typeof AdminTracksRoute
@@ -240,6 +249,7 @@ export interface FileRouteTypes {
     | '/admin/accounts'
     | '/admin/contact'
     | '/admin/cours'
+    | '/admin/reseaux'
     | '/admin/sign-in'
     | '/admin/sponsors'
     | '/admin/tracks'
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
     | '/admin/accounts'
     | '/admin/contact'
     | '/admin/cours'
+    | '/admin/reseaux'
     | '/admin/sign-in'
     | '/admin/sponsors'
     | '/admin/tracks'
@@ -288,6 +299,7 @@ export interface FileRouteTypes {
     | '/admin/accounts'
     | '/admin/contact'
     | '/admin/cours'
+    | '/admin/reseaux'
     | '/admin/sign-in'
     | '/admin/sponsors'
     | '/admin/tracks'
@@ -448,6 +460,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSignInRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/reseaux': {
+      id: '/admin/reseaux'
+      path: '/reseaux'
+      fullPath: '/admin/reseaux'
+      preLoaderRoute: typeof AdminReseauxRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/cours': {
       id: '/admin/cours'
       path: '/cours'
@@ -484,6 +503,7 @@ interface AdminRouteChildren {
   AdminAccountsRoute: typeof AdminAccountsRoute
   AdminContactRoute: typeof AdminContactRoute
   AdminCoursRoute: typeof AdminCoursRoute
+  AdminReseauxRoute: typeof AdminReseauxRoute
   AdminSignInRoute: typeof AdminSignInRoute
   AdminSponsorsRoute: typeof AdminSponsorsRoute
   AdminTracksRoute: typeof AdminTracksRoute
@@ -496,6 +516,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAccountsRoute: AdminAccountsRoute,
   AdminContactRoute: AdminContactRoute,
   AdminCoursRoute: AdminCoursRoute,
+  AdminReseauxRoute: AdminReseauxRoute,
   AdminSignInRoute: AdminSignInRoute,
   AdminSponsorsRoute: AdminSponsorsRoute,
   AdminTracksRoute: AdminTracksRoute,
