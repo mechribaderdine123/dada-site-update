@@ -35,6 +35,15 @@ function DadaReseauxArtistPage() {
   const [busy, setBusy] = useState<string | null>(null);
   const removeUser = useServerFn(deleteArtistAccount);
 
+  const heroImage = useContent("reseaux.hero.image", heroAsset.url);
+  const heroTitle = useContent("reseaux.hero.title", "DADA RESEAUX ARTIST");
+  const heroSubtitle = useContent("reseaux.hero.subtitle", "Un espace conçu pour vous mettre en lumière");
+  const cta1 = useContent("reseaux.hero.cta1", "Se connecter");
+  const cta2 = useContent("reseaux.hero.cta2", "Créer un compte");
+  const secTitle1 = useContent("reseaux.section.title1", "DECOUVRIR");
+  const secTitle2 = useContent("reseaux.section.title2", "NOS ARTISTES");
+  const searchPh = useContent("reseaux.search.placeholder", "Rechercher un artiste");
+
   const loadArtists = async () => {
     const { data } = await supabase
       .from("public_profiles")
