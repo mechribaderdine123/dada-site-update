@@ -31,7 +31,8 @@ function DadaReseauxArtistPage() {
   const [search, setSearch] = useState("");
   const [artists, setArtists] = useState<PublicArtist[]>([]);
   const [loading, setLoading] = useState(true);
-  const { isAdmin } = useAuth();
+  const { isAdmin, loading: authLoading } = useAuth();
+  const canManage = !authLoading && isAdmin;
   const [busy, setBusy] = useState<string | null>(null);
   const removeUser = useServerFn(deleteArtistAccount);
 
