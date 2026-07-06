@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Search, User as UserIcon } from "lucide-react";
+import { Search, User as UserIcon, Clock, Trash2 } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import heroAsset from "@/assets/dada-hero-new.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { signedMusicUrl } from "@/lib/music-url";
+import { useAuth } from "@/lib/auth";
+import { deleteArtistAccount } from "@/lib/api/admin-users.functions";
 
 export const Route = createFileRoute("/dada-reseaux-artist")({
   head: () => ({
