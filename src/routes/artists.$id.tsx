@@ -53,6 +53,7 @@ function PublicArtistPage() {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [loading, setLoading] = useState(true);
   const [missing, setMissing] = useState(false);
+  const [privateView, setPrivateView] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
