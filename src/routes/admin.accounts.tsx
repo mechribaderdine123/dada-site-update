@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Check, X, Clock, CheckCircle2, XCircle, Mail, MapPin, Music } from "lucide-react";
+import { Check, X, Clock, CheckCircle2, XCircle, Mail, MapPin, Music, Trash2 } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { signedMusicUrl } from "@/lib/music-url";
+import { deleteArtistAccount } from "@/lib/api/admin-users.functions";
 import type { Profile, ApprovalStatus } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin/accounts")({
