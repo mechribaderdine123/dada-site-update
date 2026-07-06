@@ -150,6 +150,12 @@ function PublicArtistPage() {
           <ArrowLeft className="w-4 h-4" /> Retour aux artistes
         </Link>
 
+        {privateView && (
+          <div className="mb-6 rounded-lg border border-yellow-500/40 bg-yellow-500/10 text-yellow-100 px-4 py-3 text-sm">
+            Compte privé — non visible publiquement. Vue admin uniquement.
+          </div>
+        )}
+
         <div className="grid md:grid-cols-[280px_1fr] gap-8 items-start">
           <div className="aspect-square w-full max-w-[280px] rounded-2xl overflow-hidden bg-white/5 grid place-items-center">
             {profile.avatar_url ? (
