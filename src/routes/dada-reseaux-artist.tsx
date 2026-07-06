@@ -156,7 +156,7 @@ function DadaReseauxArtistPage() {
                     <p className="mt-3 font-bold group-hover:text-primary transition-colors">{a.artist_name}</p>
                     <p className="text-sm text-white/60">{a.genre || "—"}{a.city ? ` · ${a.city}` : ""}</p>
                   </Link>
-                  {isAdmin && (
+                  {canManage && (
                     <div className="mt-2 flex flex-wrap gap-2">
                       <button
                         type="button"
