@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Check, X, Clock, CheckCircle2, XCircle, Mail, MapPin, Music, Trash2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
@@ -108,7 +108,14 @@ function AdminAccounts() {
                   {p.bio && <p className="mt-2 text-sm text-foreground/80 max-w-xl line-clamp-3">{p.bio}</p>}
                 </div>
               </div>
-              <div className="flex gap-2 shrink-0">
+              <div className="flex flex-wrap gap-2 shrink-0 items-center">
+                <Link
+                  to="/artists/$id"
+                  params={{ id: p.id }}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border text-sm font-semibold hover:bg-muted"
+                >
+                  Voir le profil
+                </Link>
                 {filter !== "approved" && (
                   <button
                     disabled={busy === p.id}
