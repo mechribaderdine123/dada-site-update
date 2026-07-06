@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft, User as UserIcon, Music as MusicIcon, Youtube, Instagram, Facebook, Twitter } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -49,6 +49,10 @@ type Track = {
 
 function PublicArtistPage() {
   const { id } = Route.useParams();
+  const location = useLocation();
+  const backTo = (location.state as { backTo?: string } | null)?.backTo;
+  const backLink = backTo && backTo.startsWith("/") ? backTo : "/dada-reseaux-artist";
+  const backLabel = backLink === "/admin/accounts" ? "Retour aux comptes" : "Retour aux artistes";
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [loading, setLoading] = useState(true);
@@ -128,8 +132,8 @@ function PublicArtistPage() {
       <div className="min-h-screen grid place-items-center bg-[#1a1a1a] text-white px-6 text-center">
         <div>
           <p className="text-xl">Artiste introuvable.</p>
-          <Link to="/dada-reseaux-artist" className="mt-4 inline-flex items-center gap-2 text-primary hover:underline">
-            <ArrowLeft className="w-4 h-4" /> Retour aux artistes
+          <Link to={backLink} className="mt-4 inline-flex items-center gap-2 text-primary hover:underline">
+            <ArrowLeft className="w-4 h-4" /> {backLabel}
           </Link>
         </div>
       </div>
@@ -146,8 +150,8 @@ function PublicArtistPage() {
   return (
     <div className="min-h-screen bg-[#1a1a1a] text-white">
       <div className="max-w-5xl mx-auto px-6 pt-28 pb-16">
-        <Link to="/dada-reseaux-artist" className="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm mb-8">
-          <ArrowLeft className="w-4 h-4" /> Retour aux artistes
+        <Link to={backLink} className="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm mb-8">
+          <ArrowLeft className="w-4 h-4" /> {backLabel}
         </Link>
 
         {privateView && (

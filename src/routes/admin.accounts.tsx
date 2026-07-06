@@ -112,6 +112,7 @@ function AdminAccounts() {
                 <Link
                   to="/artists/$id"
                   params={{ id: p.id }}
+                  state={{ backTo: "/admin/accounts" } as any}
                   className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border text-sm font-semibold hover:bg-muted"
                 >
                   Voir le profil
