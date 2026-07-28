@@ -1,54 +1,56 @@
 import { useSyncExternalStore } from "react";
-
-const STORAGE_KEY = "dada.site-content.v1";
+import { supabase } from "@/integrations/supabase/client";
 
 type Store = Record<string, string>;
 
 const listeners = new Set<() => void>();
-let cache: Store | null = null;
+let cache: Store = {};
+let loaded = false;
+let loadPromise: PromiseLike<void> | null = null;
 
-function read(): Store {
-  if (cache) return cache;
-  if (typeof window === "undefined") return {};
-  try {
-    cache = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-  } catch {
-    cache = {};
-  }
-  return cache!;
+function notify() {
+  listeners.forEach((l) => l());
 }
 
-function write(next: Store) {
-  cache = next;
-  if (typeof window !== "undefined") {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-  }
-  listeners.forEach((l) => l());
+function ensureLoaded() {
+  if (loaded || loadPromise || typeof window === "undefined") return;
+  loadPromise = supabase
+    .from("site_content")
+    .select("key,value")
+    .then(({ data }) => {
+      const next: Store = {};
+      (data ?? []).forEach((row) => {
+        next[row.key] = row.value;
+      });
+      cache = next;
+      loaded = true;
+      notify();
+    });
 }
 
 function subscribe(cb: () => void) {
   listeners.add(cb);
+  ensureLoaded();
   return () => listeners.delete(cb);
 }
 
 export function getContent(key: string, fallback: string): string {
-  const v = read()[key];
+  const v = cache[key];
   return v !== undefined && v !== "" ? v : fallback;
 }
 
-export function setContent(key: string, value: string) {
-  const cur = { ...read() };
-  if (value === "") delete cur[key];
-  else cur[key] = value;
-  write(cur);
-}
+export async function setContent(key: string, value: string) {
+  const next = { ...cache };
+  if (value === "") delete next[key];
+  else next[key] = value;
+  cache = next;
+  notify();
 
-export function resetContent() {
-  write({});
-}
-
-export function exportContent(): Store {
-  return { ...read() };
+  if (value === "") {
+    await supabase.from("site_content").delete().eq("key", key);
+  } else {
+    await supabase.from("site_content").upsert({ key, value });
+  }
 }
 
 export function useContent(key: string, fallback: string): string {
@@ -57,14 +59,4 @@ export function useContent(key: string, fallback: string): string {
     () => getContent(key, fallback),
     () => fallback,
   );
-}
-
-// ---- Image helpers: store as data URL in same store ----
-export async function fileToDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
 }

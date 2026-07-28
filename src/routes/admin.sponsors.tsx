@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { Trash2, Plus, Loader2, Upload, X } from "lucide-react";
-import { useSponsors, addSponsor, removeSponsor, updateSponsor, fileToDataUrl } from "@/lib/sponsors";
+import { useSponsors, addSponsor, removeSponsor, updateSponsor } from "@/lib/sponsors";
+import { uploadSiteImage } from "@/lib/site-images";
 
 export const Route = createFileRoute("/admin/sponsors")({
   component: AdminSponsors,
@@ -13,6 +14,7 @@ function AdminSponsors() {
   const [url, setUrl] = useState("");
   const [image, setImage] = useState("");
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
 
@@ -22,10 +24,17 @@ function AdminSponsors() {
       setError("Image trop lourde (max 1,5 Mo). Compressez-la avant de l'importer.");
       return;
     }
-    setImage(await fileToDataUrl(file));
+    setUploading(true);
+    try {
+      setImage(await uploadSiteImage(file, "sponsors"));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Échec de l'upload.");
+    } finally {
+      setUploading(false);
+    }
   };
 
-  const canAdd = name.trim() && image && !saving;
+  const canAdd = name.trim() && image && !saving && !uploading;
 
   const submit = async () => {
     if (!canAdd) return;
@@ -91,9 +100,11 @@ function AdminSponsors() {
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  className="inline-flex items-center gap-2 rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-semibold hover:opacity-90"
+                  disabled={uploading}
+                  className="inline-flex items-center gap-2 rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-semibold hover:opacity-90 disabled:opacity-40"
                 >
-                  <Upload className="w-4 h-4" /> {image ? "Changer le logo" : "Choisir un logo"}
+                  {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                  {uploading ? "Envoi…" : image ? "Changer le logo" : "Choisir un logo"}
                 </button>
                 {image && (
                   <button

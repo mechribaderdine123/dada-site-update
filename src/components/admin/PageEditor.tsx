@@ -1,7 +1,8 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PAGE_SCHEMAS, type EditableField } from "@/lib/content-schema";
-import { getContent, setContent, fileToDataUrl, useContent } from "@/lib/site-content";
-import { Save, RotateCcw, Upload, Check } from "lucide-react";
+import { setContent, useContent } from "@/lib/site-content";
+import { uploadSiteImage } from "@/lib/site-images";
+import { Save, RotateCcw, Upload, Check, Loader2 } from "lucide-react";
 
 export default function PageEditor({ pageId }: { pageId: string }) {
   const page = useMemo(() => PAGE_SCHEMAS.find((p) => p.id === pageId), [pageId]);
@@ -50,7 +51,14 @@ export default function PageEditor({ pageId }: { pageId: string }) {
 function FieldRow({ field, saved, onSaved }: { field: EditableField; saved: boolean; onSaved: () => void }) {
   const current = useContent(field.key, field.default);
   const [value, setValue] = useState(current);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    setValue(current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [current]);
 
   const dirty = value !== current;
 
@@ -70,10 +78,18 @@ function FieldRow({ field, saved, onSaved }: { field: EditableField; saved: bool
       alert("Image trop lourde (max 3 Mo). Compressez-la avant de l'importer.");
       return;
     }
-    const url = await fileToDataUrl(file);
-    setValue(url);
-    setContent(field.key, url);
-    onSaved();
+    setError(null);
+    setUploading(true);
+    try {
+      const url = await uploadSiteImage(file, "pages");
+      setValue(url);
+      await setContent(field.key, url);
+      onSaved();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Échec de l'upload.");
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -146,17 +162,17 @@ function FieldRow({ field, saved, onSaved }: { field: EditableField; saved: bool
             />
             <button
               onClick={() => fileRef.current?.click()}
-              className="inline-flex items-center gap-2 text-sm rounded-lg bg-primary text-primary-foreground px-3 py-2 hover:opacity-90"
+              disabled={uploading}
+              className="inline-flex items-center gap-2 text-sm rounded-lg bg-primary text-primary-foreground px-3 py-2 hover:opacity-90 disabled:opacity-40"
             >
-              <Upload className="w-4 h-4" /> Changer l'image
+              {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+              {uploading ? "Envoi…" : "Changer l'image"}
             </button>
             <p className="mt-2 text-xs text-muted-foreground">PNG / JPG — max 3 Mo</p>
+            {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
           </div>
         </div>
       )}
     </div>
   );
 }
-
-// Reset unused-import lint
-void getContent;

@@ -7,10 +7,10 @@ import {
   addWorkshop,
   updateWorkshop,
   removeWorkshop,
-  fileToDataUrl,
   WORKSHOP_CATEGORIES,
   type Workshop,
 } from "@/lib/workshops";
+import { uploadSiteImage } from "@/lib/site-images";
 
 export const Route = createFileRoute("/admin/workshops")({
   component: AdminWorkshops,
@@ -31,6 +31,7 @@ function AdminWorkshops() {
   const { workshops, loading, reload } = useWorkshops();
   const [form, setForm] = useState(empty);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -45,12 +46,19 @@ function AdminWorkshops() {
       setError("Image trop lourde (max 2 Mo).");
       return;
     }
-    const url = await fileToDataUrl(file);
-    if (target === "new") set("image_url", url);
-    else setEdit((e) => (e ? { ...e, image_url: url } : e));
+    setUploading(true);
+    try {
+      const url = await uploadSiteImage(file, "workshops");
+      if (target === "new") set("image_url", url);
+      else setEdit((e) => (e ? { ...e, image_url: url } : e));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Échec de l'upload.");
+    } finally {
+      setUploading(false);
+    }
   };
 
-  const canAdd = form.name.trim() && form.category && !saving;
+  const canAdd = form.name.trim() && form.category && !saving && !uploading;
 
   const submit = async () => {
     if (!canAdd) return;
@@ -142,9 +150,11 @@ function AdminWorkshops() {
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-secondary text-secondary-foreground px-3 py-2 text-xs font-semibold hover:opacity-90"
+                disabled={uploading}
+                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-secondary text-secondary-foreground px-3 py-2 text-xs font-semibold hover:opacity-90 disabled:opacity-40"
               >
-                <Upload className="w-3.5 h-3.5" /> {form.image_url ? "Changer" : "Image"}
+                {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+                {uploading ? "Envoi…" : form.image_url ? "Changer" : "Image"}
               </button>
               {form.image_url && (
                 <button
@@ -275,9 +285,10 @@ function AdminWorkshops() {
                       <button
                         type="button"
                         onClick={() => editFileRef.current?.click()}
-                        className="mt-2 w-full inline-flex items-center justify-center gap-1.5 rounded-lg bg-secondary text-secondary-foreground px-3 py-1.5 text-xs font-semibold hover:opacity-90"
+                        disabled={uploading}
+                        className="mt-2 w-full inline-flex items-center justify-center gap-1.5 rounded-lg bg-secondary text-secondary-foreground px-3 py-1.5 text-xs font-semibold hover:opacity-90 disabled:opacity-40"
                       >
-                        <Upload className="w-3.5 h-3.5" /> Image
+                        {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />} {uploading ? "Envoi…" : "Image"}
                       </button>
                     </div>
                     <div className="space-y-2">

@@ -58,11 +58,3 @@ export async function removeWorkshop(id: string) {
   return supabase.from("workshops").delete().eq("id", id);
 }
 
-export async function fileToDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}

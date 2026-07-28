@@ -17,12 +17,12 @@ export interface PageSchema {
   fields: EditableField[];
 }
 
-import heroAsset from "@/assets/dada-hero-new.png.asset.json";
-import handstandAsset from "@/assets/dada-handstand.png.asset.json";
-import teamAsset from "@/assets/apropos-team.png.asset.json";
-import dancersAsset from "@/assets/apropos-dancers.png.asset.json";
-import coursHero from "@/assets/cours-hero.png.asset.json";
-import coursPlan from "@/assets/cours-plan.png.asset.json";
+import heroImage from "@/assets/dada-hero.jpg";
+import welcomeImage from "@/assets/hero-dancers.jpg";
+import teamImage from "@/assets/dada-founder.jpg";
+import dancersImage from "@/assets/dada-cours.jpg";
+import coursHero from "@/assets/dada-cours.jpg";
+import coursPlan from "@/assets/dada-plan.jpg";
 
 export const PAGE_SCHEMAS: PageSchema[] = [
   {
@@ -30,7 +30,7 @@ export const PAGE_SCHEMAS: PageSchema[] = [
     label: "Accueil",
     path: "/",
     fields: [
-      { key: "home.hero.image", label: "Image hero", type: "image", default: heroAsset.url },
+      { key: "home.hero.image", label: "Image hero", type: "image", default: heroImage },
       { key: "home.hero.title1", label: "Titre ligne 1", type: "text", default: "DADA HIP HOP" },
       { key: "home.hero.title2", label: "Titre ligne 2", type: "text", default: "ACADEMY" },
       { key: "home.hero.subtitle", label: "Sous-titre", type: "text", default: "Danse. Culture. Création." },
@@ -45,7 +45,7 @@ export const PAGE_SCHEMAS: PageSchema[] = [
       { key: "home.card1.body", label: "Carte 1 - texte", type: "textarea", default: "Explorez nos styles de danse et trouvez votre rythme." },
       { key: "home.card2.title", label: "Carte 2 - titre", type: "text", default: "Réserver au studio musique" },
       { key: "home.card2.body", label: "Carte 2 - texte", type: "textarea", default: "Un studio musique pro pour enregistrer vos sons." },
-      { key: "home.welcome.image", label: "Image bienvenue", type: "image", default: handstandAsset.url },
+      { key: "home.welcome.image", label: "Image bienvenue", type: "image", default: welcomeImage },
     ],
   },
   {
@@ -54,13 +54,13 @@ export const PAGE_SCHEMAS: PageSchema[] = [
     path: "/a-propos",
     fields: [
       { key: "about.title", label: "Titre", type: "text", default: "QUI SOMMES-NOUS ?" },
-      { key: "about.image1", label: "Image 1", type: "image", default: teamAsset.url },
+      { key: "about.image1", label: "Image 1", type: "image", default: teamImage },
       { key: "about.p1", label: "Paragraphe 1", type: "textarea", default: "Dada Hip Hop Academy est un centre artistique et sportif conçu pour inspirer, former et accompagner les talents de tous âges." },
       { key: "about.p2", label: "Paragraphe 2", type: "textarea", default: "Fondé par Ghada Belgacem, danseuse, coach et créatrice de contenus, notre espace met en avant les valeurs de la culture urbaine : énergie, créativité, liberté et dépassement." },
       { key: "about.cta", label: "Bouton", type: "text", default: "voir les cours" },
       { key: "about.p3", label: "Paragraphe 3", type: "textarea", default: "Nous offrons un environnement où chacun peut évoluer à son rythme : passionnés, débutants, athlètes, artistes, enfants, adultes…" },
       { key: "about.p4", label: "Paragraphe 4 (objectif)", type: "textarea", default: "révéler le potentiel de chaque individu à travers le mouvement et la création." },
-      { key: "about.image2", label: "Image 2", type: "image", default: dancersAsset.url },
+      { key: "about.image2", label: "Image 2", type: "image", default: dancersImage },
       { key: "about.mission", label: "Mission", type: "textarea", default: "Promouvoir la danse, le bien-être et la création artistique à travers un espace moderne et inclusif." },
       { key: "about.vision", label: "Vision", type: "textarea", default: "Créer une plateforme culturelle et sportive qui révèle les talents et inspire la nouvelle génération." },
     ],
@@ -70,13 +70,13 @@ export const PAGE_SCHEMAS: PageSchema[] = [
     label: "Cours & Activités",
     path: "/cours-activites",
     fields: [
-      { key: "cours.hero.image", label: "Image hero", type: "image", default: coursHero.url },
+      { key: "cours.hero.image", label: "Image hero", type: "image", default: coursHero },
       { key: "cours.title", label: "Titre", type: "text", default: "NOS COURS & ACTIVITÉS" },
       { key: "cours.intro", label: "Introduction", type: "textarea", default: "Découvrez une variété de cours conçus pour développer votre technique, votre forme physique et votre créativité. Nos coachs qualifiés vous accompagnent à chaque étape." },
       { key: "cours.cta", label: "Bouton contact", type: "text", default: "Contacter Nous" },
       { key: "cours.section.title", label: "Sous-titre cours", type: "text", default: "TOUS NOS COURS" },
       { key: "cours.section.sub", label: "Sous-sous-titre", type: "text", default: "Des programmes adaptés à tous les niveaux, du débutant à l'expert." },
-      { key: "cours.plan.image", label: "Image planning", type: "image", default: coursPlan.url },
+      { key: "cours.plan.image", label: "Image planning", type: "image", default: coursPlan },
     ],
   },
   {
@@ -100,7 +100,7 @@ export const PAGE_SCHEMAS: PageSchema[] = [
     label: "Dada Réseaux Artist",
     path: "/dada-reseaux-artist",
     fields: [
-      { key: "reseaux.hero.image", label: "Image hero", type: "image", default: heroAsset.url },
+      { key: "reseaux.hero.image", label: "Image hero", type: "image", default: heroImage },
       { key: "reseaux.hero.title", label: "Titre hero", type: "text", default: "DADA RESEAUX ARTIST" },
       { key: "reseaux.hero.subtitle", label: "Sous-titre hero", type: "text", default: "Un espace conçu pour vous mettre en lumière" },
       { key: "reseaux.hero.cta1", label: "Bouton 1", type: "text", default: "Se connecter" },
