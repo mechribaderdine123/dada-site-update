@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkshopsRouteImport } from './routes/workshops'
+import { Route as StudioMusiqueRouteImport } from './routes/studio-musique'
 import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as DadaReseauxArtistRouteImport } from './routes/dada-reseaux-artist'
@@ -26,6 +27,7 @@ import { Route as ArtistMusicRouteImport } from './routes/artist.music'
 import { Route as ArtistEditRouteImport } from './routes/artist.edit'
 import { Route as AdminWorkshopsRouteImport } from './routes/admin.workshops'
 import { Route as AdminTracksRouteImport } from './routes/admin.tracks'
+import { Route as AdminStudioRouteImport } from './routes/admin.studio'
 import { Route as AdminSponsorsRouteImport } from './routes/admin.sponsors'
 import { Route as AdminSignInRouteImport } from './routes/admin.sign-in'
 import { Route as AdminReseauxRouteImport } from './routes/admin.reseaux'
@@ -37,6 +39,11 @@ import { Route as AdminAboutRouteImport } from './routes/admin.about'
 const WorkshopsRoute = WorkshopsRouteImport.update({
   id: '/workshops',
   path: '/workshops',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudioMusiqueRoute = StudioMusiqueRouteImport.update({
+  id: '/studio-musique',
+  path: '/studio-musique',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SignUpRoute = SignUpRouteImport.update({
@@ -119,6 +126,11 @@ const AdminTracksRoute = AdminTracksRouteImport.update({
   path: '/tracks',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminStudioRoute = AdminStudioRouteImport.update({
+  id: '/studio',
+  path: '/studio',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSponsorsRoute = AdminSponsorsRouteImport.update({
   id: '/sponsors',
   path: '/sponsors',
@@ -165,6 +177,7 @@ export interface FileRoutesByFullPath {
   '/dada-reseaux-artist': typeof DadaReseauxArtistRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/studio-musique': typeof StudioMusiqueRoute
   '/workshops': typeof WorkshopsRoute
   '/admin/about': typeof AdminAboutRoute
   '/admin/accounts': typeof AdminAccountsRoute
@@ -173,6 +186,7 @@ export interface FileRoutesByFullPath {
   '/admin/reseaux': typeof AdminReseauxRoute
   '/admin/sign-in': typeof AdminSignInRoute
   '/admin/sponsors': typeof AdminSponsorsRoute
+  '/admin/studio': typeof AdminStudioRoute
   '/admin/tracks': typeof AdminTracksRoute
   '/admin/workshops': typeof AdminWorkshopsRoute
   '/artist/edit': typeof ArtistEditRoute
@@ -189,6 +203,7 @@ export interface FileRoutesByTo {
   '/dada-reseaux-artist': typeof DadaReseauxArtistRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/studio-musique': typeof StudioMusiqueRoute
   '/workshops': typeof WorkshopsRoute
   '/admin/about': typeof AdminAboutRoute
   '/admin/accounts': typeof AdminAccountsRoute
@@ -197,6 +212,7 @@ export interface FileRoutesByTo {
   '/admin/reseaux': typeof AdminReseauxRoute
   '/admin/sign-in': typeof AdminSignInRoute
   '/admin/sponsors': typeof AdminSponsorsRoute
+  '/admin/studio': typeof AdminStudioRoute
   '/admin/tracks': typeof AdminTracksRoute
   '/admin/workshops': typeof AdminWorkshopsRoute
   '/artist/edit': typeof ArtistEditRoute
@@ -216,6 +232,7 @@ export interface FileRoutesById {
   '/dada-reseaux-artist': typeof DadaReseauxArtistRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/studio-musique': typeof StudioMusiqueRoute
   '/workshops': typeof WorkshopsRoute
   '/admin/about': typeof AdminAboutRoute
   '/admin/accounts': typeof AdminAccountsRoute
@@ -224,6 +241,7 @@ export interface FileRoutesById {
   '/admin/reseaux': typeof AdminReseauxRoute
   '/admin/sign-in': typeof AdminSignInRoute
   '/admin/sponsors': typeof AdminSponsorsRoute
+  '/admin/studio': typeof AdminStudioRoute
   '/admin/tracks': typeof AdminTracksRoute
   '/admin/workshops': typeof AdminWorkshopsRoute
   '/artist/edit': typeof ArtistEditRoute
@@ -244,6 +262,7 @@ export interface FileRouteTypes {
     | '/dada-reseaux-artist'
     | '/sign-in'
     | '/sign-up'
+    | '/studio-musique'
     | '/workshops'
     | '/admin/about'
     | '/admin/accounts'
@@ -252,6 +271,7 @@ export interface FileRouteTypes {
     | '/admin/reseaux'
     | '/admin/sign-in'
     | '/admin/sponsors'
+    | '/admin/studio'
     | '/admin/tracks'
     | '/admin/workshops'
     | '/artist/edit'
@@ -268,6 +288,7 @@ export interface FileRouteTypes {
     | '/dada-reseaux-artist'
     | '/sign-in'
     | '/sign-up'
+    | '/studio-musique'
     | '/workshops'
     | '/admin/about'
     | '/admin/accounts'
@@ -276,6 +297,7 @@ export interface FileRouteTypes {
     | '/admin/reseaux'
     | '/admin/sign-in'
     | '/admin/sponsors'
+    | '/admin/studio'
     | '/admin/tracks'
     | '/admin/workshops'
     | '/artist/edit'
@@ -294,6 +316,7 @@ export interface FileRouteTypes {
     | '/dada-reseaux-artist'
     | '/sign-in'
     | '/sign-up'
+    | '/studio-musique'
     | '/workshops'
     | '/admin/about'
     | '/admin/accounts'
@@ -302,6 +325,7 @@ export interface FileRouteTypes {
     | '/admin/reseaux'
     | '/admin/sign-in'
     | '/admin/sponsors'
+    | '/admin/studio'
     | '/admin/tracks'
     | '/admin/workshops'
     | '/artist/edit'
@@ -321,6 +345,7 @@ export interface RootRouteChildren {
   DadaReseauxArtistRoute: typeof DadaReseauxArtistRoute
   SignInRoute: typeof SignInRoute
   SignUpRoute: typeof SignUpRoute
+  StudioMusiqueRoute: typeof StudioMusiqueRoute
   WorkshopsRoute: typeof WorkshopsRoute
   ArtistsIdRoute: typeof ArtistsIdRoute
 }
@@ -332,6 +357,13 @@ declare module '@tanstack/react-router' {
       path: '/workshops'
       fullPath: '/workshops'
       preLoaderRoute: typeof WorkshopsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio-musique': {
+      id: '/studio-musique'
+      path: '/studio-musique'
+      fullPath: '/studio-musique'
+      preLoaderRoute: typeof StudioMusiqueRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sign-up': {
@@ -446,6 +478,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTracksRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/studio': {
+      id: '/admin/studio'
+      path: '/studio'
+      fullPath: '/admin/studio'
+      preLoaderRoute: typeof AdminStudioRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/sponsors': {
       id: '/admin/sponsors'
       path: '/sponsors'
@@ -506,6 +545,7 @@ interface AdminRouteChildren {
   AdminReseauxRoute: typeof AdminReseauxRoute
   AdminSignInRoute: typeof AdminSignInRoute
   AdminSponsorsRoute: typeof AdminSponsorsRoute
+  AdminStudioRoute: typeof AdminStudioRoute
   AdminTracksRoute: typeof AdminTracksRoute
   AdminWorkshopsRoute: typeof AdminWorkshopsRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -519,6 +559,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminReseauxRoute: AdminReseauxRoute,
   AdminSignInRoute: AdminSignInRoute,
   AdminSponsorsRoute: AdminSponsorsRoute,
+  AdminStudioRoute: AdminStudioRoute,
   AdminTracksRoute: AdminTracksRoute,
   AdminWorkshopsRoute: AdminWorkshopsRoute,
   AdminIndexRoute: AdminIndexRoute,
@@ -551,6 +592,7 @@ const rootRouteChildren: RootRouteChildren = {
   DadaReseauxArtistRoute: DadaReseauxArtistRoute,
   SignInRoute: SignInRoute,
   SignUpRoute: SignUpRoute,
+  StudioMusiqueRoute: StudioMusiqueRoute,
   WorkshopsRoute: WorkshopsRoute,
   ArtistsIdRoute: ArtistsIdRoute,
 }

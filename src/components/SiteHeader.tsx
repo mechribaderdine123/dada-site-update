@@ -78,6 +78,15 @@ export function SiteHeader() {
 
           <li>
             <Link
+              to="/studio-musique"
+              className={`${linkBase} ${pathname === "/studio-musique" ? activePill : linkPlain}`}
+            >
+              Studio Musique
+            </Link>
+          </li>
+
+          <li>
+            <Link
               to="/workshops"
               className={`${linkBase} ${pathname === "/workshops" ? activePill : linkPlain}`}
             >
@@ -123,6 +132,11 @@ export function SiteHeader() {
             <li>
               <Link to="/cours-activites" onClick={() => setOpen(false)} className="block px-4 py-2 rounded-lg hover:bg-muted">
                 Cours & Activités
+              </Link>
+            </li>
+            <li>
+              <Link to="/studio-musique" onClick={() => setOpen(false)} className="block px-4 py-2 rounded-lg hover:bg-muted">
+                Studio Musique
               </Link>
             </li>
             <li>
