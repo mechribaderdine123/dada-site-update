@@ -45,7 +45,7 @@ function AboutPage() {
           <div className="space-y-5 text-foreground/90 leading-relaxed">
             <p>{p3}</p>
             <p>
-              <strong>Notre objectif est simple</strong>
+              <strong>Notre objectif est simple :</strong>
               <br />
               {p4}
             </p>
