@@ -1,0 +1,32 @@
+name: Deploy to Hostinger
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Rebuild production site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy on the Hostinger VPS
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USER }}
+          key: ${{ secrets.HOSTINGER_SSH_KEY }}
+          port: ${{ secrets.HOSTINGER_PORT }}
+          envs: DEPLOY_PATH
+          script: |
+            set -e
+            cd "$DEPLOY_PATH"
+            git pull --ff-only origin main
+            docker compose up -d --build --remove-orphans
+        env:
+          DEPLOY_PATH: ${{ secrets.HOSTINGER_DEPLOY_PATH }}

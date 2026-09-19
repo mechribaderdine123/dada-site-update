@@ -9,76 +9,36 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WorkshopsRouteImport } from './routes/workshops'
-import { Route as StudioMusiqueRouteImport } from './routes/studio-musique'
-import { Route as SignUpRouteImport } from './routes/sign-up'
-import { Route as SignInRouteImport } from './routes/sign-in'
-import { Route as DadaReseauxArtistRouteImport } from './routes/dada-reseaux-artist'
-import { Route as CoursActivitesRouteImport } from './routes/cours-activites'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as ArtistRouteImport } from './routes/artist'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ArtistIndexRouteImport } from './routes/artist.index'
+import { Route as AProposRouteImport } from './routes/a-propos'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as ArtistRouteImport } from './routes/artist'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CoursActivitesRouteImport } from './routes/cours-activites'
+import { Route as DadaReseauxArtistRouteImport } from './routes/dada-reseaux-artist'
+import { Route as SignInRouteImport } from './routes/sign-in'
+import { Route as SignUpRouteImport } from './routes/sign-up'
+import { Route as StudioMusiqueRouteImport } from './routes/studio-musique'
+import { Route as WorkshopsRouteImport } from './routes/workshops'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as ArtistsIdRouteImport } from './routes/artists.$id'
-import { Route as ArtistMusicRouteImport } from './routes/artist.music'
-import { Route as ArtistEditRouteImport } from './routes/artist.edit'
-import { Route as AdminWorkshopsRouteImport } from './routes/admin.workshops'
-import { Route as AdminTracksRouteImport } from './routes/admin.tracks'
-import { Route as AdminStudioRouteImport } from './routes/admin.studio'
-import { Route as AdminSponsorsRouteImport } from './routes/admin.sponsors'
-import { Route as AdminSignInRouteImport } from './routes/admin.sign-in'
-import { Route as AdminReseauxRouteImport } from './routes/admin.reseaux'
-import { Route as AdminCoursRouteImport } from './routes/admin.cours'
-import { Route as AdminContactRouteImport } from './routes/admin.contact'
-import { Route as AdminAccountsRouteImport } from './routes/admin.accounts'
 import { Route as AdminAboutRouteImport } from './routes/admin.about'
+import { Route as AdminAccountsRouteImport } from './routes/admin.accounts'
+import { Route as AdminContactRouteImport } from './routes/admin.contact'
+import { Route as AdminCoursRouteImport } from './routes/admin.cours'
+import { Route as AdminReseauxRouteImport } from './routes/admin.reseaux'
+import { Route as AdminSignInRouteImport } from './routes/admin.sign-in'
+import { Route as AdminSponsorsRouteImport } from './routes/admin.sponsors'
+import { Route as AdminStudioRouteImport } from './routes/admin.studio'
+import { Route as AdminTracksRouteImport } from './routes/admin.tracks'
+import { Route as AdminWorkshopsRouteImport } from './routes/admin.workshops'
+import { Route as ArtistIndexRouteImport } from './routes/artist.index'
+import { Route as ArtistEditRouteImport } from './routes/artist.edit'
+import { Route as ArtistMusicRouteImport } from './routes/artist.music'
+import { Route as ArtistsIdRouteImport } from './routes/artists.$id'
 
-const WorkshopsRoute = WorkshopsRouteImport.update({
-  id: '/workshops',
-  path: '/workshops',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StudioMusiqueRoute = StudioMusiqueRouteImport.update({
-  id: '/studio-musique',
-  path: '/studio-musique',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SignUpRoute = SignUpRouteImport.update({
-  id: '/sign-up',
-  path: '/sign-up',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SignInRoute = SignInRouteImport.update({
-  id: '/sign-in',
-  path: '/sign-in',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DadaReseauxArtistRoute = DadaReseauxArtistRouteImport.update({
-  id: '/dada-reseaux-artist',
-  path: '/dada-reseaux-artist',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CoursActivitesRoute = CoursActivitesRouteImport.update({
-  id: '/cours-activites',
-  path: '/cours-activites',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ArtistRoute = ArtistRouteImport.update({
-  id: '/artist',
-  path: '/artist',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AProposRoute = AProposRouteImport.update({
@@ -86,74 +46,59 @@ const AProposRoute = AProposRouteImport.update({
   path: '/a-propos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ArtistIndexRoute = ArtistIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => ArtistRoute,
+const ArtistRoute = ArtistRouteImport.update({
+  id: '/artist',
+  path: '/artist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursActivitesRoute = CoursActivitesRouteImport.update({
+  id: '/cours-activites',
+  path: '/cours-activites',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DadaReseauxArtistRoute = DadaReseauxArtistRouteImport.update({
+  id: '/dada-reseaux-artist',
+  path: '/dada-reseaux-artist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignInRoute = SignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignUpRoute = SignUpRouteImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudioMusiqueRoute = StudioMusiqueRouteImport.update({
+  id: '/studio-musique',
+  path: '/studio-musique',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkshopsRoute = WorkshopsRouteImport.update({
+  id: '/workshops',
+  path: '/workshops',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const ArtistsIdRoute = ArtistsIdRouteImport.update({
-  id: '/artists/$id',
-  path: '/artists/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ArtistMusicRoute = ArtistMusicRouteImport.update({
-  id: '/music',
-  path: '/music',
-  getParentRoute: () => ArtistRoute,
-} as any)
-const ArtistEditRoute = ArtistEditRouteImport.update({
-  id: '/edit',
-  path: '/edit',
-  getParentRoute: () => ArtistRoute,
-} as any)
-const AdminWorkshopsRoute = AdminWorkshopsRouteImport.update({
-  id: '/workshops',
-  path: '/workshops',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTracksRoute = AdminTracksRouteImport.update({
-  id: '/tracks',
-  path: '/tracks',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminStudioRoute = AdminStudioRouteImport.update({
-  id: '/studio',
-  path: '/studio',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSponsorsRoute = AdminSponsorsRouteImport.update({
-  id: '/sponsors',
-  path: '/sponsors',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSignInRoute = AdminSignInRouteImport.update({
-  id: '/sign-in',
-  path: '/sign-in',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminReseauxRoute = AdminReseauxRouteImport.update({
-  id: '/reseaux',
-  path: '/reseaux',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCoursRoute = AdminCoursRouteImport.update({
-  id: '/cours',
-  path: '/cours',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminContactRoute = AdminContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
+const AdminAboutRoute = AdminAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminAccountsRoute = AdminAccountsRouteImport.update({
@@ -161,10 +106,65 @@ const AdminAccountsRoute = AdminAccountsRouteImport.update({
   path: '/accounts',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminAboutRoute = AdminAboutRouteImport.update({
-  id: '/about',
-  path: '/about',
+const AdminContactRoute = AdminContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => AdminRoute,
+} as any)
+const AdminCoursRoute = AdminCoursRouteImport.update({
+  id: '/cours',
+  path: '/cours',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReseauxRoute = AdminReseauxRouteImport.update({
+  id: '/reseaux',
+  path: '/reseaux',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSignInRoute = AdminSignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSponsorsRoute = AdminSponsorsRouteImport.update({
+  id: '/sponsors',
+  path: '/sponsors',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStudioRoute = AdminStudioRouteImport.update({
+  id: '/studio',
+  path: '/studio',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTracksRoute = AdminTracksRouteImport.update({
+  id: '/tracks',
+  path: '/tracks',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminWorkshopsRoute = AdminWorkshopsRouteImport.update({
+  id: '/workshops',
+  path: '/workshops',
+  getParentRoute: () => AdminRoute,
+} as any)
+const ArtistIndexRoute = ArtistIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ArtistRoute,
+} as any)
+const ArtistEditRoute = ArtistEditRouteImport.update({
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => ArtistRoute,
+} as any)
+const ArtistMusicRoute = ArtistMusicRouteImport.update({
+  id: '/music',
+  path: '/music',
+  getParentRoute: () => ArtistRoute,
+} as any)
+const ArtistsIdRoute = ArtistsIdRouteImport.update({
+  id: '/artists/$id',
+  path: '/artists/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -352,67 +352,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/workshops': {
-      id: '/workshops'
-      path: '/workshops'
-      fullPath: '/workshops'
-      preLoaderRoute: typeof WorkshopsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/studio-musique': {
-      id: '/studio-musique'
-      path: '/studio-musique'
-      fullPath: '/studio-musique'
-      preLoaderRoute: typeof StudioMusiqueRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sign-up': {
-      id: '/sign-up'
-      path: '/sign-up'
-      fullPath: '/sign-up'
-      preLoaderRoute: typeof SignUpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sign-in': {
-      id: '/sign-in'
-      path: '/sign-in'
-      fullPath: '/sign-in'
-      preLoaderRoute: typeof SignInRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dada-reseaux-artist': {
-      id: '/dada-reseaux-artist'
-      path: '/dada-reseaux-artist'
-      fullPath: '/dada-reseaux-artist'
-      preLoaderRoute: typeof DadaReseauxArtistRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cours-activites': {
-      id: '/cours-activites'
-      path: '/cours-activites'
-      fullPath: '/cours-activites'
-      preLoaderRoute: typeof CoursActivitesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/artist': {
-      id: '/artist'
-      path: '/artist'
-      fullPath: '/artist'
-      preLoaderRoute: typeof ArtistRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/a-propos': {
@@ -422,19 +366,68 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AProposRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/artist/': {
-      id: '/artist/'
-      path: '/'
-      fullPath: '/artist/'
-      preLoaderRoute: typeof ArtistIndexRouteImport
-      parentRoute: typeof ArtistRoute
+    '/artist': {
+      id: '/artist'
+      path: '/artist'
+      fullPath: '/artist'
+      preLoaderRoute: typeof ArtistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cours-activites': {
+      id: '/cours-activites'
+      path: '/cours-activites'
+      fullPath: '/cours-activites'
+      preLoaderRoute: typeof CoursActivitesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dada-reseaux-artist': {
+      id: '/dada-reseaux-artist'
+      path: '/dada-reseaux-artist'
+      fullPath: '/dada-reseaux-artist'
+      preLoaderRoute: typeof DadaReseauxArtistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-in': {
+      id: '/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof SignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-up': {
+      id: '/sign-up'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof SignUpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio-musique': {
+      id: '/studio-musique'
+      path: '/studio-musique'
+      fullPath: '/studio-musique'
+      preLoaderRoute: typeof StudioMusiqueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workshops': {
+      id: '/workshops'
+      path: '/workshops'
+      fullPath: '/workshops'
+      preLoaderRoute: typeof WorkshopsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/': {
       id: '/admin/'
@@ -443,81 +436,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/artists/$id': {
-      id: '/artists/$id'
-      path: '/artists/$id'
-      fullPath: '/artists/$id'
-      preLoaderRoute: typeof ArtistsIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/artist/music': {
-      id: '/artist/music'
-      path: '/music'
-      fullPath: '/artist/music'
-      preLoaderRoute: typeof ArtistMusicRouteImport
-      parentRoute: typeof ArtistRoute
-    }
-    '/artist/edit': {
-      id: '/artist/edit'
-      path: '/edit'
-      fullPath: '/artist/edit'
-      preLoaderRoute: typeof ArtistEditRouteImport
-      parentRoute: typeof ArtistRoute
-    }
-    '/admin/workshops': {
-      id: '/admin/workshops'
-      path: '/workshops'
-      fullPath: '/admin/workshops'
-      preLoaderRoute: typeof AdminWorkshopsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/tracks': {
-      id: '/admin/tracks'
-      path: '/tracks'
-      fullPath: '/admin/tracks'
-      preLoaderRoute: typeof AdminTracksRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/studio': {
-      id: '/admin/studio'
-      path: '/studio'
-      fullPath: '/admin/studio'
-      preLoaderRoute: typeof AdminStudioRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/sponsors': {
-      id: '/admin/sponsors'
-      path: '/sponsors'
-      fullPath: '/admin/sponsors'
-      preLoaderRoute: typeof AdminSponsorsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/sign-in': {
-      id: '/admin/sign-in'
-      path: '/sign-in'
-      fullPath: '/admin/sign-in'
-      preLoaderRoute: typeof AdminSignInRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/reseaux': {
-      id: '/admin/reseaux'
-      path: '/reseaux'
-      fullPath: '/admin/reseaux'
-      preLoaderRoute: typeof AdminReseauxRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/cours': {
-      id: '/admin/cours'
-      path: '/cours'
-      fullPath: '/admin/cours'
-      preLoaderRoute: typeof AdminCoursRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/contact': {
-      id: '/admin/contact'
-      path: '/contact'
-      fullPath: '/admin/contact'
-      preLoaderRoute: typeof AdminContactRouteImport
+    '/admin/about': {
+      id: '/admin/about'
+      path: '/about'
+      fullPath: '/admin/about'
+      preLoaderRoute: typeof AdminAboutRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/accounts': {
@@ -527,12 +450,89 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAccountsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/about': {
-      id: '/admin/about'
-      path: '/about'
-      fullPath: '/admin/about'
-      preLoaderRoute: typeof AdminAboutRouteImport
+    '/admin/contact': {
+      id: '/admin/contact'
+      path: '/contact'
+      fullPath: '/admin/contact'
+      preLoaderRoute: typeof AdminContactRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/admin/cours': {
+      id: '/admin/cours'
+      path: '/cours'
+      fullPath: '/admin/cours'
+      preLoaderRoute: typeof AdminCoursRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/reseaux': {
+      id: '/admin/reseaux'
+      path: '/reseaux'
+      fullPath: '/admin/reseaux'
+      preLoaderRoute: typeof AdminReseauxRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sign-in': {
+      id: '/admin/sign-in'
+      path: '/sign-in'
+      fullPath: '/admin/sign-in'
+      preLoaderRoute: typeof AdminSignInRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sponsors': {
+      id: '/admin/sponsors'
+      path: '/sponsors'
+      fullPath: '/admin/sponsors'
+      preLoaderRoute: typeof AdminSponsorsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/studio': {
+      id: '/admin/studio'
+      path: '/studio'
+      fullPath: '/admin/studio'
+      preLoaderRoute: typeof AdminStudioRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/tracks': {
+      id: '/admin/tracks'
+      path: '/tracks'
+      fullPath: '/admin/tracks'
+      preLoaderRoute: typeof AdminTracksRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/workshops': {
+      id: '/admin/workshops'
+      path: '/workshops'
+      fullPath: '/admin/workshops'
+      preLoaderRoute: typeof AdminWorkshopsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/artist/': {
+      id: '/artist/'
+      path: '/'
+      fullPath: '/artist/'
+      preLoaderRoute: typeof ArtistIndexRouteImport
+      parentRoute: typeof ArtistRoute
+    }
+    '/artist/edit': {
+      id: '/artist/edit'
+      path: '/edit'
+      fullPath: '/artist/edit'
+      preLoaderRoute: typeof ArtistEditRouteImport
+      parentRoute: typeof ArtistRoute
+    }
+    '/artist/music': {
+      id: '/artist/music'
+      path: '/music'
+      fullPath: '/artist/music'
+      preLoaderRoute: typeof ArtistMusicRouteImport
+      parentRoute: typeof ArtistRoute
+    }
+    '/artists/$id': {
+      id: '/artists/$id'
+      path: '/artists/$id'
+      fullPath: '/artists/$id'
+      preLoaderRoute: typeof ArtistsIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
