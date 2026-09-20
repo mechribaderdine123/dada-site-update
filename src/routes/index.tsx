@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Users, Radio } from "lucide-react";
-import heroAsset from "@/assets/dada-hero-new.png.asset.json";
-import handstandAsset from "@/assets/dada-handstand.png.asset.json";
+import heroImageAsset from "@/assets/dada-hero.jpg";
+import handstandImage from "@/assets/hero-dancers.jpg";
 import { useContent } from "@/lib/site-content";
 import { defaultSponsors, useSponsors } from "@/lib/sponsors";
 
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
-  const heroImage = useContent("home.hero.image", heroAsset.url);
+  const heroImage = useContent("home.hero.image", heroImageAsset);
   const title1 = useContent("home.hero.title1", "DADA HIP HOP");
   const title2 = useContent("home.hero.title2", "ACADEMY");
   const subtitle = useContent("home.hero.subtitle", "Danse. Culture. Création.");
@@ -36,7 +36,7 @@ function HomePage() {
   const card1Body = useContent("home.card1.body", "Explorez nos styles de danse et trouvez votre rythme.");
   const card2Title = useContent("home.card2.title", "Réserver au studio musique");
   const card2Body = useContent("home.card2.body", "Un studio musique pro pour enregistrer vos sons.");
-  const welcomeImage = useContent("home.welcome.image", handstandAsset.url);
+  const welcomeImage = useContent("home.welcome.image", handstandImage);
 
   return (
     <>
@@ -118,7 +118,7 @@ function SponsorsStrip() {
         <div className="group relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_6%,black_94%,transparent)]">
           <div className="flex w-max animate-marquee gap-20 md:gap-28 group-hover:[animation-play-state:paused]">
             {doubled.map((s, i) => {
-              const img = (
+              const img = s.image_url && !s.image_url.startsWith("/__l5e/") ? (
                 <img
                   src={s.image_url}
                   alt={s.name}
@@ -126,6 +126,10 @@ function SponsorsStrip() {
                   decoding="async"
                   fetchPriority="high"
                 />
+              ) : (
+                <span className="grid h-20 md:h-28 w-[180px] md:w-[220px] place-items-center rounded-xl border border-border bg-card px-4 text-center font-display text-2xl tracking-wide text-primary">
+                  {s.name}
+                </span>
               );
               return (
                 <div key={`${s.id}-${i}`} className="shrink-0 flex items-center" title={s.name}>

@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, useNavigate, Link, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { LogOut, Home as HomeIcon, Users, Music as MusicIcon, FileText, Award } from "lucide-react";
-import logoAsset from "@/assets/dada-logo.png.asset.json";
+import logo from "@/assets/dada-logo.png";
 import { PAGE_SCHEMAS } from "@/lib/content-schema";
 import { useAuth } from "@/lib/auth";
 
@@ -47,7 +47,7 @@ function AdminLayout() {
       <header className="sticky top-0 z-30 bg-background border-b border-border">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src={logoAsset.url} alt="" className="h-9 w-auto" />
+            <img src={logo} alt="" className="h-9 w-auto" />
             <span className="font-display tracking-wide text-xl">
               ADMIN <span className="text-primary">DASHBOARD</span>
             </span>

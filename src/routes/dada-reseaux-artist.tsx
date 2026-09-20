@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Search, User as UserIcon, Clock, Trash2 } from "lucide-react";
-import heroAsset from "@/assets/dada-hero-new.png.asset.json";
+import heroAsset from "@/assets/dada-hero.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { signedMusicUrl } from "@/lib/music-url";
 import { useAuth } from "@/lib/auth";
@@ -34,7 +34,7 @@ function DadaReseauxArtistPage() {
   const canManage = !authLoading && isAdmin;
   const [busy, setBusy] = useState<string | null>(null);
 
-  const heroImage = useContent("reseaux.hero.image", heroAsset.url);
+  const heroImage = useContent("reseaux.hero.image", heroAsset);
   const heroTitle = useContent("reseaux.hero.title", "DADA RESEAUX ARTIST");
   const heroSubtitle = useContent("reseaux.hero.subtitle", "Un espace conçu pour vous mettre en lumière");
   const cta1 = useContent("reseaux.hero.cta1", "Se connecter");

@@ -36,7 +36,9 @@ function subscribe(cb: () => void) {
 
 export function getContent(key: string, fallback: string): string {
   const v = cache[key];
-  return v !== undefined && v !== "" ? v : fallback;
+  // Lovable asset metadata uses a development-only URL that a self-hosted app
+  // cannot serve, so retain the bundled image when an old value is present.
+  return v !== undefined && v !== "" && !v.startsWith("/__l5e/") ? v : fallback;
 }
 
 export async function setContent(key: string, value: string) {

@@ -13,14 +13,18 @@ export function isServerRoute(pathname: string): boolean {
 export async function handleServerRequest(request: Request): Promise<Response> {
   try {
     const url = new URL(request.url);
-    const segments = url.pathname
+    const pathSegments = url.pathname
       .split("/")
       .filter(Boolean)
-      .slice(1)
       .map((segment) => decodeURIComponent(segment));
 
-    const media = await handleMediaRoute(request, segments);
+    // `/media/*` is a top-level public route, unlike `/api/*` whose first
+    // segment is the API prefix. Keep `media` for its handler so uploaded
+    // site images resolve at the URL saved by the dashboard.
+    const media = await handleMediaRoute(request, pathSegments);
     if (media) return media;
+
+    const segments = pathSegments.slice(1);
 
     const auth = await handleAuthRoute(request, segments);
     if (auth) return auth;

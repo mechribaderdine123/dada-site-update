@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import teamAsset from "@/assets/apropos-team.png.asset.json";
-import dancersAsset from "@/assets/apropos-dancers.png.asset.json";
+import teamAsset from "@/assets/dada-founder.jpg";
+import dancersAsset from "@/assets/hero-dancers.jpg";
 import { useContent } from "@/lib/site-content";
 
 export const Route = createFileRoute("/a-propos")({
@@ -15,13 +15,13 @@ export const Route = createFileRoute("/a-propos")({
 
 function AboutPage() {
   const title = useContent("about.title", "QUI SOMMES-NOUS ?");
-  const image1 = useContent("about.image1", teamAsset.url);
+  const image1 = useContent("about.image1", teamAsset);
   const p1 = useContent("about.p1", "Dada Hip Hop Academy est un centre artistique et sportif conçu pour inspirer, former et accompagner les talents de tous âges.");
   const p2 = useContent("about.p2", "Fondé par Ghada Belgacem, danseuse, coach et créatrice de contenus, notre espace met en avant les valeurs de la culture urbaine : énergie, créativité, liberté et dépassement.");
   const cta = useContent("about.cta", "voir les cours");
   const p3 = useContent("about.p3", "Nous offrons un environnement où chacun peut évoluer à son rythme : passionnés, débutants, athlètes, artistes, enfants, adultes…");
   const p4 = useContent("about.p4", "révéler le potentiel de chaque individu à travers le mouvement et la création.");
-  const image2 = useContent("about.image2", dancersAsset.url);
+  const image2 = useContent("about.image2", dancersAsset);
   const mission = useContent("about.mission", "Promouvoir la danse, le bien-être et la création artistique à travers un espace moderne et inclusif.");
   const vision = useContent("about.vision", "Créer une plateforme culturelle et sportive qui révèle les talents et inspire la nouvelle génération.");
 

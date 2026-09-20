@@ -92,11 +92,15 @@ export function toApiError(error: unknown): ApiError {
     return { status, message: error.message };
   }
 
-  const code = postgresErrorCode(error);
-  if (code) return mapPostgresCode(code);
+const code = postgresErrorCode(error);
 
-  console.error("[api] unhandled error", error);
-  return { status: 500, message: "Something went wrong on the server." };
+if (code) {
+  console.error("[DB RAW ERROR]", error);
+  return mapPostgresCode(code);
+}
+
+console.error("[api] unhandled error", error);
+return { status: 500, message: "Something went wrong on the server." };
 }
 
 function postgresErrorCode(error: unknown): string | null {

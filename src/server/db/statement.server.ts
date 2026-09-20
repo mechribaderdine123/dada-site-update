@@ -130,9 +130,14 @@ export function buildStatement(request: StatementRequest): Statement {
 
     case "upsert": {
       if (!meta.insertable) throw new QueryDeniedError("Rows cannot be upserted into this table.");
+      // An empty policy column list means the caller may write every table
+      // column. Content tables use that form, so passing only the conflict key
+      // here used to discard `value` (including uploaded image URLs).
+      const writableColumns =
+        payloadColumns.length > 0 ? [...payloadColumns, meta.conflictTarget] : [];
       const values = pickWritableValues(
         meta,
-        [...payloadColumns, meta.conflictTarget],
+        writableColumns,
         payload ?? {},
         decision.forcedValues,
       );

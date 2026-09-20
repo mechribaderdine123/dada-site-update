@@ -26,6 +26,7 @@ ENV UPLOAD_DIR=/data/uploads
 COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=builder /app/.output ./.output
 COPY package.json ./
+COPY scripts ./scripts
 
 # The upload folder holds the MP3s, avatars and covers. It is created here so
 # the named volume inherits the right ownership on first start.

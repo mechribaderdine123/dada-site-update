@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PersonStanding, Dumbbell, Flower2 } from "lucide-react";
-import heroAsset from "@/assets/cours-hero.png.asset.json";
-import planAsset from "@/assets/cours-plan.png.asset.json";
+import heroAsset from "@/assets/dada-cours.jpg";
+import planAsset from "@/assets/dada-plan.jpg";
 import { useContent } from "@/lib/site-content";
 
 export const Route = createFileRoute("/cours-activites")({
@@ -61,13 +61,13 @@ const CARDS: Card[] = [
 ];
 
 function CoursPage() {
-  const heroImg = useContent("cours.hero.image", heroAsset.url);
+  const heroImg = useContent("cours.hero.image", heroAsset);
   const title = useContent("cours.title", "NOS COURS & ACTIVITÉS");
   const intro = useContent("cours.intro", "Découvrez une variété de cours conçus pour développer votre technique, votre forme physique et votre créativité. Nos coachs qualifiés vous accompagnent à chaque étape.");
   const cta = useContent("cours.cta", "Contacter Nous");
   const sectionTitle = useContent("cours.section.title", "TOUS NOS COURS");
   const sectionSub = useContent("cours.section.sub", "Des programmes adaptés à tous les niveaux, du débutant à l'expert.");
-  const planImg = useContent("cours.plan.image", planAsset.url);
+  const planImg = useContent("cours.plan.image", planAsset);
 
   return (
     <div className="pt-28 pb-20">

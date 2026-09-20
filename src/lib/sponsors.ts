@@ -1,9 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import eu4YouthAsset from "@/assets/sponsor-eu4youth.png.asset.json";
-import redstartAsset from "@/assets/sponsor-redstart.png.asset.json";
-import euAsset from "@/assets/sponsor-eu.png.asset.json";
-import maghrouminAsset from "@/assets/sponsor-maghroumin.png.asset.json";
 
 export type Sponsor = {
   id: string;
@@ -17,10 +13,10 @@ export type Sponsor = {
 // avoids making the home page wait for the browser's first Supabase request.
 // The database remains the source of truth and replaces this list when ready.
 export const defaultSponsors: Sponsor[] = [
-  { id: "eu4youth", name: "EU4Youth", image_url: eu4YouthAsset.url, link_url: null, sort_order: 1 },
-  { id: "redstart", name: "Redstart Tunisie", image_url: redstartAsset.url, link_url: null, sort_order: 2 },
-  { id: "eu", name: "Union européenne", image_url: euAsset.url, link_url: null, sort_order: 3 },
-  { id: "maghroumin", name: "Maghroum'in", image_url: maghrouminAsset.url, link_url: null, sort_order: 4 },
+  { id: "eu4youth", name: "EU4Youth", image_url: "", link_url: null, sort_order: 1 },
+  { id: "redstart", name: "Redstart Tunisie", image_url: "", link_url: null, sort_order: 2 },
+  { id: "eu", name: "Union européenne", image_url: "", link_url: null, sort_order: 3 },
+  { id: "maghroumin", name: "Maghroum'in", image_url: "", link_url: null, sort_order: 4 },
 ];
 
 export function useSponsors(initialSponsors: Sponsor[] = []) {
