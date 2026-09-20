@@ -1,151 +1,307 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Mail, Phone, Youtube, Instagram, Facebook, Music as MusicIcon, ExternalLink } from "lucide-react";
-import artistPortrait from "@/assets/artist-portrait.jpg";
+import { ExternalLink, Music2, Play, Share2, User, Youtube } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { signedMusicUrl } from "@/lib/music-url";
 
-export const Route = createFileRoute("/artist/")({
-  head: () => ({
-    meta: [
-      { title: "Artist Profile — Dada Réseaux Artist" },
-      { name: "description", content: "Profil d'artiste sur la plateforme Dada Hip Hop Academy." },
-    ],
-  }),
-  component: ArtistPage,
-});
-
+export const Route = createFileRoute("/artist/")({ component: ArtistPage });
 type Track = {
-  id: string; title: string; genre: string | null;
-  cover_url: string | null; audio_url: string | null; status: string;
+  id: string;
+  title: string;
+  genre: string | null;
+  cover_url: string | null;
+  audio_url: string | null;
+  status: string;
+};
+type Video = { id: string; title: string; youtube_url: string };
+const youtubeEmbed = (url: string) => {
+  const id = url.match(/(?:youtu\.be\/|v=|embed\/)([\w-]{11})/)?.[1];
+  return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
 };
 
 function ArtistPage() {
   const { profile } = useAuth();
   const [tracks, setTracks] = useState<Track[]>([]);
+  const [videos, setVideos] = useState<Video[]>([]);
   const [avatar, setAvatar] = useState<string | null>(null);
-
-  useEffect(() => {
-    signedMusicUrl(profile?.avatar_url ?? null).then(setAvatar);
-  }, [profile?.avatar_url]);
-
+  const [cover, setCover] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   useEffect(() => {
     if (!profile) return;
-    supabase
-      .from("tracks")
-      .select("id,title,genre,cover_url,audio_url,status")
-      .eq("user_id", profile.id)
-      .order("created_at", { ascending: false })
-      .then(async ({ data }) => {
-        const list = (data as Track[]) ?? [];
-        const resolved = await Promise.all(
-          list.map(async (t) => ({
-            ...t,
-            cover_url: await signedMusicUrl(t.cover_url),
-            audio_url: await signedMusicUrl(t.audio_url),
+    Promise.all([
+      signedMusicUrl(profile.avatar_url),
+      signedMusicUrl(profile.cover_url),
+      supabase
+        .from("tracks")
+        .select("id,title,genre,cover_url,audio_url,status")
+        .eq("user_id", profile.id)
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("artist_videos")
+        .select("id,title,youtube_url")
+        .eq("user_id", profile.id)
+        .order("created_at", { ascending: false }),
+    ]).then(async ([a, c, tracksResult, videosResult]) => {
+      setAvatar(a);
+      setCover(c);
+      setVideos((videosResult.data ?? []) as Video[]);
+      setTracks(
+        await Promise.all(
+          ((tracksResult.data ?? []) as Track[]).map(async (track) => ({
+            ...track,
+            cover_url: await signedMusicUrl(track.cover_url),
+            audio_url: await signedMusicUrl(track.audio_url),
           })),
-        );
-        setTracks(resolved);
-      });
+        ),
+      );
+    });
   }, [profile]);
-
   if (!profile) return null;
-
+  const accent = profile.accent_color || "#6fffdc";
+  const background = "#0e0e0e";
+  const surface = "#1c1b1b";
+  const text = "#e5e2e1";
+  const publicUrl = `${window.location.origin}/artist/${profile.slug}`;
+  const copy = async () => {
+    await navigator.clipboard.writeText(publicUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1600);
+  };
   return (
-    <div className="min-h-screen bg-[#393939] text-white">
-      <section className="relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-secondary/30 via-[#393939] to-[#393939]" />
-        <div className="relative max-w-6xl mx-auto px-6 pt-8 pb-12">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div className="inline-flex bg-white/10 backdrop-blur rounded-xl p-1.5 gap-1">
-              <span className="px-6 py-2 rounded-lg text-sm font-semibold bg-secondary text-secondary-foreground">Home</span>
-              <Link to="/artist/music" className="px-6 py-2 rounded-lg text-sm font-semibold text-white/70 hover:text-white transition">Music</Link>
-            </div>
-            <Link to="/artist/edit" className="rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-bold hover:opacity-90 transition shadow-lg">
-              Edit profil
-            </Link>
-          </div>
-
-          <div className="mt-8 grid md:grid-cols-[280px_1fr] gap-8 items-start">
-            <div className="aspect-square w-full max-w-[280px] rounded-2xl overflow-hidden bg-black/30">
-              <img src={avatar || artistPortrait} alt={profile.artist_name} className="w-full h-full object-cover" />
-            </div>
-            <div className="space-y-4 text-white/90 leading-relaxed">
-              <h1 className="text-3xl md:text-4xl font-black text-white">{profile.artist_name}</h1>
-              <div className="flex flex-wrap gap-2 text-sm">
-                {profile.genre && <span className="rounded-full bg-white/10 px-3 py-1">{profile.genre}</span>}
-                {profile.city && <span className="rounded-full bg-white/10 px-3 py-1">{profile.city}</span>}
+    <div
+      className="min-h-screen"
+      style={
+        {
+          backgroundColor: background,
+          color: text,
+          "--artist-accent": accent,
+          "--artist-surface": surface,
+        } as React.CSSProperties
+      }
+    >
+      <header
+        className="relative z-20 flex h-20 items-center justify-between border-b border-white/5 px-5 md:px-8"
+        style={{ backgroundColor: background }}
+      >
+        <Link
+          to="/artist"
+          className="font-display text-2xl tracking-wide"
+          style={{ color: accent }}
+        >
+          DADAHIPHOP
+        </Link>
+        <nav className="hidden items-center gap-2 text-xs font-bold uppercase tracking-wider text-white/55 sm:flex">
+          <span className="rounded bg-white/5 px-3 py-2">Mon profil</span>
+          <Link
+            to="/artist/my-music"
+            className="rounded px-3 py-2 hover:bg-white/5 hover:text-white"
+          >
+            My music
+          </Link>
+        </nav>
+        <Link
+          to="/artist/edit"
+          className="rounded px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#00382d]"
+          style={{ backgroundColor: accent }}
+        >
+          Edit profile
+        </Link>
+      </header>
+      <section
+        className="relative h-64 overflow-hidden md:h-80"
+        style={{ backgroundColor: surface }}
+      >
+        {cover && <img src={cover} alt="" className="h-full w-full object-cover opacity-75" />}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0e0e0e] via-[#0e0e0e]/35 to-black/25" />
+        <div className="relative mx-auto flex max-w-7xl justify-end px-5 pt-6">
+          <Link
+            to="/artist/edit"
+            className="rounded-lg bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-wider hover:bg-white/15"
+          >
+            Edit profile
+          </Link>
+        </div>
+      </section>
+      <div className="relative z-10 mx-auto -mt-20 max-w-7xl px-5 pb-16">
+        <section
+          className="rounded-xl border border-white/10 p-5 shadow-2xl backdrop-blur md:p-7"
+          style={{ backgroundColor: surface }}
+        >
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
+              <div className="h-28 w-28 overflow-hidden rounded-xl bg-[#353534] md:h-36 md:w-36">
+                {avatar ? (
+                  <img
+                    src={avatar}
+                    alt={profile.artist_name}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <User className="m-auto h-full w-12 text-white/30" />
+                )}
               </div>
-              <p className="whitespace-pre-wrap">{profile.bio || "Ajoutez votre biographie depuis Profil."}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[#393939] py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-black">Ma musique</h2>
-          {tracks.length === 0 ? (
-            <p className="mt-6 text-white/70">Aucun morceau pour le moment. <Link to="/artist/music" className="text-secondary hover:underline">Ajouter un morceau →</Link></p>
-          ) : (
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-              {tracks.slice(0, 6).map((t) => (
-                <div key={t.id} className="group">
-                  <div className="aspect-square overflow-hidden rounded-2xl bg-[#4a4a4a] grid place-items-center">
-                    {t.cover_url ? (
-                      <img src={t.cover_url} alt={t.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    ) : (
-                      <MusicIcon className="w-12 h-12 text-white/50" />
-                    )}
-                  </div>
-                  <div className="mt-4 flex items-start justify-between gap-2">
-                    <div>
-                      <p className="text-2xl font-black">{t.title}</p>
-                      <p className="text-sm text-white/60">
-                        {t.genre || "—"}
-                        <span className={`ml-2 rounded-full px-2 py-0.5 text-xs ${
-                          t.status === "approved" ? "bg-green-500/20 text-green-300" :
-                          t.status === "rejected" ? "bg-red-500/20 text-red-300" :
-                          "bg-yellow-500/20 text-yellow-200"
-                        }`}>
-                          {t.status === "approved" ? "Publié" : t.status === "rejected" ? "Refusé" : "En attente"}
-                        </span>
-                      </p>
-                    </div>
-                    {t.audio_url && (
-                      <a href={t.audio_url} target="_blank" rel="noreferrer" className="text-secondary hover:opacity-70 mt-2" aria-label="Listen">
-                        <ExternalLink className="w-5 h-5" />
-                      </a>
-                    )}
-                  </div>
+              <div>
+                <div className="flex flex-wrap gap-2 text-[11px] font-bold uppercase tracking-widest">
+                  <span
+                    className="rounded px-2 py-1 text-[#00382d]"
+                    style={{ backgroundColor: accent }}
+                  >
+                    Mon profil
+                  </span>
+                  {profile.genre && (
+                    <span className="rounded bg-white/10 px-2 py-1 text-white/65">
+                      {profile.genre}
+                    </span>
+                  )}
                 </div>
-              ))}
+                <h1 className="mt-3 font-display text-5xl uppercase leading-none md:text-6xl">
+                  {profile.artist_name}
+                </h1>
+                <p className="mt-2 text-sm text-white/60">
+                  {[profile.genre, profile.city].filter(Boolean).join(" · ") ||
+                    "Complétez votre profil"}
+                </p>
+              </div>
             </div>
-          )}
-        </div>
-      </section>
-
-      <footer className="bg-[#2d2d2d] py-12 px-6">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12">
-          <div>
-            <h3 className="text-2xl font-black">Réseaux sociaux</h3>
-            <div className="mt-6 grid grid-cols-2 gap-4 text-sm text-white/90">
-              {profile.youtube && <a href={profile.youtube} target="_blank" rel="noreferrer" className="flex items-center gap-3 hover:text-secondary transition"><Youtube className="w-5 h-5 text-primary" /> YouTube</a>}
-              {profile.facebook && <a href={profile.facebook} target="_blank" rel="noreferrer" className="flex items-center gap-3 hover:text-secondary transition"><Facebook className="w-5 h-5 text-secondary" /> Facebook</a>}
-              {profile.instagram && <a href={profile.instagram} target="_blank" rel="noreferrer" className="flex items-center gap-3 hover:text-secondary transition"><Instagram className="w-5 h-5 text-primary" /> Instagram</a>}
-              {profile.spotify && <a href={profile.spotify} target="_blank" rel="noreferrer" className="flex items-center gap-3 hover:text-secondary transition">🎵 Spotify</a>}
+            <div className="flex flex-wrap gap-2">
+              <Link
+                to="/artist/my-music"
+                className="inline-flex h-11 items-center gap-2 rounded px-4 text-sm font-bold text-[#00382d]"
+                style={{ backgroundColor: accent }}
+              >
+                <Music2 className="w-4" /> My music
+              </Link>
+              <button
+                onClick={copy}
+                className="inline-flex h-11 items-center gap-2 rounded bg-white/10 px-4 text-sm font-bold hover:bg-white/15"
+              >
+                <Share2 className="w-4" />
+                {copied ? "Link copied" : "Share"}
+              </button>
             </div>
           </div>
-          <div className="md:text-right">
-            <h3 className="text-2xl font-black">Contact</h3>
-            <div className="mt-6 space-y-3 text-sm text-white/90">
-              <div className="flex items-center gap-3 md:justify-end"><Mail className="w-5 h-5 text-primary" /> {profile.email}</div>
-              {profile.phone && <div className="flex items-center gap-3 md:justify-end"><Phone className="w-5 h-5 text-secondary" /> {profile.phone}</div>}
+        </section>
+        <div className="mt-8 grid gap-8 lg:grid-cols-12">
+          <main className="lg:col-span-8">
+            <Title>My music</Title>
+            <div className="mt-4 space-y-3">
+              {false ? (
+                tracks.map((track, i) => (
+                  <article
+                    key={track.id}
+                    className="flex flex-col gap-4 rounded-xl p-4 sm:flex-row sm:items-center"
+                    style={{ backgroundColor: surface }}
+                  >
+                    <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded bg-[#353534]">
+                      {track.cover_url ? (
+                        <img src={track.cover_url} alt="" className="h-full w-full object-cover" />
+                      ) : (
+                        <span style={{ color: accent }}>0{i + 1}</span>
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-display text-xl uppercase">{track.title}</h3>
+                      <p className="text-xs text-white/50">
+                        {track.genre || "Dada Hip Hop Academy"} ·{" "}
+                        {track.status === "approved" ? "Published" : "Pending review"}
+                      </p>
+                      {track.audio_url && (
+                        <audio
+                          controls
+                          src={track.audio_url}
+                          preload="none"
+                          className="mt-3 h-9 w-full"
+                        />
+                      )}
+                    </div>
+                  </article>
+                ))
+              ) : (
+                <Link
+                  to="/artist/my-music"
+                  className="flex items-center justify-between rounded-xl p-5 font-bold hover:brightness-110"
+                  style={{ backgroundColor: surface }}
+                >
+                  <span>Open your music page to listen to all your tracks.</span>
+                  <Music2 className="w-5" style={{ color: accent }} />
+                </Link>
+              )}
             </div>
-          </div>
+            <div className="mt-10">
+              <Title pink>Clips</Title>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                {videos.length ? (
+                  videos.map((video) => (
+                    <article
+                      key={video.id}
+                      className="overflow-hidden rounded-xl"
+                      style={{ backgroundColor: surface }}
+                    >
+                      <div className="aspect-video bg-black">
+                        {youtubeEmbed(video.youtube_url) ? (
+                          <iframe
+                            className="h-full w-full"
+                            src={youtubeEmbed(video.youtube_url)!}
+                            title={video.title}
+                            allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
+                            allowFullScreen
+                          />
+                        ) : (
+                          <a
+                            href={video.youtube_url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="grid h-full place-items-center"
+                          >
+                            <Play style={{ color: accent }} />
+                          </a>
+                        )}
+                      </div>
+                      <h3 className="p-4 font-display text-lg uppercase">{video.title}</h3>
+                    </article>
+                  ))
+                ) : (
+                  <Empty>Add YouTube clips from Music.</Empty>
+                )}
+              </div>
+            </div>
+          </main>
+          <aside className="lg:col-span-4">
+            <section className="rounded-xl p-6" style={{ backgroundColor: surface }}>
+              <Title>About</Title>
+              <p className="mt-4 whitespace-pre-wrap leading-relaxed text-white/65">
+                {profile.bio || "Add your artist biography from Edit profile."}
+              </p>
+              <a
+                href={publicUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-5 inline-flex items-center gap-2 text-sm hover:underline"
+                style={{ color: accent }}
+              >
+                <ExternalLink className="w-4" /> dadahiphop.com/artist/{profile.slug}
+              </a>
+            </section>
+          </aside>
         </div>
-      </footer>
+      </div>
     </div>
+  );
+}
+function Title({ children, pink }: { children: React.ReactNode; pink?: boolean }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span
+        className="h-6 w-1 rounded"
+        style={{ backgroundColor: pink ? "#ff4b89" : "var(--artist-accent)" }}
+      />
+      <h2 className="font-display text-2xl uppercase tracking-wide">{children}</h2>
+    </div>
+  );
+}
+function Empty({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="rounded-xl bg-[var(--artist-surface)] p-6 text-sm text-white/55">{children}</p>
   );
 }

@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
-import logo from "@/assets/dada-logo.png";
+import logoAsset from "@/assets/dada-logo.png.asset.json";
 
 export function SiteHeader() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -19,7 +19,7 @@ export function SiteHeader() {
     <header className="absolute top-0 inset-x-0 z-40 pt-4 px-4">
       <nav className="max-w-7xl mx-auto flex items-center justify-between gap-4 rounded-full bg-background/90 backdrop-blur-md border border-border/60 pl-4 pr-3 py-2 shadow-xl">
         <Link to="/" className="flex items-center shrink-0">
-          <img src={logo} alt="Dada Hip Hop Academy" className="h-12 w-auto" />
+          <img src={logoAsset.url} alt="Dada Hip Hop Academy" className="h-12 w-auto" fetchPriority="high" />
         </Link>
 
         <ul className="hidden lg:flex items-center gap-2">

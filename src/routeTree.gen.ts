@@ -32,9 +32,12 @@ import { Route as AdminStudioRouteImport } from './routes/admin.studio'
 import { Route as AdminTracksRouteImport } from './routes/admin.tracks'
 import { Route as AdminWorkshopsRouteImport } from './routes/admin.workshops'
 import { Route as ArtistIndexRouteImport } from './routes/artist.index'
+import { Route as ArtistSlugRouteImport } from './routes/artist.$slug'
 import { Route as ArtistEditRouteImport } from './routes/artist.edit'
 import { Route as ArtistMusicRouteImport } from './routes/artist.music'
+import { Route as ArtistMyMusicRouteImport } from './routes/artist.my-music'
 import { Route as ArtistsIdRouteImport } from './routes/artists.$id'
+import { Route as ArtistSlugMusicRouteImport } from './routes/artist.$slug.music'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -151,6 +154,11 @@ const ArtistIndexRoute = ArtistIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ArtistRoute,
 } as any)
+const ArtistSlugRoute = ArtistSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ArtistRoute,
+} as any)
 const ArtistEditRoute = ArtistEditRouteImport.update({
   id: '/edit',
   path: '/edit',
@@ -161,10 +169,20 @@ const ArtistMusicRoute = ArtistMusicRouteImport.update({
   path: '/music',
   getParentRoute: () => ArtistRoute,
 } as any)
+const ArtistMyMusicRoute = ArtistMyMusicRouteImport.update({
+  id: '/my-music',
+  path: '/my-music',
+  getParentRoute: () => ArtistRoute,
+} as any)
 const ArtistsIdRoute = ArtistsIdRouteImport.update({
   id: '/artists/$id',
   path: '/artists/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ArtistSlugMusicRoute = ArtistSlugMusicRouteImport.update({
+  id: '/music',
+  path: '/music',
+  getParentRoute: () => ArtistSlugRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -189,11 +207,14 @@ export interface FileRoutesByFullPath {
   '/admin/studio': typeof AdminStudioRoute
   '/admin/tracks': typeof AdminTracksRoute
   '/admin/workshops': typeof AdminWorkshopsRoute
+  '/artist/$slug': typeof ArtistSlugRouteWithChildren
   '/artist/edit': typeof ArtistEditRoute
   '/artist/music': typeof ArtistMusicRoute
+  '/artist/my-music': typeof ArtistMyMusicRoute
   '/artists/$id': typeof ArtistsIdRoute
   '/admin/': typeof AdminIndexRoute
   '/artist/': typeof ArtistIndexRoute
+  '/artist/$slug/music': typeof ArtistSlugMusicRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -215,11 +236,14 @@ export interface FileRoutesByTo {
   '/admin/studio': typeof AdminStudioRoute
   '/admin/tracks': typeof AdminTracksRoute
   '/admin/workshops': typeof AdminWorkshopsRoute
+  '/artist/$slug': typeof ArtistSlugRouteWithChildren
   '/artist/edit': typeof ArtistEditRoute
   '/artist/music': typeof ArtistMusicRoute
+  '/artist/my-music': typeof ArtistMyMusicRoute
   '/artists/$id': typeof ArtistsIdRoute
   '/admin': typeof AdminIndexRoute
   '/artist': typeof ArtistIndexRoute
+  '/artist/$slug/music': typeof ArtistSlugMusicRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -244,11 +268,14 @@ export interface FileRoutesById {
   '/admin/studio': typeof AdminStudioRoute
   '/admin/tracks': typeof AdminTracksRoute
   '/admin/workshops': typeof AdminWorkshopsRoute
+  '/artist/$slug': typeof ArtistSlugRouteWithChildren
   '/artist/edit': typeof ArtistEditRoute
   '/artist/music': typeof ArtistMusicRoute
+  '/artist/my-music': typeof ArtistMyMusicRoute
   '/artists/$id': typeof ArtistsIdRoute
   '/admin/': typeof AdminIndexRoute
   '/artist/': typeof ArtistIndexRoute
+  '/artist/$slug/music': typeof ArtistSlugMusicRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -274,11 +301,14 @@ export interface FileRouteTypes {
     | '/admin/studio'
     | '/admin/tracks'
     | '/admin/workshops'
+    | '/artist/$slug'
     | '/artist/edit'
     | '/artist/music'
+    | '/artist/my-music'
     | '/artists/$id'
     | '/admin/'
     | '/artist/'
+    | '/artist/$slug/music'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -300,11 +330,14 @@ export interface FileRouteTypes {
     | '/admin/studio'
     | '/admin/tracks'
     | '/admin/workshops'
+    | '/artist/$slug'
     | '/artist/edit'
     | '/artist/music'
+    | '/artist/my-music'
     | '/artists/$id'
     | '/admin'
     | '/artist'
+    | '/artist/$slug/music'
   id:
     | '__root__'
     | '/'
@@ -328,11 +361,14 @@ export interface FileRouteTypes {
     | '/admin/studio'
     | '/admin/tracks'
     | '/admin/workshops'
+    | '/artist/$slug'
     | '/artist/edit'
     | '/artist/music'
+    | '/artist/my-music'
     | '/artists/$id'
     | '/admin/'
     | '/artist/'
+    | '/artist/$slug/music'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -513,6 +549,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArtistIndexRouteImport
       parentRoute: typeof ArtistRoute
     }
+    '/artist/$slug': {
+      id: '/artist/$slug'
+      path: '/$slug'
+      fullPath: '/artist/$slug'
+      preLoaderRoute: typeof ArtistSlugRouteImport
+      parentRoute: typeof ArtistRoute
+    }
     '/artist/edit': {
       id: '/artist/edit'
       path: '/edit'
@@ -527,12 +570,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArtistMusicRouteImport
       parentRoute: typeof ArtistRoute
     }
+    '/artist/my-music': {
+      id: '/artist/my-music'
+      path: '/my-music'
+      fullPath: '/artist/my-music'
+      preLoaderRoute: typeof ArtistMyMusicRouteImport
+      parentRoute: typeof ArtistRoute
+    }
     '/artists/$id': {
       id: '/artists/$id'
       path: '/artists/$id'
       fullPath: '/artists/$id'
       preLoaderRoute: typeof ArtistsIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/artist/$slug/music': {
+      id: '/artist/$slug/music'
+      path: '/music'
+      fullPath: '/artist/$slug/music'
+      preLoaderRoute: typeof ArtistSlugMusicRouteImport
+      parentRoute: typeof ArtistSlugRoute
     }
   }
 }
@@ -567,15 +624,31 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface ArtistSlugRouteChildren {
+  ArtistSlugMusicRoute: typeof ArtistSlugMusicRoute
+}
+
+const ArtistSlugRouteChildren: ArtistSlugRouteChildren = {
+  ArtistSlugMusicRoute: ArtistSlugMusicRoute,
+}
+
+const ArtistSlugRouteWithChildren = ArtistSlugRoute._addFileChildren(
+  ArtistSlugRouteChildren,
+)
+
 interface ArtistRouteChildren {
+  ArtistSlugRoute: typeof ArtistSlugRouteWithChildren
   ArtistEditRoute: typeof ArtistEditRoute
   ArtistMusicRoute: typeof ArtistMusicRoute
+  ArtistMyMusicRoute: typeof ArtistMyMusicRoute
   ArtistIndexRoute: typeof ArtistIndexRoute
 }
 
 const ArtistRouteChildren: ArtistRouteChildren = {
+  ArtistSlugRoute: ArtistSlugRouteWithChildren,
   ArtistEditRoute: ArtistEditRoute,
   ArtistMusicRoute: ArtistMusicRoute,
+  ArtistMyMusicRoute: ArtistMyMusicRoute,
   ArtistIndexRoute: ArtistIndexRoute,
 }
 

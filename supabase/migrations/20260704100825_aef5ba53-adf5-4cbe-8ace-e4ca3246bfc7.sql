@@ -1,1 +1,0 @@
-ALTER TABLE public.workshops ADD COLUMN is_finished BOOLEAN NOT NULL DEFAULT false;

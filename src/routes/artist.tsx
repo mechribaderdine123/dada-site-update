@@ -6,6 +6,14 @@ export const Route = createFileRoute("/artist")({
   component: ArtistGate,
 });
 
+/** Dashboard routes stay behind sign-in. Public share URLs are /artist/:slug and /artist/:slug/music. */
+const DASHBOARD_SEGMENTS = new Set(["", "edit", "music", "my-music"]);
+
+function isArtistDashboard(pathname: string) {
+  const first = pathname.replace(/^\/artist\/?/, "").split("/").filter(Boolean)[0] ?? "";
+  return DASHBOARD_SEGMENTS.has(first);
+}
+
 function PrivateAccountNotice() {
   const { profile } = useAuth();
   if (!profile || profile.status === "approved") return null;
@@ -23,13 +31,18 @@ function ArtistGate() {
   const nav = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { loading, session } = useAuth();
+  const dashboard = isArtistDashboard(pathname);
 
   useEffect(() => {
-    if (loading) return;
+    if (!dashboard || loading) return;
     if (!session) {
       nav({ to: "/sign-in", replace: true });
     }
-  }, [loading, session, nav]);
+  }, [dashboard, loading, session, nav]);
+
+  if (!dashboard) {
+    return <Outlet key={pathname} />;
+  }
 
   if (loading) {
     return <div className="min-h-screen bg-[#393939] text-white grid place-items-center">Chargement…</div>;

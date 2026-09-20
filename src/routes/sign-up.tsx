@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Eye, EyeOff, Youtube, Facebook, Instagram, Music2, Twitter } from "lucide-react";
 import bg from "@/assets/dada-auth.jpg";
-import logo from "@/assets/dada-logo.png";
+import logoAsset from "@/assets/dada-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/sign-up")({
@@ -96,7 +96,7 @@ function SignUpPage() {
 
       <div className="relative w-full max-w-2xl rounded-2xl bg-black/55 backdrop-blur-xl border border-white/10 shadow-2xl p-8 md:p-10">
         <div className="flex justify-center">
-          <img src={logo} alt="Dada Hip Hop Academy" className="h-16 w-auto" />
+          <img src={logoAsset.url} alt="Dada Hip Hop Academy" className="h-16 w-auto" fetchPriority="high" />
         </div>
         <h1 className="mt-3 text-center font-display text-3xl md:text-4xl tracking-wide">Rejoignez la communauté</h1>
 

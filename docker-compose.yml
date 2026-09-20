@@ -1,15 +1,100 @@
+# Dada Hip Hop Academy — production stack.
+#
+#   db     PostgreSQL database (accounts, profiles, tracks, clips, content)
+#   app    Node server: SSR pages + /api + /media (upload folder on a volume)
+#   nginx  Reverse proxy, TLS termination for ${DOMAIN}
+#
+# Start everything with:  docker compose up -d --build
+
 services:
-  frontend:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-dadahiphop}
+      POSTGRES_USER: ${POSTGRES_USER:-dadahiphop}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dadahiphop} -d ${POSTGRES_DB:-dadahiphop}"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    networks:
+      - internal
+
+  app:
     build:
       context: .
-      args:
-        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL}
-        VITE_SUPABASE_PUBLISHABLE_KEY: ${VITE_SUPABASE_PUBLISHABLE_KEY}
-        VITE_SUPABASE_PROJECT_ID: ${VITE_SUPABASE_PROJECT_ID}
     restart: unless-stopped
-    ports:
-      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
-      SUPABASE_URL: ${SUPABASE_URL}
-      SUPABASE_PUBLISHABLE_KEY: ${SUPABASE_PUBLISHABLE_KEY}
-      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL must be set in .env}
+      DB_POOL_MAX: ${DB_POOL_MAX:-10}
+      SESSION_SECRET: ${SESSION_SECRET:?SESSION_SECRET must be set in .env}
+      SESSION_DAYS: ${SESSION_DAYS:-30}
+      UPLOAD_DIR: ${UPLOAD_DIR:-/data/uploads}
+      MAX_AUDIO_BYTES: ${MAX_AUDIO_BYTES:-78643200}
+      MAX_IMAGE_BYTES: ${MAX_IMAGE_BYTES:-8388608}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+    volumes:
+      - uploads:${UPLOAD_DIR:-/data/uploads}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:3000/api/auth/session || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks:
+      - internal
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on:
+      - app
+    environment:
+      DOMAIN: ${DOMAIN:-dadahiphop.com}
+      NGINX_ENVSUBST_OUTPUT_DIR: /etc/nginx/conf.d
+      # Only ${DOMAIN} is substituted, so Nginx variables stay untouched.
+      NGINX_ENVSUBST_FILTER: DOMAIN
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/nginx/templates:/etc/nginx/templates:ro
+      - ./deploy/certbot/conf:/etc/letsencrypt:ro
+      - ./deploy/certbot/www:/var/www/certbot
+    networks:
+      - internal
+
+  # Issues and renews the Let's Encrypt certificate for ${DOMAIN}.
+  # Run deploy/init-letsencrypt.sh once before the first production start.
+  certbot:
+    image: certbot/certbot:latest
+    restart: unless-stopped
+    entrypoint:
+      - /bin/sh
+      - -c
+      - "trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h & wait $${!}; done"
+    volumes:
+      - ./deploy/certbot/conf:/etc/letsencrypt
+      - ./deploy/certbot/www:/var/www/certbot
+    networks:
+      - internal
+
+volumes:
+  db_data:
+  uploads:
+
+networks:
+  internal:
+    driver: bridge

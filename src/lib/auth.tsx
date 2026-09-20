@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import type { Session, User } from "@supabase/supabase-js";
+import type { LocalUser as User, Session } from "@/integrations/supabase/client";
 import { supabase } from "@/integrations/supabase/client";
 
 export type AppRole = "admin" | "artist";
@@ -14,6 +14,9 @@ export type Profile = {
   bio: string | null;
   phone: string | null;
   avatar_url: string | null;
+  cover_url: string | null;
+  accent_color: string;
+  slug: string;
   youtube: string | null;
   spotify: string | null;
   facebook: string | null;

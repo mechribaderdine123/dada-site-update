@@ -19,6 +19,10 @@ dist-ssr
 .env.*
 !.env.example
 
+# Server uploads and TLS material — never committed
+uploads/
+deploy/certbot/
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars

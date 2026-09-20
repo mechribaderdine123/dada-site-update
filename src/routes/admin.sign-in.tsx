@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import adminBg from "@/assets/auth-boombox.jpg";
-import logo from "@/assets/dada-logo.png";
+import logoAsset from "@/assets/dada-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin/sign-in")({
@@ -58,7 +58,7 @@ function AdminSignIn() {
       <div className="relative z-10 min-h-screen w-full grid place-items-center px-4">
         <div className="w-full max-w-md rounded-3xl border border-white/15 bg-black/40 backdrop-blur-md p-8 md:p-10 shadow-2xl">
           <div className="flex justify-center">
-            <img src={logo} alt="Dada Hip Hop Academy" className="h-20 w-auto" />
+            <img src={logoAsset.url} alt="Dada Hip Hop Academy" className="h-20 w-auto" fetchPriority="high" />
           </div>
           <h1 className="mt-6 text-center font-display tracking-wide text-4xl text-white">Admin</h1>
 

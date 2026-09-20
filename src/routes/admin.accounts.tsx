@@ -1,10 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Check, X, Clock, CheckCircle2, XCircle, Mail, MapPin, Music, Trash2 } from "lucide-react";
-import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { signedMusicUrl } from "@/lib/music-url";
-import { deleteArtistAccount } from "@/lib/api/admin-users.functions";
 import type { Profile, ApprovalStatus } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin/accounts")({
@@ -46,12 +44,12 @@ function AdminAccounts() {
     load();
   };
 
-  const removeUser = useServerFn(deleteArtistAccount);
   const onDelete = async (p: Profile) => {
     if (!confirm(`Supprimer définitivement le compte de ${p.artist_name} ? Cette action est irréversible.`)) return;
     setBusy(p.id);
     try {
-      await removeUser({ data: { userId: p.id } });
+      const { error } = await supabase.auth.admin.deleteUser(p.id);
+      if (error) throw error;
       setRows((prev) => prev.filter((r) => r.id !== p.id));
     } catch (e) {
       alert(`Erreur: ${(e as Error).message}`);
@@ -110,9 +108,8 @@ function AdminAccounts() {
               </div>
               <div className="flex flex-wrap gap-2 shrink-0 items-center">
                 <Link
-                  to="/artists/$id"
-                  params={{ id: p.id }}
-                  state={{ backTo: "/admin/accounts" } as any}
+                  to="/artist/$slug"
+                  params={{ slug: p.slug }}
                   className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border text-sm font-semibold hover:bg-muted"
                 >
                   Voir le profil

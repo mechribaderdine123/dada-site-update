@@ -3,7 +3,7 @@ import { ArrowRight, Users, Radio } from "lucide-react";
 import heroAsset from "@/assets/dada-hero-new.png.asset.json";
 import handstandAsset from "@/assets/dada-handstand.png.asset.json";
 import { useContent } from "@/lib/site-content";
-import { useSponsors } from "@/lib/sponsors";
+import { defaultSponsors, useSponsors } from "@/lib/sponsors";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -11,6 +11,11 @@ export const Route = createFileRoute("/")({
       { title: "Dada Hip Hop Academy — Danse. Culture. Création." },
       { name: "description", content: "L'espace où chaque talent trouve son expression. Cours de danse, studio musique et création artistique." },
     ],
+    links: defaultSponsors.map((sponsor) => ({
+      rel: "preload",
+      as: "image",
+      href: sponsor.image_url,
+    })),
   }),
   component: HomePage,
 });
@@ -101,8 +106,8 @@ function HomePage() {
 }
 
 function SponsorsStrip() {
-  const { sponsors, loading } = useSponsors();
-  if (loading || sponsors.length === 0) return null;
+  const { sponsors } = useSponsors(defaultSponsors);
+  if (sponsors.length === 0) return null;
   const doubled = [...sponsors, ...sponsors];
   return (
     <section className="py-12 md:py-16 border-b border-border/60 bg-muted/20">
@@ -117,7 +122,9 @@ function SponsorsStrip() {
                 <img
                   src={s.image_url}
                   alt={s.name}
-                  className="h-32 md:h-44 w-auto object-contain opacity-90 hover:opacity-100 transition"
+                  className="h-20 md:h-28 w-[180px] md:w-[220px] object-contain opacity-90 hover:opacity-100 transition"
+                  decoding="async"
+                  fetchPriority="high"
                 />
               );
               return (

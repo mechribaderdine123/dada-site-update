@@ -6,9 +6,12 @@ Every push to the `main` branch deploys this site to a Hostinger VPS. The workfl
 
 1. Install Docker and the Docker Compose plugin on the VPS.
 2. Clone this repository to a permanent server folder, for example `/opt/dada-hip-hop-academy`.
-3. In that folder, create `.env` using `.env.example` and enter the real Supabase values. Never commit this file.
-4. Run `docker compose up -d --build` once on the server.
-5. Ensure the domain/reverse proxy forwards HTTPS traffic to port `3000`.
+3. Run `docker compose up -d --build` once on the server.
+4. Ensure the domain/reverse proxy forwards HTTPS traffic to port `3000`.
+
+This local-data build has no external account, API keys, or database configuration.
+Data is stored in the visitor's browser. The initial local admin login is
+`admin@dadahiphop.local` with password `admin12345`.
 
 ## One-time GitHub setup
 

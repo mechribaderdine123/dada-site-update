@@ -1,13 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Search, User as UserIcon, Clock, Trash2 } from "lucide-react";
-import { useServerFn } from "@tanstack/react-start";
 import heroAsset from "@/assets/dada-hero-new.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { signedMusicUrl } from "@/lib/music-url";
 import { useAuth } from "@/lib/auth";
 import { useContent } from "@/lib/site-content";
-import { deleteArtistAccount } from "@/lib/api/admin-users.functions";
 
 export const Route = createFileRoute("/dada-reseaux-artist")({
   head: () => ({
@@ -21,6 +19,7 @@ export const Route = createFileRoute("/dada-reseaux-artist")({
 
 type PublicArtist = {
   id: string;
+  slug: string;
   artist_name: string;
   genre: string | null;
   city: string | null;
@@ -34,7 +33,6 @@ function DadaReseauxArtistPage() {
   const { isAdmin, loading: authLoading } = useAuth();
   const canManage = !authLoading && isAdmin;
   const [busy, setBusy] = useState<string | null>(null);
-  const removeUser = useServerFn(deleteArtistAccount);
 
   const heroImage = useContent("reseaux.hero.image", heroAsset.url);
   const heroTitle = useContent("reseaux.hero.title", "DADA RESEAUX ARTIST");
@@ -48,7 +46,7 @@ function DadaReseauxArtistPage() {
   const loadArtists = async () => {
     const { data } = await supabase
       .from("public_profiles")
-      .select("id, artist_name, genre, city, avatar_url")
+      .select("id, slug, artist_name, genre, city, avatar_url")
       .order("created_at", { ascending: false });
     const list = (data as PublicArtist[]) ?? [];
     const resolved = await Promise.all(
@@ -74,7 +72,8 @@ function DadaReseauxArtistPage() {
     if (!confirm(`Supprimer définitivement le compte de ${a.artist_name} ? Cette action est irréversible.`)) return;
     setBusy(a.id);
     try {
-      await removeUser({ data: { userId: a.id } });
+      const { error } = await supabase.auth.admin.deleteUser(a.id);
+      if (error) throw error;
       setArtists((prev) => prev.filter((x) => x.id !== a.id));
     } catch (e) {
       alert(`Erreur: ${(e as Error).message}`);
@@ -145,7 +144,7 @@ function DadaReseauxArtistPage() {
             <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
               {filtered.map((a) => (
                 <div key={a.id} className="group block text-left relative">
-                  <Link to="/artists/$id" params={{ id: a.id }} state={canManage ? ({ backTo: "/dada-reseaux-artist" } as any) : undefined} className="block">
+                  <Link to="/artist/$slug" params={{ slug: a.slug }} className="block">
                     <div className="aspect-square rounded-2xl overflow-hidden bg-white/5 grid place-items-center">
                       {a.avatar_url ? (
                         <img src={a.avatar_url} alt={a.artist_name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
