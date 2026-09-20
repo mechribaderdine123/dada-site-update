@@ -60,7 +60,7 @@ function AboutPage() {
             <h3 className="font-display text-3xl tracking-wide text-primary">VALEURS</h3>
             <div className="mt-4 grid grid-cols-3 gap-x-4 gap-y-2 text-sm">
               <span>Créativité</span><span>Respect</span><span>Énergie</span>
-              <span>Confiance</span><span>Excellence 1475</span><span>Communauté</span>
+              <span>Confiance</span><span>Excellencebb 1475</span><span>Communauté</span>
             </div>
           </div>
         </div>
