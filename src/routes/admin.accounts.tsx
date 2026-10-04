@@ -45,7 +45,12 @@ function AdminAccounts() {
   };
 
   const onDelete = async (p: Profile) => {
-    if (!confirm(`Supprimer définitivement le compte de ${p.artist_name} ? Cette action est irréversible.`)) return;
+    if (
+      !confirm(
+        `Supprimer définitivement le compte de ${p.artist_name} ? Cette action est irréversible.`,
+      )
+    )
+      return;
     setBusy(p.id);
     try {
       const { error } = await supabase.auth.admin.deleteUser(p.id);
@@ -71,7 +76,9 @@ function AdminAccounts() {
             key={s}
             onClick={() => setFilter(s)}
             className={`px-4 py-2 rounded-lg text-sm font-semibold inline-flex items-center gap-2 border ${
-              filter === s ? "bg-primary text-primary-foreground border-primary" : "bg-card hover:bg-muted border-border"
+              filter === s
+                ? "bg-primary text-primary-foreground border-primary"
+                : "bg-card hover:bg-muted border-border"
             }`}
           >
             {s === "pending" && <Clock className="w-4 h-4" />}
@@ -86,24 +93,44 @@ function AdminAccounts() {
         <p className="text-sm text-muted-foreground">Chargement…</p>
       ) : rows.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border p-10 text-center text-muted-foreground">
-          Aucun compte {filter === "pending" ? "en attente" : filter === "approved" ? "approuvé" : "refusé"}.
+          Aucun compte{" "}
+          {filter === "pending" ? "en attente" : filter === "approved" ? "approuvé" : "refusé"}.
         </div>
       ) : (
         <div className="grid gap-4">
           {rows.map((p) => (
-            <div key={p.id} className="rounded-xl border border-border bg-card p-5 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+            <div
+              key={p.id}
+              className="rounded-xl border border-border bg-card p-5 flex flex-col md:flex-row gap-4 md:items-center md:justify-between"
+            >
               <div className="flex items-start gap-4">
                 <div className="w-14 h-14 rounded-full bg-muted overflow-hidden shrink-0 grid place-items-center text-lg font-bold text-muted-foreground">
-                  {p.avatar_url ? <img src={p.avatar_url} alt="" className="w-full h-full object-cover" /> : p.artist_name?.[0]?.toUpperCase() ?? "?"}
+                  {p.avatar_url ? (
+                    <img src={p.avatar_url} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    (p.artist_name?.[0]?.toUpperCase() ?? "?")
+                  )}
                 </div>
                 <div>
                   <p className="font-bold text-lg">{p.artist_name}</p>
-                  <p className="text-sm text-muted-foreground inline-flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" /> {p.email}</p>
+                  <p className="text-sm text-muted-foreground inline-flex items-center gap-1.5">
+                    <Mail className="w-3.5 h-3.5" /> {p.email}
+                  </p>
                   <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                    {p.genre && <span className="inline-flex items-center gap-1"><Music className="w-3 h-3" /> {p.genre}</span>}
-                    {p.city && <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" /> {p.city}</span>}
+                    {p.genre && (
+                      <span className="inline-flex items-center gap-1">
+                        <Music className="w-3 h-3" /> {p.genre}
+                      </span>
+                    )}
+                    {p.city && (
+                      <span className="inline-flex items-center gap-1">
+                        <MapPin className="w-3 h-3" /> {p.city}
+                      </span>
+                    )}
                   </div>
-                  {p.bio && <p className="mt-2 text-sm text-foreground/80 max-w-xl line-clamp-3">{p.bio}</p>}
+                  {p.bio && (
+                    <p className="mt-2 text-sm text-foreground/80 max-w-xl line-clamp-3">{p.bio}</p>
+                  )}
                 </div>
               </div>
               <div className="flex flex-wrap gap-2 shrink-0 items-center">

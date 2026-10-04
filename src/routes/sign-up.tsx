@@ -33,9 +33,20 @@ type FormState = {
 };
 
 const empty: FormState = {
-  artist_name: "", email: "", password: "", password2: "",
-  genre: "", city: "", bio: "", phone: "",
-  youtube: "", spotify: "", facebook: "", instagram: "", tiktok: "", twitter: "",
+  artist_name: "",
+  email: "",
+  password: "",
+  password2: "",
+  genre: "",
+  city: "",
+  bio: "",
+  phone: "",
+  youtube: "",
+  spotify: "",
+  facebook: "",
+  instagram: "",
+  tiktok: "",
+  twitter: "",
 };
 
 function SignUpPage() {
@@ -98,35 +109,101 @@ function SignUpPage() {
         <div className="flex justify-center">
           <img src={logo} alt="Dada Hip Hop Academy" className="h-16 w-auto" fetchPriority="high" />
         </div>
-        <h1 className="mt-3 text-center font-display text-3xl md:text-4xl tracking-wide">Rejoignez la communauté</h1>
+        <h1 className="mt-3 text-center font-display text-3xl md:text-4xl tracking-wide">
+          Rejoignez la communauté
+        </h1>
 
         {step === 1 && (
-          <form onSubmit={(e) => { e.preventDefault(); setError(null); setStep(2); }} className="mt-6">
-            <h2 className="text-secondary font-semibold border-b border-white/15 pb-2">Informations Générales</h2>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setError(null);
+              setStep(2);
+            }}
+            className="mt-6"
+          >
+            <h2 className="text-secondary font-semibold border-b border-white/15 pb-2">
+              Informations Générales
+            </h2>
             <div className="mt-5 space-y-4">
-              <Field label="Nom d'artiste *" value={f.artist_name} onChange={(v) => set("artist_name", v)} required />
-              <Field label="E-mail *" type="email" value={f.email} onChange={(v) => set("email", v)} placeholder="e-mail@gmail.com" required />
+              <Field
+                label="Nom d'artiste *"
+                value={f.artist_name}
+                onChange={(v) => set("artist_name", v)}
+                required
+              />
+              <Field
+                label="E-mail *"
+                type="email"
+                value={f.email}
+                onChange={(v) => set("email", v)}
+                placeholder="e-mail@gmail.com"
+                required
+              />
               <div className="grid grid-cols-2 gap-4">
-                <PwdField label="Mot de Passe *" show={showPwd} setShow={setShowPwd} value={f.password} onChange={(v) => set("password", v)} />
-                <PwdField label="Confirmer Mot de Passe *" show={showPwd2} setShow={setShowPwd2} value={f.password2} onChange={(v) => set("password2", v)} />
+                <PwdField
+                  label="Mot de Passe *"
+                  show={showPwd}
+                  setShow={setShowPwd}
+                  value={f.password}
+                  onChange={(v) => set("password", v)}
+                />
+                <PwdField
+                  label="Confirmer Mot de Passe *"
+                  show={showPwd2}
+                  setShow={setShowPwd2}
+                  value={f.password2}
+                  onChange={(v) => set("password2", v)}
+                />
               </div>
             </div>
-            {error && <p className="mt-4 text-sm text-red-200 bg-red-900/40 border border-red-400/30 rounded-lg px-3 py-2">{error}</p>}
-            <button type="submit" className="mt-8 w-full h-12 rounded-lg bg-secondary text-secondary-foreground font-semibold hover:opacity-90 transition">Suivant</button>
+            {error && (
+              <p className="mt-4 text-sm text-red-200 bg-red-900/40 border border-red-400/30 rounded-lg px-3 py-2">
+                {error}
+              </p>
+            )}
+            <button
+              type="submit"
+              className="mt-8 w-full h-12 rounded-lg bg-secondary text-secondary-foreground font-semibold hover:opacity-90 transition"
+            >
+              Suivant
+            </button>
             <StepBar step={1} />
             <p className="mt-4 text-sm text-center text-white/80">
               Vous avez déjà un compte?{" "}
-              <Link to="/sign-in" className="text-secondary font-semibold hover:underline">Connecter</Link>
+              <Link to="/sign-in" className="text-secondary font-semibold hover:underline">
+                Connecter
+              </Link>
             </p>
           </form>
         )}
 
         {step === 2 && (
-          <form onSubmit={(e) => { e.preventDefault(); setStep(3); }} className="mt-6">
-            <h2 className="text-secondary font-semibold border-b border-white/15 pb-2">Profil Artistique</h2>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setStep(3);
+            }}
+            className="mt-6"
+          >
+            <h2 className="text-secondary font-semibold border-b border-white/15 pb-2">
+              Profil Artistique
+            </h2>
             <div className="mt-5 space-y-4">
-              <Field label="Genre musical *" value={f.genre} onChange={(v) => set("genre", v)} placeholder="Hip Hop, R&B, Rap..." required />
-              <Field label="Ville *" value={f.city} onChange={(v) => set("city", v)} placeholder="Votre ville" required />
+              <Field
+                label="Genre musical *"
+                value={f.genre}
+                onChange={(v) => set("genre", v)}
+                placeholder="Hip Hop, R&B, Rap..."
+                required
+              />
+              <Field
+                label="Ville *"
+                value={f.city}
+                onChange={(v) => set("city", v)}
+                placeholder="Votre ville"
+                required
+              />
               <div>
                 <label className="text-sm font-semibold">Biographie</label>
                 <textarea
@@ -137,11 +214,28 @@ function SignUpPage() {
                   className="mt-2 w-full px-4 py-3 rounded-lg bg-white text-black placeholder:text-black/40 outline-none focus:ring-2 focus:ring-secondary resize-none"
                 />
               </div>
-              <Field label="Téléphone" type="tel" value={f.phone} onChange={(v) => set("phone", v)} placeholder="+243 ..." />
+              <Field
+                label="Téléphone"
+                type="tel"
+                value={f.phone}
+                onChange={(v) => set("phone", v)}
+                placeholder="+243 ..."
+              />
             </div>
             <div className="mt-8 grid grid-cols-2 gap-4">
-              <button type="button" onClick={() => setStep(1)} className="h-12 rounded-lg bg-white/10 hover:bg-white/15 border border-white/15 font-semibold transition">Retour</button>
-              <button type="submit" className="h-12 rounded-lg bg-secondary text-secondary-foreground font-semibold hover:opacity-90 transition">Suivant</button>
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                className="h-12 rounded-lg bg-white/10 hover:bg-white/15 border border-white/15 font-semibold transition"
+              >
+                Retour
+              </button>
+              <button
+                type="submit"
+                className="h-12 rounded-lg bg-secondary text-secondary-foreground font-semibold hover:opacity-90 transition"
+              >
+                Suivant
+              </button>
             </div>
             <StepBar step={2} />
           </form>
@@ -149,23 +243,75 @@ function SignUpPage() {
 
         {step === 3 && (
           <form onSubmit={submit} className="mt-6">
-            <h2 className="text-secondary font-semibold border-b border-white/15 pb-2">Plateformes de médias sociaux et de musique</h2>
+            <h2 className="text-secondary font-semibold border-b border-white/15 pb-2">
+              Plateformes de médias sociaux et de musique
+            </h2>
             <div className="mt-5 space-y-4">
-              <SocialField icon={<Youtube className="w-4 h-4 text-red-500" />} label="YouTube" value={f.youtube} onChange={(v) => set("youtube", v)} placeholder="https://www.youtube.com/@nom" />
-              <SocialField icon={<Music2 className="w-4 h-4 text-green-500" />} label="Spotify" value={f.spotify} onChange={(v) => set("spotify", v)} placeholder="https://open.spotify.com/artist/..." />
+              <SocialField
+                icon={<Youtube className="w-4 h-4 text-red-500" />}
+                label="YouTube"
+                value={f.youtube}
+                onChange={(v) => set("youtube", v)}
+                placeholder="https://www.youtube.com/@nom"
+              />
+              <SocialField
+                icon={<Music2 className="w-4 h-4 text-green-500" />}
+                label="Spotify"
+                value={f.spotify}
+                onChange={(v) => set("spotify", v)}
+                placeholder="https://open.spotify.com/artist/..."
+              />
               <div className="grid grid-cols-2 gap-4">
-                <SocialField icon={<Facebook className="w-4 h-4 text-blue-500" />} label="Facebook" value={f.facebook} onChange={(v) => set("facebook", v)} placeholder="https://facebook.com/artiste" />
-                <SocialField icon={<Instagram className="w-4 h-4 text-pink-500" />} label="Instagram" value={f.instagram} onChange={(v) => set("instagram", v)} placeholder="https://instagram.com/artiste" />
+                <SocialField
+                  icon={<Facebook className="w-4 h-4 text-blue-500" />}
+                  label="Facebook"
+                  value={f.facebook}
+                  onChange={(v) => set("facebook", v)}
+                  placeholder="https://facebook.com/artiste"
+                />
+                <SocialField
+                  icon={<Instagram className="w-4 h-4 text-pink-500" />}
+                  label="Instagram"
+                  value={f.instagram}
+                  onChange={(v) => set("instagram", v)}
+                  placeholder="https://instagram.com/artiste"
+                />
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <SocialField icon={<Music2 className="w-4 h-4" />} label="TikTok" value={f.tiktok} onChange={(v) => set("tiktok", v)} placeholder="https://tiktok.com/@artiste" />
-                <SocialField icon={<Twitter className="w-4 h-4" />} label="Twitter" value={f.twitter} onChange={(v) => set("twitter", v)} placeholder="https://twitter.com/artiste" />
+                <SocialField
+                  icon={<Music2 className="w-4 h-4" />}
+                  label="TikTok"
+                  value={f.tiktok}
+                  onChange={(v) => set("tiktok", v)}
+                  placeholder="https://tiktok.com/@artiste"
+                />
+                <SocialField
+                  icon={<Twitter className="w-4 h-4" />}
+                  label="Twitter"
+                  value={f.twitter}
+                  onChange={(v) => set("twitter", v)}
+                  placeholder="https://twitter.com/artiste"
+                />
               </div>
             </div>
-            {error && <p className="mt-4 text-sm text-red-200 bg-red-900/40 border border-red-400/30 rounded-lg px-3 py-2">{error}</p>}
+            {error && (
+              <p className="mt-4 text-sm text-red-200 bg-red-900/40 border border-red-400/30 rounded-lg px-3 py-2">
+                {error}
+              </p>
+            )}
             <div className="mt-8 grid grid-cols-2 gap-4">
-              <button type="button" onClick={() => setStep(2)} className="h-12 rounded-lg bg-white/10 hover:bg-white/15 border border-white/15 font-semibold transition">Retour</button>
-              <button type="submit" disabled={loading} className="h-12 rounded-lg bg-secondary text-secondary-foreground font-semibold hover:opacity-90 transition disabled:opacity-60">
+              <button
+                type="button"
+                onClick={() => setStep(2)}
+                className="h-12 rounded-lg bg-white/10 hover:bg-white/15 border border-white/15 font-semibold transition"
+              >
+                Retour
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="h-12 rounded-lg bg-secondary text-secondary-foreground font-semibold hover:opacity-90 transition disabled:opacity-60"
+              >
                 {loading ? "Création..." : "Créer le compte"}
               </button>
             </div>
@@ -177,7 +323,15 @@ function SignUpPage() {
   );
 }
 
-function Field({ label, value, onChange, ...props }: { label: string; value: string; onChange: (v: string) => void } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange">) {
+function Field({
+  label,
+  value,
+  onChange,
+  ...props
+}: { label: string; value: string; onChange: (v: string) => void } & Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "value" | "onChange"
+>) {
   return (
     <div>
       <label className="text-sm font-semibold">{label}</label>
@@ -191,7 +345,19 @@ function Field({ label, value, onChange, ...props }: { label: string; value: str
   );
 }
 
-function PwdField({ label, show, setShow, value, onChange }: { label: string; show: boolean; setShow: (v: boolean) => void; value: string; onChange: (v: string) => void }) {
+function PwdField({
+  label,
+  show,
+  setShow,
+  value,
+  onChange,
+}: {
+  label: string;
+  show: boolean;
+  setShow: (v: boolean) => void;
+  value: string;
+  onChange: (v: string) => void;
+}) {
   return (
     <div>
       <label className="text-sm font-semibold">{label}</label>
@@ -205,7 +371,11 @@ function PwdField({ label, show, setShow, value, onChange }: { label: string; sh
           placeholder="***********"
           className="w-full h-12 px-4 pr-11 rounded-lg bg-white text-black placeholder:text-black/40 outline-none focus:ring-2 focus:ring-secondary"
         />
-        <button type="button" onClick={() => setShow(!show)} className="absolute right-3 top-1/2 -translate-y-1/2 text-black/60 hover:text-black">
+        <button
+          type="button"
+          onClick={() => setShow(!show)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-black/60 hover:text-black"
+        >
           {show ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
         </button>
       </div>
@@ -213,7 +383,19 @@ function PwdField({ label, show, setShow, value, onChange }: { label: string; sh
   );
 }
 
-function SocialField({ icon, label, value, onChange, placeholder }: { icon: React.ReactNode; label: string; value: string; onChange: (v: string) => void; placeholder: string }) {
+function SocialField({
+  icon,
+  label,
+  value,
+  onChange,
+  placeholder,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+}) {
   return (
     <div>
       <label className="text-sm font-semibold inline-flex items-center gap-2">
@@ -233,7 +415,10 @@ function StepBar({ step }: { step: number }) {
   return (
     <div className="mt-6 flex items-center justify-center gap-2">
       {[1, 2, 3].map((n) => (
-        <div key={n} className={`h-1.5 w-16 rounded-full ${n <= step ? "bg-secondary" : "bg-white/20"}`} />
+        <div
+          key={n}
+          className={`h-1.5 w-16 rounded-full ${n <= step ? "bg-secondary" : "bg-white/20"}`}
+        />
       ))}
     </div>
   );

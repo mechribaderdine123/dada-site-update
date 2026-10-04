@@ -29,11 +29,9 @@ export function noContent(headers: Record<string, string> = {}): Response {
 }
 
 export function methodNotAllowed(allowed: readonly string[]): Response {
-  return json(
-    { data: null, error: { message: "Method not allowed." } },
-    405,
-    { allow: allowed.join(", ") },
-  );
+  return json({ data: null, error: { message: "Method not allowed." } }, 405, {
+    allow: allowed.join(", "),
+  });
 }
 
 export async function readJson<T = Record<string, unknown>>(request: Request): Promise<T> {
@@ -92,15 +90,15 @@ export function toApiError(error: unknown): ApiError {
     return { status, message: error.message };
   }
 
-const code = postgresErrorCode(error);
+  const code = postgresErrorCode(error);
 
-if (code) {
-  console.error("[DB RAW ERROR]", error);
-  return mapPostgresCode(code);
-}
+  if (code) {
+    console.error("[DB RAW ERROR]", error);
+    return mapPostgresCode(code);
+  }
 
-console.error("[api] unhandled error", error);
-return { status: 500, message: "Something went wrong on the server." };
+  console.error("[api] unhandled error", error);
+  return { status: 500, message: "Something went wrong on the server." };
 }
 
 function postgresErrorCode(error: unknown): string | null {

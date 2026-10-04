@@ -76,7 +76,9 @@ async function uniqueSlug(
 ): Promise<string> {
   let slug = base;
   for (let attempt = 2; attempt < 50; attempt += 1) {
-    const taken = await client.query("select 1 from profiles where lower(slug) = lower($1)", [slug]);
+    const taken = await client.query("select 1 from profiles where lower(slug) = lower($1)", [
+      slug,
+    ]);
     if (taken.rowCount === 0) break;
     slug = `${base}-${attempt}`;
   }

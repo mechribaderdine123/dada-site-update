@@ -15,7 +15,10 @@ export function extractMusicPath(value: string | null): string | null {
 
 const cache = new Map<string, { url: string; exp: number }>();
 
-export async function signedMusicUrl(value: string | null, expiresIn = 3600): Promise<string | null> {
+export async function signedMusicUrl(
+  value: string | null,
+  expiresIn = 3600,
+): Promise<string | null> {
   const path = extractMusicPath(value);
   if (!path) return value; // fallback: return original if we can't parse
   const now = Date.now();
@@ -29,4 +32,22 @@ export async function signedMusicUrl(value: string | null, expiresIn = 3600): Pr
 
 export async function signedMusicUrls(values: (string | null)[], expiresIn = 3600) {
   return Promise.all(values.map((v) => signedMusicUrl(v, expiresIn)));
+}
+
+// Generic signed URL function for any bucket
+export async function signedUrl(
+  bucket: string,
+  path: string | null,
+  expiresIn = 3600,
+): Promise<string | null> {
+  if (!path) return null;
+  const cacheKey = `${bucket}:${path}`;
+  const now = Date.now();
+  const hit = cache.get(cacheKey);
+  if (hit && hit.exp > now + 60_000) return hit.url;
+
+  const { data, error } = await supabase.storage.from(bucket).createSignedUrl(path, expiresIn);
+  if (error || !data) return null;
+  cache.set(cacheKey, { url: data.signedUrl, exp: now + expiresIn * 1000 });
+  return data.signedUrl;
 }

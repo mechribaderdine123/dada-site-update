@@ -17,9 +17,13 @@ type DbBody = {
   single?: boolean;
 };
 
-export async function handleDbRoute(request: Request, segments: string[]): Promise<Response | null> {
+export async function handleDbRoute(
+  request: Request,
+  segments: string[],
+): Promise<Response | null> {
   if (segments[0] !== "db") return null;
-  if (segments.length > 1) return json({ data: null, error: { message: "Unknown endpoint." } }, 404);
+  if (segments.length > 1)
+    return json({ data: null, error: { message: "Unknown endpoint." } }, 404);
   if (request.method !== "POST") return methodNotAllowed(["POST"]);
   assertSameOrigin(request);
 

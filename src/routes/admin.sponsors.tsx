@@ -72,7 +72,8 @@ function AdminSponsors() {
       <div>
         <h1 className="font-display tracking-wide text-3xl">Sponsors & partenaires</h1>
         <p className="text-sm text-muted-foreground">
-          Les logos sont enregistrés sur le serveur et affichés à tous les visiteurs, sous l'image d'accueil.
+          Les logos sont enregistrés sur le serveur et affichés à tous les visiteurs, sous l'image
+          d'accueil.
         </p>
       </div>
 
@@ -81,11 +82,17 @@ function AdminSponsors() {
         <h2 className="font-semibold">Ajouter un sponsor</h2>
         <div className="grid gap-4 md:grid-cols-[120px_1fr]">
           <div className="w-28 h-28 rounded-lg overflow-hidden border border-border bg-muted grid place-items-center">
-            {image ? <img src={image} alt="" className="w-full h-full object-contain p-2" /> : <span className="text-xs text-muted-foreground">Aperçu</span>}
+            {image ? (
+              <img src={image} alt="" className="w-full h-full object-contain p-2" />
+            ) : (
+              <span className="text-xs text-muted-foreground">Aperçu</span>
+            )}
           </div>
           <div className="space-y-3">
             <div>
-              <label className="text-xs font-semibold block mb-1">Logo (PNG/JPG/SVG, max 1,5 Mo)</label>
+              <label className="text-xs font-semibold block mb-1">
+                Logo (PNG/JPG/SVG, max 1,5 Mo)
+              </label>
               <input
                 ref={fileRef}
                 type="file"
@@ -103,7 +110,11 @@ function AdminSponsors() {
                   disabled={uploading}
                   className="inline-flex items-center gap-2 rounded-lg bg-secondary text-secondary-foreground px-4 py-2 text-sm font-semibold hover:opacity-90 disabled:opacity-40"
                 >
-                  {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                  {uploading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Upload className="w-4 h-4" />
+                  )}
                   {uploading ? "Envoi…" : image ? "Changer le logo" : "Choisir un logo"}
                 </button>
                 {image && (
@@ -146,7 +157,8 @@ function AdminSponsors() {
               disabled={!canAdd}
               className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-semibold disabled:opacity-40"
             >
-              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />} Ajouter
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}{" "}
+              Ajouter
             </button>
           </div>
         </div>
@@ -161,19 +173,31 @@ function AdminSponsors() {
             <p className="text-sm text-muted-foreground">Aucun sponsor pour le moment.</p>
           )}
           {sponsors.map((s) => (
-            <div key={s.id} className="rounded-xl border border-border bg-card p-4 flex items-center gap-3">
+            <div
+              key={s.id}
+              className="rounded-xl border border-border bg-card p-4 flex items-center gap-3"
+            >
               <div className="w-16 h-16 rounded-lg bg-muted overflow-hidden grid place-items-center shrink-0">
-                <img src={s.image_url} alt={s.name} className="w-full h-full object-contain p-1.5" />
+                <img
+                  src={s.image_url}
+                  alt={s.name}
+                  className="w-full h-full object-contain p-1.5"
+                />
               </div>
               <div className="flex-1 min-w-0">
                 <input
                   defaultValue={s.name}
-                  onBlur={(e) => e.target.value !== s.name && doUpdate(s.id, { name: e.target.value })}
+                  onBlur={(e) =>
+                    e.target.value !== s.name && doUpdate(s.id, { name: e.target.value })
+                  }
                   className="w-full rounded-md border border-border bg-background px-2 py-1 text-sm font-semibold"
                 />
                 <input
                   defaultValue={s.link_url ?? ""}
-                  onBlur={(e) => (e.target.value || null) !== s.link_url && doUpdate(s.id, { link_url: e.target.value || null })}
+                  onBlur={(e) =>
+                    (e.target.value || null) !== s.link_url &&
+                    doUpdate(s.id, { link_url: e.target.value || null })
+                  }
                   placeholder="Lien (facultatif)"
                   className="mt-1 w-full rounded-md border border-border bg-background px-2 py-1 text-xs"
                 />

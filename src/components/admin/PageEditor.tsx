@@ -48,7 +48,15 @@ export default function PageEditor({ pageId }: { pageId: string }) {
   );
 }
 
-function FieldRow({ field, saved, onSaved }: { field: EditableField; saved: boolean; onSaved: () => void }) {
+function FieldRow({
+  field,
+  saved,
+  onSaved,
+}: {
+  field: EditableField;
+  saved: boolean;
+  onSaved: () => void;
+}) {
   const current = useContent(field.key, field.default);
   const [value, setValue] = useState(current);
   const [uploading, setUploading] = useState(false);
@@ -144,9 +152,7 @@ function FieldRow({ field, saved, onSaved }: { field: EditableField; saved: bool
       {field.type === "image" && (
         <div className="flex items-center gap-4">
           <div className="w-32 h-24 rounded-lg overflow-hidden border border-border bg-muted shrink-0">
-            {value ? (
-              <img src={value} alt="" className="w-full h-full object-cover" />
-            ) : null}
+            {value ? <img src={value} alt="" className="w-full h-full object-cover" /> : null}
           </div>
           <div>
             <input
@@ -165,7 +171,11 @@ function FieldRow({ field, saved, onSaved }: { field: EditableField; saved: bool
               disabled={uploading}
               className="inline-flex items-center gap-2 text-sm rounded-lg bg-primary text-primary-foreground px-3 py-2 hover:opacity-90 disabled:opacity-40"
             >
-              {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+              {uploading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Upload className="w-4 h-4" />
+              )}
               {uploading ? "Envoi…" : "Changer l'image"}
             </button>
             <p className="mt-2 text-xs text-muted-foreground">PNG / JPG — max 3 Mo</p>

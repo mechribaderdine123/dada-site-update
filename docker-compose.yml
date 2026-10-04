@@ -10,14 +10,18 @@ services:
   db:
     image: postgres:16-alpine
     restart: unless-stopped
+    container_name: dada-db
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-dadahiphop}
       POSTGRES_USER: ${POSTGRES_USER:-dadahiphop}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
 
     ports:
-    - "5432:5432"
-    
+      # Bound to loopback only. The app reaches the database over the compose
+      # network (db:5432), so this exists purely for host-side tooling
+      # (psql, migrations). Never publish 5432 to the internet.
+      - "127.0.0.1:5432:5432"
+
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
@@ -26,13 +30,12 @@ services:
       interval: 10s
       timeout: 5s
       retries: 12
-    networks:
-      - internal
 
   app:
     build:
       context: .
     restart: unless-stopped
+    container_name: dada-app
     depends_on:
       db:
         condition: service_healthy
@@ -40,7 +43,10 @@ services:
       NODE_ENV: production
       HOST: 0.0.0.0
       PORT: 3000
-      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL must be set in .env}
+      # Built from the POSTGRES_* values so it always points at the db service.
+      # Do not use DATABASE_URL from .env here: a host-side "localhost" resolves
+      # to the app container itself and the pool can never reach the database.
+      DATABASE_URL: postgres://${POSTGRES_USER:-dadahiphop}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}@db:5432/${POSTGRES_DB:-dadahiphop}
       DB_POOL_MAX: ${DB_POOL_MAX:-10}
       SESSION_SECRET: ${SESSION_SECRET:?SESSION_SECRET must be set in .env}
       SESSION_DAYS: ${SESSION_DAYS:-30}
@@ -57,18 +63,18 @@ services:
       timeout: 5s
       retries: 10
       start_period: 20s
-    networks:
-      - internal
+    ports:
+      - "3000:3000"
 
   nginx:
     image: nginx:1.27-alpine
     restart: unless-stopped
+    container_name: dada-nginx
     depends_on:
       - app
     environment:
       DOMAIN: ${DOMAIN:-dadahiphop.com}
       NGINX_ENVSUBST_OUTPUT_DIR: /etc/nginx/conf.d
-      # Only ${DOMAIN} is substituted, so Nginx variables stay untouched.
       NGINX_ENVSUBST_FILTER: DOMAIN
     ports:
       - "80:80"
@@ -77,8 +83,6 @@ services:
       - ./deploy/nginx/templates:/etc/nginx/templates:ro
       - ./deploy/certbot/conf:/etc/letsencrypt:ro
       - ./deploy/certbot/www:/var/www/certbot
-    networks:
-      - internal
 
   # Issues and renews the Let's Encrypt certificate for ${DOMAIN}.
   # Run deploy/init-letsencrypt.sh once before the first production start.

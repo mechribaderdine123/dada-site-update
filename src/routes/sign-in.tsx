@@ -9,7 +9,10 @@ export const Route = createFileRoute("/sign-in")({
   head: () => ({
     meta: [
       { title: "Se connecter — Dada Hip Hop Academy" },
-      { name: "description", content: "Connectez-vous à votre espace artiste Dada Hip Hop Academy." },
+      {
+        name: "description",
+        content: "Connectez-vous à votre espace artiste Dada Hip Hop Academy.",
+      },
     ],
   }),
   component: SignInPage,
@@ -52,7 +55,9 @@ function SignInPage() {
         <div className="flex justify-center">
           <img src={logo} alt="Dada Hip Hop Academy" className="h-20 w-auto" fetchPriority="high" />
         </div>
-        <h1 className="mt-4 text-center font-display text-3xl md:text-4xl tracking-wide">Bienvenue de retour</h1>
+        <h1 className="mt-4 text-center font-display text-3xl md:text-4xl tracking-wide">
+          Bienvenue de retour
+        </h1>
 
         <form onSubmit={onSubmit} className="mt-8 space-y-5">
           <div>
@@ -78,7 +83,11 @@ function SignInPage() {
                 placeholder="***********"
                 className="w-full h-12 px-4 pr-11 rounded-lg bg-white text-black placeholder:text-black/40 outline-none focus:ring-2 focus:ring-secondary"
               />
-              <button type="button" onClick={() => setShowPwd((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-black/60 hover:text-black">
+              <button
+                type="button"
+                onClick={() => setShowPwd((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-black/60 hover:text-black"
+              >
                 {showPwd ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
@@ -101,10 +110,14 @@ function SignInPage() {
 
         <p className="mt-6 text-sm text-center text-white/80">
           Vous n'avez pas de compte ?{" "}
-          <Link to="/sign-up" className="text-secondary font-semibold hover:underline">Créer un compte</Link>
+          <Link to="/sign-up" className="text-secondary font-semibold hover:underline">
+            Créer un compte
+          </Link>
         </p>
         <div className="mt-3 text-center">
-          <Link to="/" className="text-sm text-secondary hover:underline">Retour</Link>
+          <Link to="/" className="text-sm text-secondary hover:underline">
+            Retour
+          </Link>
         </div>
       </div>
     </div>

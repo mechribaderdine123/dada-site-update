@@ -7,11 +7,15 @@ export type TableName =
   | "user_roles"
   | "tracks"
   | "artist_videos"
+  | "feed_posts"
   | "workshops"
   | "sponsors"
   | "site_content"
   | "studio_services"
-  | "studio_tags";
+  | "studio_tags"
+  | "gym_cours"
+  | "gym_inscriptions"
+  | "gym_presences";
 
 export type TableMeta = {
   /** Columns a client may select from this table. */
@@ -75,13 +79,30 @@ export const TABLES: Record<TableName, TableMeta> = {
       "created_at",
       "updated_at",
     ],
-    publicColumns: ["id", "user_id", "title", "genre", "audio_url", "cover_url", "status", "created_at"],
+    publicColumns: [
+      "id",
+      "user_id",
+      "title",
+      "genre",
+      "audio_url",
+      "cover_url",
+      "status",
+      "created_at",
+    ],
     conflictTarget: "id",
     insertable: true,
   },
   artist_videos: {
     columns: ["id", "user_id", "title", "youtube_url", "created_at", "updated_at"],
     publicColumns: ["id", "user_id", "title", "youtube_url", "created_at"],
+    conflictTarget: "id",
+    insertable: true,
+  },
+  feed_posts: {
+    columns: ["id", "user_id", "image_url", "caption", "status", "created_at", "updated_at"],
+    // status is deliberately absent from publicColumns: anonymous visitors must
+    // never be able to see or filter on the moderation state.
+    publicColumns: ["id", "user_id", "image_url", "caption", "created_at"],
     conflictTarget: "id",
     insertable: true,
   },
@@ -139,6 +160,82 @@ export const TABLES: Record<TableName, TableMeta> = {
   studio_tags: {
     columns: ["id", "label", "sort_order", "created_at", "updated_at"],
     publicColumns: ["id", "label", "sort_order", "created_at"],
+    conflictTarget: "id",
+    insertable: true,
+  },
+  gym_cours: {
+    columns: [
+      "id",
+      "nom",
+      "pub",
+      "duree_mois",
+      "tarif",
+      "couleur",
+      "sort_order",
+      "created_at",
+      "updated_at",
+    ],
+    publicColumns: [],
+    conflictTarget: "id",
+    insertable: true,
+  },
+  gym_inscriptions: {
+    columns: [
+      "id",
+      "nom",
+      "ddn",
+      "cin",
+      "adresse",
+      "tel",
+      "email",
+      "statut",
+      "np",
+      "tp",
+      "cin_parent",
+      "adresse_parent",
+      "cn",
+      "dd",
+      "mt",
+      "mt_original",
+      "ac",
+      "mp",
+      "ap",
+      "di",
+      "obs",
+      "ass_payee",
+      "ass_date",
+      "med_groupe_sanguin",
+      "med_autorisation_sport",
+      "med_maladies",
+      "med_allergies",
+      "med_medicaments",
+      "med_urgence_nom",
+      "med_urgence_tel",
+      "med_remarques",
+      "promo_code",
+      "promo_type",
+      "promo_valeur",
+      "nb_renouvellements",
+      "historique",
+      "abonnement_suspendu",
+      "abonnement_arrete",
+      "ne_pas_renouveler",
+      "suspension_motif",
+      "suspension_date",
+      "suspension_note",
+      "arret_motif",
+      "arret_date",
+      "arret_note",
+      "created_at",
+      "updated_at",
+    ],
+    publicColumns: [],
+    conflictTarget: "id",
+    insertable: true,
+  },
+  gym_presences: {
+    columns: ["id", "pres_date", "session", "inscription_id", "statut", "created_at", "updated_at"],
+    publicColumns: [],
     conflictTarget: "id",
     insertable: true,
   },

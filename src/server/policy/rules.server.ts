@@ -67,6 +67,9 @@ const CONTENT_TABLES: TableName[] = [
   "studio_tags",
 ];
 
+// Gym management data is private: only administrators may read or write it.
+const GYM_TABLES: TableName[] = ["gym_cours", "gym_inscriptions", "gym_presences"];
+
 const PUBLIC_PROFILE_COLUMNS = [
   "id",
   "artist_name",
@@ -101,6 +104,10 @@ export function authorize(input: AuthorizeInput): AccessDecision {
     return actor?.isAdmin ? allowed({ columns: null }) : DENIED("Admin access required.");
   }
 
+  if (GYM_TABLES.includes(table)) {
+    return actor?.isAdmin ? allowed({ columns: null }) : DENIED("Admin access required.");
+  }
+
   switch (table) {
     case "profiles":
       return profilePolicy(input, actor, param);
@@ -110,6 +117,8 @@ export function authorize(input: AuthorizeInput): AccessDecision {
       return trackPolicy(action, actor, param);
     case "artist_videos":
       return videoPolicy(action, actor, param);
+    case "feed_posts":
+      return feedPostPolicy(action, actor, param);
     default:
       return DENIED("This table is not available.");
   }
@@ -208,6 +217,37 @@ function trackPolicy(action: Action, actor: Actor, param: ParamBinder): AccessDe
   }
 
   return DENIED("Tracks cannot be upserted.");
+}
+
+/** Feed posts are owner-scoped: an artist reads, writes and deletes only their own rows. */
+function feedPostPolicy(action: Action, actor: Actor, param: ParamBinder): AccessDecision {
+  if (action === "select") {
+    if (actor?.isAdmin) return allowed({ columns: null });
+    if (!actor) return DENIED("Sign in to read feed posts.");
+    return allowed({ columns: null, filter: `user_id = ${param(actor.id)}` });
+  }
+
+  if (action === "insert") {
+    if (!actor) return DENIED("Sign in to share a post.");
+    return allowed({
+      columns: ["image_url", "caption"],
+      forcedValues: { user_id: actor.id },
+    });
+  }
+
+  if (action === "update") {
+    if (actor?.isAdmin) return allowed({ columns: null });
+    if (!actor) return DENIED("Sign in to update a post.");
+    return allowed({ columns: ["caption"], filter: `user_id = ${param(actor.id)}` });
+  }
+
+  if (action === "delete") {
+    if (actor?.isAdmin) return allowed({ columns: null });
+    if (!actor) return DENIED("Sign in to delete a post.");
+    return allowed({ columns: null, filter: `user_id = ${param(actor.id)}` });
+  }
+
+  return DENIED("Posts cannot be upserted.");
 }
 
 function videoPolicy(action: Action, actor: Actor, param: ParamBinder): AccessDecision {

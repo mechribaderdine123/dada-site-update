@@ -5,7 +5,7 @@ import { getEnv } from "../env.server";
 // Upload folders on the server disk. Private buckets can only be read through
 // a signed URL; the public bucket is served to anyone.
 
-export type BucketName = "music" | "avatars" | "covers" | "site-images";
+export type BucketName = "music" | "avatars" | "covers" | "site-images" | "feed-images";
 
 export type Bucket = {
   name: BucketName;
@@ -37,6 +37,12 @@ export const BUCKETS: Record<BucketName, Bucket> = {
   music: { name: "music", folder: "music", isPublic: false, contentTypes: AUDIO_TYPES },
   avatars: { name: "avatars", folder: "avatars", isPublic: false, contentTypes: IMAGE_TYPES },
   covers: { name: "covers", folder: "covers", isPublic: false, contentTypes: IMAGE_TYPES },
+  "feed-images": {
+    name: "feed-images",
+    folder: "feed-images",
+    isPublic: false,
+    contentTypes: IMAGE_TYPES,
+  },
   "site-images": {
     name: "site-images",
     folder: "site-images",
@@ -45,7 +51,13 @@ export const BUCKETS: Record<BucketName, Bucket> = {
   },
 };
 
-export const BUCKET_ORDER: BucketName[] = ["music", "avatars", "covers", "site-images"];
+export const BUCKET_ORDER: BucketName[] = [
+  "music",
+  "avatars",
+  "covers",
+  "feed-images",
+  "site-images",
+];
 
 export function isBucketName(value: string): value is BucketName {
   return Object.prototype.hasOwnProperty.call(BUCKETS, value);

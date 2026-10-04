@@ -25,6 +25,8 @@ import { Route as AdminAboutRouteImport } from './routes/admin.about'
 import { Route as AdminAccountsRouteImport } from './routes/admin.accounts'
 import { Route as AdminContactRouteImport } from './routes/admin.contact'
 import { Route as AdminCoursRouteImport } from './routes/admin.cours'
+import { Route as AdminGymRouteImport } from './routes/admin.gym'
+import { Route as AdminPostsRouteImport } from './routes/admin.posts'
 import { Route as AdminReseauxRouteImport } from './routes/admin.reseaux'
 import { Route as AdminSignInRouteImport } from './routes/admin.sign-in'
 import { Route as AdminSponsorsRouteImport } from './routes/admin.sponsors'
@@ -119,6 +121,16 @@ const AdminCoursRoute = AdminCoursRouteImport.update({
   path: '/cours',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminGymRoute = AdminGymRouteImport.update({
+  id: '/gym',
+  path: '/gym',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPostsRoute = AdminPostsRouteImport.update({
+  id: '/posts',
+  path: '/posts',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminReseauxRoute = AdminReseauxRouteImport.update({
   id: '/reseaux',
   path: '/reseaux',
@@ -201,6 +213,8 @@ export interface FileRoutesByFullPath {
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/contact': typeof AdminContactRoute
   '/admin/cours': typeof AdminCoursRoute
+  '/admin/gym': typeof AdminGymRoute
+  '/admin/posts': typeof AdminPostsRoute
   '/admin/reseaux': typeof AdminReseauxRoute
   '/admin/sign-in': typeof AdminSignInRoute
   '/admin/sponsors': typeof AdminSponsorsRoute
@@ -230,6 +244,8 @@ export interface FileRoutesByTo {
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/contact': typeof AdminContactRoute
   '/admin/cours': typeof AdminCoursRoute
+  '/admin/gym': typeof AdminGymRoute
+  '/admin/posts': typeof AdminPostsRoute
   '/admin/reseaux': typeof AdminReseauxRoute
   '/admin/sign-in': typeof AdminSignInRoute
   '/admin/sponsors': typeof AdminSponsorsRoute
@@ -262,6 +278,8 @@ export interface FileRoutesById {
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/contact': typeof AdminContactRoute
   '/admin/cours': typeof AdminCoursRoute
+  '/admin/gym': typeof AdminGymRoute
+  '/admin/posts': typeof AdminPostsRoute
   '/admin/reseaux': typeof AdminReseauxRoute
   '/admin/sign-in': typeof AdminSignInRoute
   '/admin/sponsors': typeof AdminSponsorsRoute
@@ -295,6 +313,8 @@ export interface FileRouteTypes {
     | '/admin/accounts'
     | '/admin/contact'
     | '/admin/cours'
+    | '/admin/gym'
+    | '/admin/posts'
     | '/admin/reseaux'
     | '/admin/sign-in'
     | '/admin/sponsors'
@@ -324,6 +344,8 @@ export interface FileRouteTypes {
     | '/admin/accounts'
     | '/admin/contact'
     | '/admin/cours'
+    | '/admin/gym'
+    | '/admin/posts'
     | '/admin/reseaux'
     | '/admin/sign-in'
     | '/admin/sponsors'
@@ -355,6 +377,8 @@ export interface FileRouteTypes {
     | '/admin/accounts'
     | '/admin/contact'
     | '/admin/cours'
+    | '/admin/gym'
+    | '/admin/posts'
     | '/admin/reseaux'
     | '/admin/sign-in'
     | '/admin/sponsors'
@@ -500,6 +524,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCoursRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/gym': {
+      id: '/admin/gym'
+      path: '/gym'
+      fullPath: '/admin/gym'
+      preLoaderRoute: typeof AdminGymRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/posts': {
+      id: '/admin/posts'
+      path: '/posts'
+      fullPath: '/admin/posts'
+      preLoaderRoute: typeof AdminPostsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/reseaux': {
       id: '/admin/reseaux'
       path: '/reseaux'
@@ -599,6 +637,8 @@ interface AdminRouteChildren {
   AdminAccountsRoute: typeof AdminAccountsRoute
   AdminContactRoute: typeof AdminContactRoute
   AdminCoursRoute: typeof AdminCoursRoute
+  AdminGymRoute: typeof AdminGymRoute
+  AdminPostsRoute: typeof AdminPostsRoute
   AdminReseauxRoute: typeof AdminReseauxRoute
   AdminSignInRoute: typeof AdminSignInRoute
   AdminSponsorsRoute: typeof AdminSponsorsRoute
@@ -613,6 +653,8 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAccountsRoute: AdminAccountsRoute,
   AdminContactRoute: AdminContactRoute,
   AdminCoursRoute: AdminCoursRoute,
+  AdminGymRoute: AdminGymRoute,
+  AdminPostsRoute: AdminPostsRoute,
   AdminReseauxRoute: AdminReseauxRoute,
   AdminSignInRoute: AdminSignInRoute,
   AdminSponsorsRoute: AdminSponsorsRoute,

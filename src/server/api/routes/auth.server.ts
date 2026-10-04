@@ -10,7 +10,10 @@ import { assertSameOrigin, failure, json, methodNotAllowed, readJson } from "../
 
 // /api/auth/* — sign up, sign in, sign out, current session, account deletion.
 
-export async function handleAuthRoute(request: Request, segments: string[]): Promise<Response | null> {
+export async function handleAuthRoute(
+  request: Request,
+  segments: string[],
+): Promise<Response | null> {
   if (segments[0] !== "auth") return null;
 
   switch (segments[1] ?? "") {
@@ -42,11 +45,9 @@ async function signUp(request: Request): Promise<Response> {
   // Signing up also signs the artist in, so the studio opens right away.
   const { token, expiresAt } = await signInWithPassword(email, password);
 
-  return json(
-    { data: { user: created.user, session: { user: created.user } }, error: null },
-    200,
-    { "set-cookie": buildSessionCookie(token, expiresAt) },
-  );
+  return json({ data: { user: created.user, session: { user: created.user } }, error: null }, 200, {
+    "set-cookie": buildSessionCookie(token, expiresAt),
+  });
 }
 
 async function signIn(request: Request): Promise<Response> {
@@ -56,11 +57,9 @@ async function signIn(request: Request): Promise<Response> {
   const body = await readJson(request);
   const result = await signInWithPassword(String(body.email ?? ""), String(body.password ?? ""));
 
-  return json(
-    { data: { user: result.user, session: { user: result.user } }, error: null },
-    200,
-    { "set-cookie": buildSessionCookie(result.token, result.expiresAt) },
-  );
+  return json({ data: { user: result.user, session: { user: result.user } }, error: null }, 200, {
+    "set-cookie": buildSessionCookie(result.token, result.expiresAt),
+  });
 }
 
 async function signOut(request: Request): Promise<Response> {

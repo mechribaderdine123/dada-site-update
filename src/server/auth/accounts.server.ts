@@ -47,7 +47,8 @@ export async function signUpArtist(input: {
   profile?: ProfileSeed;
 }): Promise<{ user: AccountUser }> {
   const email = input.email.trim().toLowerCase();
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw new AuthError("Enter a valid e-mail address.");
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
+    throw new AuthError("Enter a valid e-mail address.");
   assertPasswordStrength(input.password);
 
   if (await findAccountByEmail(email)) {
@@ -67,7 +68,9 @@ export async function signUpArtist(input: {
     const baseSlug = slugify(seed.artist_name || email.split("@")[0]);
     let slug = baseSlug;
     for (let attempt = 2; attempt < 50; attempt += 1) {
-      const taken = await client.query("select 1 from profiles where lower(slug) = lower($1)", [slug]);
+      const taken = await client.query("select 1 from profiles where lower(slug) = lower($1)", [
+        slug,
+      ]);
       if (taken.rowCount === 0) break;
       slug = `${baseSlug}-${attempt}`;
     }
@@ -113,7 +116,8 @@ export async function signInWithPassword(
 
   // Always run a verification step so a missing account and a wrong password
   // take a comparable amount of time.
-  const hash = account?.password_hash ?? "$2a$12$invalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidin";
+  const hash =
+    account?.password_hash ?? "$2a$12$invalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidin";
   const valid = await verifyPassword(password, hash);
   if (!account || !valid) throw new AuthError("Invalid login credentials");
 

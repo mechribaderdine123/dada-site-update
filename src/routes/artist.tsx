@@ -10,7 +10,11 @@ export const Route = createFileRoute("/artist")({
 const DASHBOARD_SEGMENTS = new Set(["", "edit", "music", "my-music"]);
 
 function isArtistDashboard(pathname: string) {
-  const first = pathname.replace(/^\/artist\/?/, "").split("/").filter(Boolean)[0] ?? "";
+  const first =
+    pathname
+      .replace(/^\/artist\/?/, "")
+      .split("/")
+      .filter(Boolean)[0] ?? "";
   return DASHBOARD_SEGMENTS.has(first);
 }
 
@@ -21,7 +25,8 @@ function PrivateAccountNotice() {
     <div className="bg-secondary/10 border border-secondary/30 text-secondary-foreground rounded-xl px-4 py-3 text-sm max-w-6xl mx-auto mt-4 mb-2">
       <p className="font-semibold">Votre compte est actuellement privé.</p>
       <p className="opacity-90 mt-1">
-        Vous pouvez gérer votre profil et votre musique, mais seuls vous et l'administrateur pouvez le voir pour l'instant. Il deviendra public après validation par l'administrateur.
+        Vous pouvez gérer votre profil et votre musique, mais seuls vous et l'administrateur pouvez
+        le voir pour l'instant. Il deviendra public après validation par l'administrateur.
       </p>
     </div>
   );
@@ -45,7 +50,11 @@ function ArtistGate() {
   }
 
   if (loading) {
-    return <div className="min-h-screen bg-[#393939] text-white grid place-items-center">Chargement…</div>;
+    return (
+      <div className="min-h-screen bg-[#393939] text-white grid place-items-center">
+        Chargement…
+      </div>
+    );
   }
   if (!session) return null;
 

@@ -18,7 +18,10 @@ export async function apiRequest<T = unknown>(
   options: RequestOptions = {},
 ): Promise<ApiResult<T>> {
   if (!isBrowser()) {
-    return { data: null, error: new Error("This request can only run in the browser.") } as ApiResult<T>;
+    return {
+      data: null,
+      error: new Error("This request can only run in the browser."),
+    } as ApiResult<T>;
   }
 
   const headers: Record<string, string> = { accept: "application/json" };
@@ -38,7 +41,10 @@ export async function apiRequest<T = unknown>(
       credentials: "same-origin",
     });
   } catch {
-    return { data: null, error: new Error("The server could not be reached. Check your connection.") };
+    return {
+      data: null,
+      error: new Error("The server could not be reached. Check your connection."),
+    };
   }
 
   const text = await response.text();

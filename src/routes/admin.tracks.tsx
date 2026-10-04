@@ -42,7 +42,12 @@ function AdminTracks() {
         .from("profiles")
         .select("id, artist_name, email")
         .in("id", ids);
-      byId = new Map((profs ?? []).map((p) => [p.id, { artist_name: p.artist_name, email: p.email }]));
+      byId = new Map(
+        (profs ?? []).map((p: { id: string; artist_name: string; email: string }) => [
+          p.id,
+          { artist_name: p.artist_name, email: p.email },
+        ]),
+      );
     }
     const enriched = await Promise.all(
       list.map(async (t) => ({
@@ -80,7 +85,9 @@ function AdminTracks() {
     <div className="space-y-6">
       <div>
         <h1 className="font-display tracking-wide text-3xl">Musiques</h1>
-        <p className="text-sm text-muted-foreground">Approuvez, refusez ou supprimez les morceaux soumis.</p>
+        <p className="text-sm text-muted-foreground">
+          Approuvez, refusez ou supprimez les morceaux soumis.
+        </p>
       </div>
 
       <div className="flex gap-2">
@@ -89,7 +96,9 @@ function AdminTracks() {
             key={s}
             onClick={() => setFilter(s)}
             className={`px-4 py-2 rounded-lg text-sm font-semibold inline-flex items-center gap-2 border ${
-              filter === s ? "bg-primary text-primary-foreground border-primary" : "bg-card hover:bg-muted border-border"
+              filter === s
+                ? "bg-primary text-primary-foreground border-primary"
+                : "bg-card hover:bg-muted border-border"
             }`}
           >
             {s === "pending" && <Clock className="w-4 h-4" />}
@@ -104,12 +113,16 @@ function AdminTracks() {
         <p className="text-sm text-muted-foreground">Chargement…</p>
       ) : rows.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border p-10 text-center text-muted-foreground">
-          Aucun morceau {filter === "pending" ? "en attente" : filter === "approved" ? "approuvé" : "refusé"}.
+          Aucun morceau{" "}
+          {filter === "pending" ? "en attente" : filter === "approved" ? "approuvé" : "refusé"}.
         </div>
       ) : (
         <div className="grid gap-4">
           {rows.map((t) => (
-            <div key={t.id} className="rounded-xl border border-border bg-card p-5 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+            <div
+              key={t.id}
+              className="rounded-xl border border-border bg-card p-5 flex flex-col md:flex-row gap-4 md:items-center md:justify-between"
+            >
               <div className="flex items-start gap-4">
                 <div className="w-20 h-20 rounded-lg bg-muted overflow-hidden shrink-0 grid place-items-center">
                   {t.cover_url ? (
@@ -121,7 +134,10 @@ function AdminTracks() {
                 <div>
                   <p className="font-bold text-lg">{t.title}</p>
                   <p className="text-sm text-muted-foreground">
-                    par <span className="font-semibold text-foreground">{t.profiles?.artist_name ?? "—"}</span>
+                    par{" "}
+                    <span className="font-semibold text-foreground">
+                      {t.profiles?.artist_name ?? "—"}
+                    </span>
                     {t.genre && <> · {t.genre}</>}
                   </p>
                   {t.audio_url && (

@@ -1,8 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // The data client for the application. Although this module keeps its original
 // path and export name so that existing call sites keep working, it no longer
 // talks to Supabase or to the browser's local storage: every call goes to this
 // project's own REST API (/api/*), which stores data in PostgreSQL and files
 // in the server upload folder.
+//
+// NOTE: `any` is required here on purpose. The query builder's loose result
+// type is what every existing call site relies on (they cast with `as`).
+// Tightening these types would ripple through every route component.
 
 import { apiRequest, isBrowser } from "@/lib/api/http";
 
@@ -205,9 +210,14 @@ async function loadSession(): Promise<void> {
     method: "GET",
   });
   cachedSession = result.data?.session ?? null;
+  // Tell listeners what was found before anyone flips their loading flag off,
+  // so route guards never observe a signed-out frame on a normal page load.
+  emit(cachedSession ? "INITIALIZED" : "SIGNED_OUT");
 }
 
 const auth = {
+  // Awaiting loadSession guarantees the session is resolved (and listeners
+  // notified) before getSession resolves.
   async getSession(): Promise<{ data: { session: Session | null } }> {
     await loadSession();
     return { data: { session: cachedSession } };
@@ -234,7 +244,9 @@ const auth = {
   async signUp(input: {
     email: string;
     password: string;
-    options?: { data?: Record<string, unknown> };
+    // `emailRedirectTo` is accepted for call-site compatibility; there is no
+    // e-mail verification flow in this self-hosted setup, so it is ignored.
+    options?: { data?: Record<string, unknown>; emailRedirectTo?: string };
   }) {
     const result = await apiRequest<{ user: LocalUser; session: Session }>("/api/auth/sign-up", {
       method: "POST",

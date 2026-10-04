@@ -11,7 +11,11 @@ export const Route = createFileRoute("/dada-reseaux-artist")({
   head: () => ({
     meta: [
       { title: "Dada Réseaux Artist — Dada Hip Hop Academy" },
-      { name: "description", content: "Espace dédié aux artistes de Dada Hip Hop Academy. Découvrez, partagez et mettez en lumière votre talent." },
+      {
+        name: "description",
+        content:
+          "Espace dédié aux artistes de Dada Hip Hop Academy. Découvrez, partagez et mettez en lumière votre talent.",
+      },
     ],
   }),
   component: DadaReseauxArtistPage,
@@ -36,7 +40,10 @@ function DadaReseauxArtistPage() {
 
   const heroImage = useContent("reseaux.hero.image", heroAsset);
   const heroTitle = useContent("reseaux.hero.title", "DADA RESEAUX ARTIST");
-  const heroSubtitle = useContent("reseaux.hero.subtitle", "Un espace conçu pour vous mettre en lumière");
+  const heroSubtitle = useContent(
+    "reseaux.hero.subtitle",
+    "Un espace conçu pour vous mettre en lumière",
+  );
   const cta1 = useContent("reseaux.hero.cta1", "Se connecter");
   const cta2 = useContent("reseaux.hero.cta2", "Créer un compte");
   const secTitle1 = useContent("reseaux.section.title1", "DECOUVRIR");
@@ -69,7 +76,12 @@ function DadaReseauxArtistPage() {
   };
 
   const onDelete = async (a: PublicArtist) => {
-    if (!confirm(`Supprimer définitivement le compte de ${a.artist_name} ? Cette action est irréversible.`)) return;
+    if (
+      !confirm(
+        `Supprimer définitivement le compte de ${a.artist_name} ? Cette action est irréversible.`,
+      )
+    )
+      return;
     setBusy(a.id);
     try {
       const { error } = await supabase.auth.admin.deleteUser(a.id);
@@ -93,7 +105,11 @@ function DadaReseauxArtistPage() {
   return (
     <div className="min-h-screen bg-[#1a1a1a] text-white">
       <section className="relative h-[75vh] min-h-[520px] w-full overflow-hidden">
-        <img src={heroImage} alt="Danseurs Dada Hip Hop Academy" className="absolute inset-0 w-full h-full object-cover" />
+        <img
+          src={heroImage}
+          alt="Danseurs Dada Hip Hop Academy"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
         <div className="absolute inset-0 bg-primary/45" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#1a1a1a]" />
 
@@ -105,10 +121,16 @@ function DadaReseauxArtistPage() {
             {heroSubtitle}
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link to="/sign-in" className="rounded-md bg-primary text-primary-foreground px-8 py-3 text-sm font-semibold hover:opacity-90 transition">
+            <Link
+              to="/sign-in"
+              className="rounded-md bg-primary text-primary-foreground px-8 py-3 text-sm font-semibold hover:opacity-90 transition"
+            >
               {cta1}
             </Link>
-            <Link to="/sign-up" className="rounded-md bg-white/10 border border-white/20 text-white px-8 py-3 text-sm font-semibold hover:bg-white/20 transition">
+            <Link
+              to="/sign-up"
+              className="rounded-md bg-white/10 border border-white/20 text-white px-8 py-3 text-sm font-semibold hover:bg-white/20 transition"
+            >
               {cta2}
             </Link>
           </div>
@@ -147,13 +169,22 @@ function DadaReseauxArtistPage() {
                   <Link to="/artist/$slug" params={{ slug: a.slug }} className="block">
                     <div className="aspect-square rounded-2xl overflow-hidden bg-white/5 grid place-items-center">
                       {a.avatar_url ? (
-                        <img src={a.avatar_url} alt={a.artist_name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                        <img
+                          src={a.avatar_url}
+                          alt={a.artist_name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        />
                       ) : (
                         <UserIcon className="w-12 h-12 text-white/40" />
                       )}
                     </div>
-                    <p className="mt-3 font-bold group-hover:text-primary transition-colors">{a.artist_name}</p>
-                    <p className="text-sm text-white/60">{a.genre || "—"}{a.city ? ` · ${a.city}` : ""}</p>
+                    <p className="mt-3 font-bold group-hover:text-primary transition-colors">
+                      {a.artist_name}
+                    </p>
+                    <p className="text-sm text-white/60">
+                      {a.genre || "—"}
+                      {a.city ? ` · ${a.city}` : ""}
+                    </p>
                   </Link>
                   {canManage && (
                     <div className="mt-2 flex flex-wrap gap-2">

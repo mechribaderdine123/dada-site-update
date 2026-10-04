@@ -1,0 +1,63 @@
+{
+  "inscriptions": [
+    {
+      "id": 101,
+      "nom": "Ben Salah Ahmed",
+      "ddn": "01/01/1995",
+      "cin": "01010101",
+      "tel": "50123456",
+      "email": "ahmed.test@email.com",
+      "statut": "Majeur",
+      "np": "", "tp": "", "cin_parent": "", "adresse_parent": "",
+      "adresse": "Tunis, Rue 1 Avenue",
+      "cn": "Dance Hip-Hop",
+      "dd": "2026-07-01",
+      "mt": 360, "mt_original": 360, "ac": 180,
+      "mp": "Especes",
+      "ap": "Oui", "di": "Oui", "obs": "Import test",
+      "ass_payee": "Oui", "ass_date": "2026-07-01",
+      "med_groupe_sanguin": "O+", "med_autorisation_sport": "Oui",
+      "med_maladies": "", "med_allergies": "", "med_medicaments": "",
+      "med_urgence_nom": "", "med_urgence_tel": "", "med_remarques": "",
+      "promo_code": "", "promo_type": "", "promo_valeur": 0,
+      "nb_renouvellements": 0, "historique_renouvellements": [],
+      "abonnement_suspendu": false, "abonnement_arrete": false
+    },
+    {
+      "id": 102,
+      "nom": "Trabelsi Sonia",
+      "ddn": "05/03/2012",
+      "cin": "",
+      "tel": "22334455",
+      "email": "sonia.test@email.com",
+      "statut": "Mineur",
+      "np": "Parent Trabelsi", "tp": "71223344", "cin_parent": "02223333",
+      "adresse_parent": "",
+      "adresse": "Ariana",
+      "cn": "Gymnastique",
+      "dd": "2026-06-10",
+      "mt": 350, "mt_original": 350, "ac": 350,
+      "mp": "Cheque",
+      "ap": "Oui", "di": "Oui", "obs": "",
+      "ass_payee": "Oui", "ass_date": "2026-06-10",
+      "med_groupe_sanguin": "A+", "med_autorisation_sport": "Oui",
+      "med_maladies": "", "med_allergies": "Pollens", "med_medicaments": "",
+      "med_urgence_nom": "", "med_urgence_tel": "", "med_remarques": "",
+      "promo_code": "FAMILLE", "promo_type": "pct", "promo_valeur": 20,
+      "nb_renouvellements": 0, "historique_renouvellements": [],
+      "abonnement_suspendu": false, "abonnement_arrete": false
+    }
+  ],
+  "cours": [
+    { "nom": "Kung Fu Enfants", "pub": "Enfants 6-12 ans", "dm": 6, "tarif": 320, "col": "#ffb800" }
+  ],
+  "presences": {
+    "2026-09-28": {
+      "Session 1": { "101": "present", "102": "absent" }
+    },
+    "2026-09-29": {
+      "Session 1": { "101": "justifie", "102": "present" }
+    }
+  },
+  "nextId": 103
+}

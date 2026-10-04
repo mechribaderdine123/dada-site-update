@@ -61,9 +61,10 @@ export function buildStatement(request: StatementRequest): Statement {
 
   // Filtering and sorting are limited to columns the caller may read, except
   // when the policy narrows the read to the caller's own row.
-  const touchesPrivateColumn = [...request.filters.map((f) => f.column), ...request.order.map((o) => o.column)].some(
-    (column) => meta.columns.includes(column) && !meta.publicColumns.includes(column),
-  );
+  const touchesPrivateColumn = [
+    ...request.filters.map((f) => f.column),
+    ...request.order.map((o) => o.column),
+  ].some((column) => meta.columns.includes(column) && !meta.publicColumns.includes(column));
   const filterColumns =
     decision.selfScope && touchesPrivateColumn && !request.actor?.isAdmin
       ? [...meta.columns]
@@ -77,6 +78,16 @@ export function buildStatement(request: StatementRequest): Statement {
 
   const table = quote(request.table);
   const payloadColumns = decision.columns.length > 0 ? decision.columns : [];
+
+  // A policy-narrowed write (an artist editing their own profile, deleting
+  // their own track or post) still needs a client filter to target the row.
+  // Key columns are safe for that: the policy filter is ANDed into the same
+  // WHERE clause, so the statement can never touch another owner's rows.
+  const isPolicyNarrowedWrite =
+    (request.action === "update" || request.action === "delete") && decision.filter !== null;
+  const writeFilterColumns = isPolicyNarrowedWrite
+    ? [...filterColumns, "id", "user_id"].filter((column) => meta.columns.includes(column))
+    : filterColumns;
 
   switch (request.action) {
     case "select": {
@@ -93,7 +104,12 @@ export function buildStatement(request: StatementRequest): Statement {
       if (!meta.insertable) throw new QueryDeniedError("Rows cannot be inserted into this table.");
       const payloads = Array.isArray(request.payload) ? request.payload : [request.payload];
       const rows = payloads.map((entry) =>
-        pickWritableValues(meta, payloadColumns, toPayloadObject(entry) ?? {}, decision.forcedValues),
+        pickWritableValues(
+          meta,
+          payloadColumns,
+          toPayloadObject(entry) ?? {},
+          decision.forcedValues,
+        ),
       );
       const columns = [...new Set(rows.flatMap((row) => Object.keys(row)))];
       const values = rows
@@ -113,7 +129,7 @@ export function buildStatement(request: StatementRequest): Statement {
       const assignments = Object.entries(values)
         .map(([column, value]) => `${quote(column)} = ${params.bind(value)}`)
         .join(", ");
-      const where = buildWhere(filterColumns, request.filters, policyFilter, params);
+      const where = buildWhere(writeFilterColumns, request.filters, policyFilter, params);
       return {
         text: `update ${table} set ${assignments}${where} returning ${projection}`,
         params: params.params,
@@ -124,8 +140,11 @@ export function buildStatement(request: StatementRequest): Statement {
       if (request.filters.length === 0 && !policyFilter) {
         throw new QueryInputError("Refusing to delete every row: add a filter.");
       }
-      const where = buildWhere(filterColumns, request.filters, policyFilter, params);
-      return { text: `delete from ${table}${where} returning ${projection}`, params: params.params };
+      const where = buildWhere(writeFilterColumns, request.filters, policyFilter, params);
+      return {
+        text: `delete from ${table}${where} returning ${projection}`,
+        params: params.params,
+      };
     }
 
     case "upsert": {

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   Check,
   ExternalLink,
+  Menu,
   ImagePlus,
   Link2,
   Music2,
@@ -15,6 +16,9 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { signedMusicUrl } from "@/lib/music-url";
 import { MusicManager } from "@/components/artist/MusicManager";
+import { SideDrawer } from "@/components/SideDrawer";
+import { FeedPostUpload } from "@/components/artist/FeedPostUpload";
+import { FeedGallery } from "@/components/artist/FeedGallery";
 
 export const Route = createFileRoute("/artist/edit")({ component: EditProfilePage });
 const colors = [
@@ -24,6 +28,19 @@ const colors = [
   { name: "Acid green", value: "#39ff14" },
   { name: "Crimson", value: "#ff3344" },
 ];
+// Sections in page order. Drives both the studio navigation buttons and which one
+// is highlighted as the section under the sticky header.
+const studioSections = [
+  { id: "visuals", label: "Visuals & images", Icon: ImagePlus },
+  { id: "theme", label: "Color & theme", Icon: Palette },
+  { id: "information", label: "Profile information", Icon: UserRound },
+  { id: "socials", label: "Social links", Icon: Link2 },
+  { id: "music", label: "Music & clips", Icon: Music2 },
+  { id: "feed", label: "Feed & gallery", Icon: ImagePlus },
+];
+// The sticky header is 76px tall and sections settle at scroll-mt-24 (96px), so a
+// section counts as current once its top passes this line, just under the header.
+const ACTIVE_LINE = 110;
 
 function EditProfilePage() {
   const { profile, refresh } = useAuth();
@@ -33,9 +50,12 @@ function EditProfilePage() {
     [avatar, setAvatar] = useState<string | null>(null),
     [cover, setCover] = useState<string | null>(null);
   const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null);
-  const [activePanel, setActivePanel] = useState<"profile" | "music">(() =>
-    typeof window !== "undefined" && window.location.hash === "#music" ? "music" : "profile",
-  );
+  const [feedRefresh, setFeedRefresh] = useState(0);
+  const [activeSection, setActiveSection] = useState(studioSections[0].id);
+  // Below lg the sidebar is an off-canvas drawer; from lg up it is a permanent
+  // sticky column on the left, so only the drawer needs open state.
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const closeDrawer = () => setDrawerOpen(false);
   const [f, setF] = useState({
     artist_name: "",
     slug: "",
@@ -54,14 +74,83 @@ function EditProfilePage() {
     accent_color: "#00e5bf",
   });
   const set = (key: keyof typeof f, value: string) => setF((old) => ({ ...old, [key]: value }));
-  const showProfile = (section?: string) => {
-    setActivePanel("profile");
-    if (section)
-      window.setTimeout(
-        () => document.getElementById(section)?.scrollIntoView({ behavior: "smooth" }),
-        0,
-      );
+  // Every section lives on this single page, so navigation only ever scrolls.
+  // The pending scroll timer is shared so a re-render cancels the previous attempt
+  // instead of stacking loops (each scroll event re-renders the router).
+  const scrollTimer = useRef(0);
+  const goTo = (section: string) => {
+    window.clearTimeout(scrollTimer.current);
+    // Highlight immediately so the nav reacts on click, before the scroll settles.
+    setActiveSection(section);
+    // Tapping a section in the mobile drawer should dismiss it and show the result.
+    setDrawerOpen(false);
+    const align = (tries: number) => {
+      const target = document.getElementById(section);
+      if (!target) {
+        if (tries < 25) scrollTimer.current = window.setTimeout(() => align(tries + 1), 120);
+        return;
+      }
+      // Instant, not smooth: a smooth scroll animates over several frames and emits a
+      // scroll event on each one, which re-renders the router and previously caused a
+      // "Maximum update depth" loop.
+      target.scrollIntoView({ block: "start" });
+      // Sections carry scroll-mt-24, so the settled top is that offset (not 0).
+      // Sections above also shift as MusicManager/FeedGallery load, so re-align until
+      // the target reaches that offset, or the page simply cannot scroll further.
+      const offset = Number.parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+      const top = Math.round(target.getBoundingClientRect().top);
+      const atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight;
+      if (Math.abs(top - offset) > 2 && !atBottom && tries < 25) {
+        scrollTimer.current = window.setTimeout(() => align(tries + 1), 120);
+      }
+    };
+    scrollTimer.current = window.setTimeout(() => align(0), 60);
   };
+  // #music / #feed / #visuals deep links open the right part of the same page.
+  // Highlight whichever section is currently under the header. Reading the state
+  // inside setActiveSection means an unchanged section never re-renders, and the
+  // rAF throttle keeps this to one measurement per frame.
+  useEffect(() => {
+    if (!profile) return;
+    let frame = 0;
+    const pick = () => {
+      frame = 0;
+      const atBottom =
+        window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+      let current = studioSections[0].id;
+      for (const section of studioSections) {
+        const node = document.getElementById(section.id);
+        if (!node) continue;
+        // At the page bottom the last section may never reach the line, so trust
+        // the end of the document instead.
+        if (atBottom || node.getBoundingClientRect().top <= ACTIVE_LINE) current = section.id;
+      }
+      setActiveSection((prev) => (prev === current ? prev : current));
+    };
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(pick);
+    };
+    pick();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+    // Keyed on the id on purpose: the profile object is rebuilt on every refresh,
+    // and the sections only exist once it has rendered.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.id]);
+  useEffect(() => {
+    if (!profile) return;
+    const hash = window.location.hash.replace("#", "");
+    if (!hash) return;
+    goTo(hash);
+    return () => window.clearTimeout(scrollTimer.current);
+    // Keyed on the id on purpose: the profile object is rebuilt on every refresh.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.id]);
   useEffect(() => {
     if (!profile) return;
     setF({
@@ -145,21 +234,26 @@ function EditProfilePage() {
   return (
     <div className="min-h-screen bg-[#0b0b0b] text-[#e5e2e1]">
       <header className="sticky top-0 z-30 flex h-[76px] items-center justify-between border-b border-white/5 bg-[#111]/95 px-5 backdrop-blur md:px-8">
-        <Link
-          to="/artist"
-          className="font-display text-2xl tracking-wide"
-          style={{ color: f.accent_color }}
-        >
-          DADAHIPHOP
-        </Link>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setDrawerOpen(true)}
+            aria-label="Ouvrir la navigation du studio"
+            title="Navigation du studio"
+            className="-ml-2 grid h-10 w-10 place-items-center rounded text-white/70 hover:bg-white/10 hover:text-white lg:hidden"
+          >
+            <Menu className="w-5" />
+          </button>
+          <Link
+            to="/artist"
+            className="font-display text-2xl uppercase tracking-wide"
+            style={{ color: f.accent_color }}
+          >
+            {f.artist_name || "DADAHIPHOP"}
+          </Link>
+        </div>
         <nav className="hidden gap-7 text-xs font-bold uppercase tracking-wider text-white/55 md:flex">
           <Link to="/dada-reseaux-artist">Artistes</Link>
-          <button type="button" onClick={() => showProfile("visuals")}>
-            Profile settings
-          </button>
-          <button type="button" onClick={() => setActivePanel("music")}>
-            Music & clips
-          </button>
         </nav>
         <div className="flex gap-2">
           <a
@@ -182,52 +276,40 @@ function EditProfilePage() {
         </div>
       </header>
       <div className="mx-auto grid max-w-[1400px] gap-5 px-5 py-6 lg:grid-cols-[215px_1fr] lg:px-8">
-        <aside className="lg:sticky lg:top-24 lg:h-fit">
+        <SideDrawer
+          open={drawerOpen}
+          onClose={closeDrawer}
+          label="Studio navigation"
+          bp="lg"
+          className="lg:sticky lg:top-24 lg:h-fit"
+        >
           <div className="rounded-lg bg-[#1c1c1c] p-3">
-            <p className="px-2 pb-2 text-[10px] font-bold uppercase tracking-widest text-white/40">
-              Studio navigation
-            </p>
-            <button
-              type="button"
-              onClick={() => showProfile("visuals")}
-              className="flex w-full items-center gap-2 rounded px-3 py-2.5 text-left text-sm font-bold text-[#00382d]"
-              style={{ backgroundColor: f.accent_color }}
-            >
-              <ImagePlus className="w-4" />
-              Info & media
-            </button>
-            <button
-              type="button"
-              onClick={() => showProfile("theme")}
-              className="mt-1 flex w-full items-center gap-2 rounded px-3 py-2.5 text-left text-sm font-bold text-white/65"
-            >
-              <Palette className="w-4" />
-              Color & theme
-            </button>
-            <button
-              type="button"
-              onClick={() => showProfile("information")}
-              className="mt-1 flex w-full items-center gap-2 rounded px-3 py-2.5 text-left text-sm font-bold text-white/65"
-            >
-              <UserRound className="w-4" />
-              Profile information
-            </button>
-            <button
-              type="button"
-              onClick={() => showProfile("socials")}
-              className="mt-1 flex w-full items-center gap-2 rounded px-3 py-2.5 text-left text-sm font-bold text-white/65"
-            >
-              <Link2 className="w-4" />
-              Social links
-            </button>
-            <button
-              type="button"
-              onClick={() => setActivePanel("music")}
-              className="mt-1 flex w-full items-center gap-2 rounded px-3 py-2.5 text-left text-sm font-bold text-white/65"
-            >
-              <Music2 className="w-4" />
-              Music & clips
-            </button>
+            <div className="px-2 pb-2">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/40">
+                Studio navigation
+              </p>
+            </div>
+            {studioSections.map((section, index) => {
+              const active = section.id === activeSection;
+              const Icon = section.Icon;
+              return (
+                <button
+                  key={section.id}
+                  type="button"
+                  onClick={() => goTo(section.id)}
+                  aria-current={active ? "true" : undefined}
+                  className={
+                    (index === 0 ? "flex" : "mt-1 flex") +
+                    " w-full items-center gap-2 rounded px-3 py-2.5 text-left text-sm font-bold " +
+                    (active ? "text-[#00382d]" : "text-white/65")
+                  }
+                  style={active ? { backgroundColor: f.accent_color } : undefined}
+                >
+                  <Icon className="w-4" />
+                  {section.label}
+                </button>
+              );
+            })}
           </div>
           <div className="mt-4 rounded-lg bg-[#1c1c1c] p-4">
             <p className="text-[10px] font-bold uppercase text-white/45">Public status</p>
@@ -255,7 +337,7 @@ function EditProfilePage() {
               />
             </div>
           </div>
-        </aside>
+        </SideDrawer>
         <main className="min-w-0">
           <div className="mb-7">
             <p
@@ -281,200 +363,222 @@ function EditProfilePage() {
               {notice.text}
             </p>
           )}
-          {activePanel === "music" ? (
-            <MusicManager userId={profile.id} accent={f.accent_color} surface="#1c1c1c" />
-          ) : (
-            <>
-              <section id="visuals" className="rounded-xl bg-[#1c1c1c] p-5 md:p-6">
-                <Section icon={<ImagePlus />} title="Visuals & brand image" />
-                <div className="mt-5">
-                  <p className="mb-2 text-xs font-bold uppercase text-white/55">Cover image</p>
-                  <button
-                    onClick={() => coverRef.current?.click()}
-                    className="relative block aspect-[16/6] w-full overflow-hidden rounded-lg bg-[#111]"
-                  >
-                    {cover ? (
-                      <img
-                        src={cover}
-                        alt="Cover preview"
-                        className="h-full w-full object-cover opacity-75"
-                      />
-                    ) : (
-                      <span className="grid h-full place-items-center text-white/45">
-                        <span>
-                          <Upload className="mx-auto mb-2" />
-                          Add cover image
-                        </span>
+          <>
+            <section id="visuals" className="scroll-mt-24 rounded-xl bg-[#1c1c1c] p-5 md:p-6">
+              <Section icon={<ImagePlus />} title="Visuals & brand image" />
+              <div className="mt-5">
+                <p className="mb-2 text-xs font-bold uppercase text-white/55">Cover image</p>
+                <button
+                  onClick={() => coverRef.current?.click()}
+                  className="relative block aspect-[16/6] w-full overflow-hidden rounded-lg bg-[#111]"
+                >
+                  {cover ? (
+                    <img
+                      src={cover}
+                      alt="Cover preview"
+                      className="h-full w-full object-cover opacity-75"
+                    />
+                  ) : (
+                    <span className="grid h-full place-items-center text-white/45">
+                      <span>
+                        <Upload className="mx-auto mb-2" />
+                        Add cover image
                       </span>
-                    )}
-                    <span
-                      className="absolute bottom-3 left-3 rounded bg-black/60 px-2 py-1 text-[10px] font-bold uppercase"
-                      style={{ color: f.accent_color }}
-                    >
-                      Live preview
                     </span>
-                  </button>
-                </div>
-                <div className="mt-5 grid gap-5 rounded-lg bg-[#222] p-4 sm:grid-cols-[100px_1fr]">
+                  )}
+                  <span
+                    className="absolute bottom-3 left-3 rounded bg-black/60 px-2 py-1 text-[10px] font-bold uppercase"
+                    style={{ color: f.accent_color }}
+                  >
+                    Live preview
+                  </span>
+                </button>
+              </div>
+              <div className="mt-5 grid gap-5 rounded-lg bg-[#222] p-4 sm:grid-cols-[100px_1fr]">
+                <button
+                  onClick={() => avatarRef.current?.click()}
+                  className="aspect-square overflow-hidden rounded bg-[#111]"
+                >
+                  {avatar ? (
+                    <img src={avatar} alt="Avatar preview" className="h-full w-full object-cover" />
+                  ) : (
+                    <UserRound className="m-auto h-full w-10 text-white/35" />
+                  )}
+                </button>
+                <div>
+                  <h3 className="font-display text-xl uppercase">Profile avatar</h3>
+                  <p className="mt-1 text-sm text-white/50">
+                    Use a square JPG, PNG or WebP portrait for your public profile.
+                  </p>
                   <button
                     onClick={() => avatarRef.current?.click()}
-                    className="aspect-square overflow-hidden rounded bg-[#111]"
-                  >
-                    {avatar ? (
-                      <img
-                        src={avatar}
-                        alt="Avatar preview"
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <UserRound className="m-auto h-full w-10 text-white/35" />
-                    )}
-                  </button>
-                  <div>
-                    <h3 className="font-display text-xl uppercase">Profile avatar</h3>
-                    <p className="mt-1 text-sm text-white/50">
-                      Use a square JPG, PNG or WebP portrait for your public profile.
-                    </p>
-                    <button
-                      onClick={() => avatarRef.current?.click()}
-                      className="mt-3 rounded px-3 py-1.5 text-xs font-bold uppercase text-[#00382d]"
-                      style={{ backgroundColor: f.accent_color }}
-                    >
-                      Change image
-                    </button>
-                  </div>
-                </div>
-                <input
-                  ref={coverRef}
-                  hidden
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => upload(e.target.files?.[0], "cover")}
-                />
-                <input
-                  ref={avatarRef}
-                  hidden
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => upload(e.target.files?.[0], "avatar")}
-                />
-              </section>
-              <section id="theme" className="mt-6 rounded-xl bg-[#1c1c1c] p-5 md:p-6">
-                <Section icon={<Palette />} title="Button color" />
-                <p className="mt-2 text-sm text-white/55">
-                  Choose the accent color used for your buttons and action details.
-                </p>
-                <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-                  {colors.map((color) => (
-                    <button
-                      key={color.value}
-                      onClick={() => set("accent_color", color.value)}
-                      className="rounded-lg bg-[#222] p-3 text-left"
-                    >
-                      <span
-                        className="grid h-9 w-9 place-items-center rounded-lg text-[#00382d]"
-                        style={{ backgroundColor: color.value }}
-                      >
-                        {f.accent_color.toLowerCase() === color.value && <Check className="w-5" />}
-                      </span>
-                      <span className="mt-2 block text-[10px] font-bold uppercase">
-                        {color.name}
-                      </span>
-                      <span className="block text-[10px] text-white/45">{color.value}</span>
-                    </button>
-                  ))}
-                  <label className="rounded-lg bg-[#222] p-3 text-[10px] font-bold uppercase">
-                    Accent
-                    <input
-                      type="color"
-                      value={f.accent_color}
-                      onChange={(e) => set("accent_color", e.target.value)}
-                      className="mt-2 h-9 w-full rounded bg-transparent"
-                    />
-                  </label>
-                </div>
-              </section>
-              <section id="information" className="mt-6 rounded-xl bg-[#1c1c1c] p-5 md:p-6">
-                <Section icon={<UserRound />} title="General information & biography" />
-                <div className="mt-5 grid gap-4 md:grid-cols-2">
-                  <Field
-                    label="Artist / stage name"
-                    value={f.artist_name}
-                    onChange={(v) => set("artist_name", v)}
-                  />
-                  <Field
-                    label="Main musical genre"
-                    value={f.genre}
-                    onChange={(v) => set("genre", v)}
-                  />
-                  <Field label="City" value={f.city} onChange={(v) => set("city", v)} />
-                  <Field
-                    label="Phone (booking / management)"
-                    value={f.phone}
-                    onChange={(v) => set("phone", v)}
-                  />
-                  <Field
-                    label="Public profile link"
-                    prefix="dadahiphop.com/artist/"
-                    value={f.slug}
-                    onChange={(v) => set("slug", v.toLowerCase().replace(/[^a-z0-9-]/g, "-"))}
-                  />
-                </div>
-                <label className="mt-4 block text-[11px] font-bold uppercase tracking-wider text-white/60">
-                  Artist biography
-                  <textarea
-                    rows={6}
-                    maxLength={500}
-                    value={f.bio}
-                    onChange={(e) => set("bio", e.target.value)}
-                    className="mt-2 w-full rounded bg-[#222] p-3 text-sm font-normal normal-case tracking-normal text-white outline-none"
-                  />
-                </label>
-                <p className="mt-1 text-right text-[10px] text-white/35">
-                  {f.bio.length} / 500 characters
-                </p>
-              </section>
-              <section id="socials" className="mt-6 rounded-xl bg-[#1c1c1c] p-5 md:p-6">
-                <Section icon={<Link2 />} title="Social links & streaming" />
-                <div className="mt-5 grid gap-4 md:grid-cols-2">
-                  <Field label="YouTube" value={f.youtube} onChange={(v) => set("youtube", v)} />
-                  <Field label="Spotify" value={f.spotify} onChange={(v) => set("spotify", v)} />
-                  <Field
-                    label="Instagram"
-                    value={f.instagram}
-                    onChange={(v) => set("instagram", v)}
-                  />
-                  <Field label="TikTok" value={f.tiktok} onChange={(v) => set("tiktok", v)} />
-                  <Field label="Facebook" value={f.facebook} onChange={(v) => set("facebook", v)} />
-                  <Field
-                    label="X / Twitter"
-                    value={f.twitter}
-                    onChange={(v) => set("twitter", v)}
-                  />
-                </div>
-              </section>
-              <div className="sticky bottom-4 z-20 mt-6 flex flex-col gap-3 rounded-lg border border-white/10 bg-[#252525]/95 p-3 shadow-2xl backdrop-blur sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-xs text-white/50">Your profile changes are ready to save.</p>
-                <div className="flex gap-2">
-                  <Link
-                    to="/artist"
-                    className="rounded bg-white/10 px-4 py-2 text-xs font-bold uppercase"
-                  >
-                    Cancel
-                  </Link>
-                  <button
-                    onClick={save}
-                    disabled={saving}
-                    className="inline-flex items-center gap-2 rounded px-4 py-2 text-xs font-bold uppercase text-[#00382d]"
+                    className="mt-3 rounded px-3 py-1.5 text-xs font-bold uppercase text-[#00382d]"
                     style={{ backgroundColor: f.accent_color }}
                   >
-                    <Save className="w-4" />
-                    {saving ? "Saving…" : "Save profile"}
+                    Change image
                   </button>
                 </div>
               </div>
-            </>
-          )}
+              <input
+                ref={coverRef}
+                hidden
+                type="file"
+                accept="image/*"
+                onChange={(e) => upload(e.target.files?.[0], "cover")}
+              />
+              <input
+                ref={avatarRef}
+                hidden
+                type="file"
+                accept="image/*"
+                onChange={(e) => upload(e.target.files?.[0], "avatar")}
+              />
+            </section>
+            <section id="theme" className="mt-6 scroll-mt-24 rounded-xl bg-[#1c1c1c] p-5 md:p-6">
+              <Section icon={<Palette />} title="Button color" />
+              <p className="mt-2 text-sm text-white/55">
+                Choose the accent color used for your buttons and action details.
+              </p>
+              <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+                {colors.map((color) => (
+                  <button
+                    key={color.value}
+                    onClick={() => set("accent_color", color.value)}
+                    className="rounded-lg bg-[#222] p-3 text-left"
+                  >
+                    <span
+                      className="grid h-9 w-9 place-items-center rounded-lg text-[#00382d]"
+                      style={{ backgroundColor: color.value }}
+                    >
+                      {f.accent_color.toLowerCase() === color.value && <Check className="w-5" />}
+                    </span>
+                    <span className="mt-2 block text-[10px] font-bold uppercase">{color.name}</span>
+                    <span className="block text-[10px] text-white/45">{color.value}</span>
+                  </button>
+                ))}
+                <label className="rounded-lg bg-[#222] p-3 text-[10px] font-bold uppercase">
+                  Accent
+                  <input
+                    type="color"
+                    value={f.accent_color}
+                    onChange={(e) => set("accent_color", e.target.value)}
+                    className="mt-2 h-9 w-full rounded bg-transparent"
+                  />
+                </label>
+              </div>
+            </section>
+            <section
+              id="information"
+              className="mt-6 scroll-mt-24 rounded-xl bg-[#1c1c1c] p-5 md:p-6"
+            >
+              <Section icon={<UserRound />} title="General information & biography" />
+              <div className="mt-5 grid gap-4 md:grid-cols-2">
+                <Field
+                  label="Artist / stage name"
+                  value={f.artist_name}
+                  onChange={(v) => set("artist_name", v)}
+                />
+                <Field
+                  label="Main musical genre"
+                  value={f.genre}
+                  onChange={(v) => set("genre", v)}
+                />
+                <Field label="City" value={f.city} onChange={(v) => set("city", v)} />
+                <Field
+                  label="Phone (booking / management)"
+                  value={f.phone}
+                  onChange={(v) => set("phone", v)}
+                />
+                <Field
+                  label="Public profile link"
+                  prefix="dadahiphop.com/artist/"
+                  value={f.slug}
+                  onChange={(v) => set("slug", v.toLowerCase().replace(/[^a-z0-9-]/g, "-"))}
+                />
+              </div>
+              <label className="mt-4 block text-[11px] font-bold uppercase tracking-wider text-white/60">
+                Artist biography
+                <textarea
+                  rows={6}
+                  maxLength={500}
+                  value={f.bio}
+                  onChange={(e) => set("bio", e.target.value)}
+                  className="mt-2 w-full rounded bg-[#222] p-3 text-sm font-normal normal-case tracking-normal text-white outline-none"
+                />
+              </label>
+              <p className="mt-1 text-right text-[10px] text-white/35">
+                {f.bio.length} / 500 characters
+              </p>
+            </section>
+            <section id="socials" className="mt-6 scroll-mt-24 rounded-xl bg-[#1c1c1c] p-5 md:p-6">
+              <Section icon={<Link2 />} title="Social links & streaming" />
+              <div className="mt-5 grid gap-4 md:grid-cols-2">
+                <Field label="YouTube" value={f.youtube} onChange={(v) => set("youtube", v)} />
+                <Field label="Spotify" value={f.spotify} onChange={(v) => set("spotify", v)} />
+                <Field
+                  label="Instagram"
+                  value={f.instagram}
+                  onChange={(v) => set("instagram", v)}
+                />
+                <Field label="TikTok" value={f.tiktok} onChange={(v) => set("tiktok", v)} />
+                <Field label="Facebook" value={f.facebook} onChange={(v) => set("facebook", v)} />
+                <Field label="X / Twitter" value={f.twitter} onChange={(v) => set("twitter", v)} />
+              </div>
+            </section>
+            <div className="sticky bottom-4 z-20 mt-6 flex flex-col gap-3 rounded-lg border border-white/10 bg-[#252525]/95 p-3 shadow-2xl backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs text-white/50">Your profile changes are ready to save.</p>
+              <div className="flex gap-2">
+                <Link
+                  to="/artist"
+                  className="rounded bg-white/10 px-4 py-2 text-xs font-bold uppercase"
+                >
+                  Cancel
+                </Link>
+                <button
+                  onClick={save}
+                  disabled={saving}
+                  className="inline-flex items-center gap-2 rounded px-4 py-2 text-xs font-bold uppercase text-[#00382d]"
+                  style={{ backgroundColor: f.accent_color }}
+                >
+                  <Save className="w-4" />
+                  {saving ? "Saving…" : "Save profile"}
+                </button>
+              </div>
+            </div>
+            <section id="music" className="scroll-mt-24 mt-10">
+              <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+                <h2 className="font-display text-2xl uppercase tracking-wide text-[#e5e2e1]">
+                  Music & clips
+                </h2>
+                <p className="text-xs text-white/45">
+                  Upload your tracks and YouTube clips — scroll down to share more.
+                </p>
+              </div>
+              <MusicManager userId={profile.id} accent={f.accent_color} surface="#1c1c1c" />
+            </section>
+            <section id="feed" className="scroll-mt-24 mt-10 space-y-6">
+              <div>
+                <h2 className="font-display text-2xl uppercase tracking-wide text-[#e5e2e1]">
+                  Feed & gallery
+                </h2>
+                <p className="mt-1 text-xs text-white/45">
+                  Share photos and updates on your public artist page.
+                </p>
+              </div>
+              <FeedPostUpload
+                userId={profile.id}
+                accent={f.accent_color}
+                surface="#1c1c1c"
+                onPostCreated={() => setFeedRefresh((prev) => prev + 1)}
+              />
+              <FeedGallery
+                userId={profile.id}
+                accent={f.accent_color}
+                surface="#1c1c1c"
+                refreshTrigger={feedRefresh}
+              />
+            </section>
+          </>
         </main>
       </div>
     </div>

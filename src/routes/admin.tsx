@@ -1,9 +1,20 @@
 import { createFileRoute, Outlet, useNavigate, Link, useRouterState } from "@tanstack/react-router";
-import { useEffect } from "react";
-import { LogOut, Home as HomeIcon, Users, Music as MusicIcon, FileText, Award } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  LogOut,
+  Home as HomeIcon,
+  Menu,
+  Users,
+  Music as MusicIcon,
+  FileText,
+  Award,
+  Dumbbell,
+  Image as ImageIcon,
+} from "lucide-react";
 import logo from "@/assets/dada-logo.png";
 import { PAGE_SCHEMAS } from "@/lib/content-schema";
 import { useAuth } from "@/lib/auth";
+import { SideDrawer } from "@/components/SideDrawer";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -19,6 +30,7 @@ function AdminLayout() {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { loading, session, isAdmin, signOut } = useAuth();
+  const [navOpen, setNavOpen] = useState(false);
 
   useEffect(() => {
     if (pathname === "/admin/sign-in") return;
@@ -35,18 +47,31 @@ function AdminLayout() {
     pathname === "/admin"
       ? "home"
       : pathname === "/admin/accounts"
-      ? "__accounts"
-      : pathname === "/admin/tracks"
-      ? "__tracks"
-      : pathname === "/admin/sponsors"
-      ? "__sponsors"
-      : pathname.replace("/admin/", "");
+        ? "__accounts"
+        : pathname === "/admin/tracks"
+          ? "__tracks"
+          : pathname === "/admin/sponsors"
+            ? "__sponsors"
+            : pathname === "/admin/gym"
+              ? "__gym"
+              : pathname === "/admin/posts"
+                ? "__posts"
+                : pathname.replace("/admin/", "");
 
   return (
     <div className="min-h-screen bg-muted/30">
       <header className="sticky top-0 z-30 bg-background border-b border-border">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setNavOpen(true)}
+              aria-label="Ouvrir le menu"
+              title="Menu"
+              className="-ml-2 grid h-10 w-10 place-items-center rounded-lg text-foreground/70 hover:bg-muted hover:text-foreground md:hidden"
+            >
+              <Menu className="w-5" />
+            </button>
             <img src={logo} alt="" className="h-9 w-auto" />
             <span className="font-display tracking-wide text-xl">
               ADMIN <span className="text-primary">DASHBOARD</span>
@@ -73,7 +98,14 @@ function AdminLayout() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 grid gap-6 md:grid-cols-[240px_1fr]">
-        <aside className="rounded-2xl border border-border bg-card p-3 h-fit md:sticky md:top-24 space-y-4">
+        <SideDrawer
+          open={navOpen}
+          onClose={() => setNavOpen(false)}
+          label="Menu du dashboard"
+          bp="md"
+          className="md:sticky md:top-24 md:h-fit"
+          panelClassName="bg-card"
+        >
           <div>
             <p className="px-3 pt-2 pb-2 text-xs uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5" /> Modération
@@ -82,7 +114,9 @@ function AdminLayout() {
               <Link
                 to="/admin/accounts"
                 className={`px-3 py-2 rounded-lg text-sm inline-flex items-center gap-2 ${
-                  activeId === "__accounts" ? "bg-primary text-primary-foreground" : "hover:bg-muted"
+                  activeId === "__accounts"
+                    ? "bg-primary text-primary-foreground"
+                    : "hover:bg-muted"
                 }`}
               >
                 <Users className="w-4 h-4" /> Comptes artistes
@@ -98,10 +132,28 @@ function AdminLayout() {
               <Link
                 to="/admin/sponsors"
                 className={`px-3 py-2 rounded-lg text-sm inline-flex items-center gap-2 ${
-                  activeId === "__sponsors" ? "bg-primary text-primary-foreground" : "hover:bg-muted"
+                  activeId === "__sponsors"
+                    ? "bg-primary text-primary-foreground"
+                    : "hover:bg-muted"
                 }`}
               >
                 <Award className="w-4 h-4" /> Sponsors
+              </Link>
+              <Link
+                to="/admin/gym"
+                className={`px-3 py-2 rounded-lg text-sm inline-flex items-center gap-2 ${
+                  activeId === "__gym" ? "bg-primary text-primary-foreground" : "hover:bg-muted"
+                }`}
+              >
+                <Dumbbell className="w-4 h-4" /> Salle de sport
+              </Link>
+              <Link
+                to="/admin/posts"
+                className={`px-3 py-2 rounded-lg text-sm inline-flex items-center gap-2 ${
+                  activeId === "__posts" ? "bg-primary text-primary-foreground" : "hover:bg-muted"
+                }`}
+              >
+                <ImageIcon className="w-4 h-4" /> Posts & images
               </Link>
             </nav>
           </div>
@@ -128,7 +180,7 @@ function AdminLayout() {
               })}
             </nav>
           </div>
-        </aside>
+        </SideDrawer>
 
         <main>
           <Outlet />

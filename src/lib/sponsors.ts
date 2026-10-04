@@ -40,7 +40,11 @@ export function useSponsors(initialSponsors: Sponsor[] = []) {
   return { sponsors, loading, reload: load };
 }
 
-export async function addSponsor(input: { name: string; image_url: string; link_url?: string | null }) {
+export async function addSponsor(input: {
+  name: string;
+  image_url: string;
+  link_url?: string | null;
+}) {
   return supabase.from("sponsors").insert({
     name: input.name,
     image_url: input.image_url,
@@ -48,11 +52,13 @@ export async function addSponsor(input: { name: string; image_url: string; link_
   });
 }
 
-export async function updateSponsor(id: string, patch: Partial<Pick<Sponsor, "name" | "link_url" | "sort_order" | "image_url">>) {
+export async function updateSponsor(
+  id: string,
+  patch: Partial<Pick<Sponsor, "name" | "link_url" | "sort_order" | "image_url">>,
+) {
   return supabase.from("sponsors").update(patch).eq("id", id);
 }
 
 export async function removeSponsor(id: string) {
   return supabase.from("sponsors").delete().eq("id", id);
 }
-

@@ -25,7 +25,10 @@ export type Workshop = {
   is_finished: boolean;
 };
 
-export type WorkshopInput = Omit<Workshop, "id" | "sort_order" | "is_finished"> & { sort_order?: number; is_finished?: boolean };
+export type WorkshopInput = Omit<Workshop, "id" | "sort_order" | "is_finished"> & {
+  sort_order?: number;
+  is_finished?: boolean;
+};
 
 export function useWorkshops() {
   const [workshops, setWorkshops] = useState<Workshop[]>([]);
@@ -41,7 +44,9 @@ export function useWorkshops() {
     setLoading(false);
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
 
   return { workshops, loading, reload: load };
 }
@@ -57,4 +62,3 @@ export async function updateWorkshop(id: string, patch: Partial<WorkshopInput>) 
 export async function removeWorkshop(id: string) {
   return supabase.from("workshops").delete().eq("id", id);
 }
-

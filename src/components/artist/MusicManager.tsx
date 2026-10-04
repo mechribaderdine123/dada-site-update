@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { extractMusicPath, signedMusicUrl } from "@/lib/music-url";
+import { TrackPlayer } from "@/components/artist/TrackPlayer";
 
 type Track = {
   id: string;
@@ -139,11 +140,11 @@ export function MusicManager({
                     {track.genre || "No genre"} · <Status status={track.status} />
                   </p>
                   {track.audio_url && (
-                    <audio
-                      controls
-                      preload="none"
-                      src={track.audio_url}
-                      className="mt-2 h-8 w-full"
+                    <TrackPlayer
+                      url={track.audio_url}
+                      title={track.title}
+                      accent={accent}
+                      className="mt-3"
                     />
                   )}
                 </div>

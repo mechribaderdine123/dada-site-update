@@ -12,7 +12,9 @@ import {
   Youtube,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { signedMusicUrl } from "@/lib/music-url";
+import { signedMusicUrl, signedUrl } from "@/lib/music-url";
+import { TrackPlayer } from "@/components/artist/TrackPlayer";
+import logo from "@/assets/dada-logo.png";
 
 export const Route = createFileRoute("/artist/$slug")({ component: ArtistPublicProfile });
 type Artist = {
@@ -40,6 +42,7 @@ type Track = {
   audio_url: string | null;
 };
 type Video = { id: string; title: string; youtube_url: string };
+type FeedPost = { id: string; image_url: string; caption: string | null };
 
 function youtubeEmbed(url: string) {
   const found = url.match(/(?:youtu\.be\/|v=|embed\/)([\w-]{11})/);
@@ -50,6 +53,7 @@ function ArtistPublicProfile() {
   const [artist, setArtist] = useState<Artist | null>(null);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
+  const [posts, setPosts] = useState<FeedPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [shared, setShared] = useState(false);
   useEffect(() => {
@@ -79,7 +83,7 @@ function ArtistPublicProfile() {
       }
       const p = data as Artist;
       const isPublic = !!publicData;
-      const [avatar_url, cover_url, trackResult, videoResult] = await Promise.all([
+      const [avatar_url, cover_url, trackResult, videoResult, postResult] = await Promise.all([
         signedMusicUrl(p.avatar_url),
         signedMusicUrl(p.cover_url),
         isPublic
@@ -99,6 +103,15 @@ function ArtistPublicProfile() {
           .select("id,title,youtube_url")
           .eq("user_id", p.id)
           .order("created_at", { ascending: false }),
+        // Feed posts stay private until an admin approves them. Unlike tracks
+        // there is deliberately no isPublic branch: an unreviewed post must never
+        // be returned on this route, whoever is asking.
+        supabase
+          .from("feed_posts")
+          .select("id,image_url,caption")
+          .eq("user_id", p.id)
+          .eq("status", "approved")
+          .order("created_at", { ascending: false }),
       ]);
       const resolvedTracks = await Promise.all(
         ((trackResult.data ?? []) as Track[]).map(async (track) => ({
@@ -107,10 +120,17 @@ function ArtistPublicProfile() {
           audio_url: await signedMusicUrl(track.audio_url),
         })),
       );
+      const resolvedPosts = await Promise.all(
+        ((postResult.data ?? []) as FeedPost[]).map(async (post) => ({
+          ...post,
+          image_url: (await signedUrl("feed-images", post.image_url)) ?? "",
+        })),
+      );
       if (alive) {
         setArtist({ ...p, avatar_url, cover_url });
         setTracks(resolvedTracks);
         setVideos((videoResult.data ?? []) as Video[]);
+        setPosts(resolvedPosts.filter((post) => post.image_url));
         setLoading(false);
       }
     })();
@@ -177,22 +197,14 @@ function ArtistPublicProfile() {
         className="relative z-20 flex h-20 items-center justify-between border-b border-white/5 px-5 md:px-8"
         style={{ backgroundColor: background }}
       >
-        <Link
-          to="/dada-reseaux-artist"
-          className="font-display text-2xl tracking-wide"
-          style={{ color: accent }}
-        >
-          DADAHIPHOP
+        <Link to="/dada-reseaux-artist" className="flex items-center">
+          <img
+            src={logo}
+            alt="Dada Hip Hop Academy"
+            className="h-9 w-auto md:h-11"
+            fetchPriority="high"
+          />
         </Link>
-        <nav className="hidden items-center gap-2 text-xs font-bold uppercase tracking-wider text-white/55 sm:flex">
-          <Link
-            to="/dada-reseaux-artist"
-            className="rounded px-3 py-2 hover:bg-white/5 hover:text-white"
-          >
-            Artistes
-          </Link>
-          <span className="rounded bg-white/5 px-3 py-2">Sons & playlists</span>
-        </nav>
         <button
           onClick={share}
           className="rounded px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#00382d]"
@@ -269,17 +281,20 @@ function ArtistPublicProfile() {
             </div>
           </div>
         </section>
+        <div className="mt-5 lg:hidden">
+          <AboutCard bio={artist.bio} />
+        </div>
         <div className="mt-8 grid gap-8 lg:grid-cols-12">
           <main className="min-w-0 lg:col-span-8">
             <Heading title="Musique" />
             <Link
               to="/artist/$slug/music"
               params={{ slug: artist.slug }}
-              className="mt-4 flex items-center justify-between rounded-xl p-5 font-bold hover:brightness-110"
-              style={{ backgroundColor: surface }}
+              className="mt-2 inline-flex items-center gap-2 text-sm font-bold underline-offset-4 hover:underline"
+              style={{ color: accent }}
             >
               <span>Listen to all music</span>
-              <Music2 className="w-5" style={{ color: accent }} />
+              <Music2 className="w-4" />
             </Link>
             <div className="mt-4 space-y-3">
               {tracks.length ? (
@@ -306,12 +321,7 @@ function ArtistPublicProfile() {
                         {track.genre || "Dada Hip Hop Academy"}
                       </p>
                       {track.audio_url && (
-                        <audio
-                          controls
-                          preload="none"
-                          src={track.audio_url}
-                          className="mt-3 h-9 w-full"
-                        />
+                        <TrackPlayer url={track.audio_url} title={track.title} accent={accent} />
                       )}
                     </div>
                   </article>
@@ -364,14 +374,38 @@ function ArtistPublicProfile() {
                 )}
               </div>
             </div>
+
+            {posts.length > 0 && (
+              <div className="mt-10">
+                <Heading title="Feed" />
+                <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
+                  {posts.map((post) => (
+                    <figure
+                      key={post.id}
+                      className="overflow-hidden rounded-xl"
+                      style={{ backgroundColor: surface }}
+                    >
+                      <img
+                        src={post.image_url}
+                        alt={post.caption || "Photo de l'artiste"}
+                        loading="lazy"
+                        className="aspect-square w-full object-cover"
+                      />
+                      {post.caption && (
+                        <figcaption className="p-3 text-xs text-white/60">
+                          {post.caption}
+                        </figcaption>
+                      )}
+                    </figure>
+                  ))}
+                </div>
+              </div>
+            )}
           </main>
           <aside className="space-y-5 lg:col-span-4">
-            <section className="rounded-xl p-6" style={{ backgroundColor: surface }}>
-              <Heading title="À propos" />
-              <p className="mt-4 whitespace-pre-wrap leading-relaxed text-white/65">
-                {artist.bio || "Cet artiste n’a pas encore ajouté de biographie."}
-              </p>
-            </section>
+            <div className="hidden lg:block">
+              <AboutCard bio={artist.bio} />
+            </div>
             {socials.length > 0 && (
               <section className="rounded-xl p-6" style={{ backgroundColor: surface }}>
                 <Heading title="Réseaux" />{" "}
@@ -407,6 +441,16 @@ function Heading({ title, pink }: { title: string; pink?: boolean }) {
       />
       <h2 className="font-display text-2xl uppercase tracking-wide">{title}</h2>
     </div>
+  );
+}
+function AboutCard({ bio }: { bio: string | null }) {
+  return (
+    <section className="rounded-xl p-6" style={{ backgroundColor: "var(--artist-surface)" }}>
+      <Heading title="À propos" />
+      <p className="mt-4 whitespace-pre-wrap leading-relaxed text-white/65">
+        {bio || "Cet artiste n’a pas encore ajouté de biographie."}
+      </p>
+    </section>
   );
 }
 function Empty({ text }: { text: string }) {

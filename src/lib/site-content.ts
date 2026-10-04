@@ -19,7 +19,7 @@ function ensureLoaded() {
     .select("key,value")
     .then(({ data }) => {
       const next: Store = {};
-      (data ?? []).forEach((row) => {
+      (data ?? []).forEach((row: { key: string; value: string }) => {
         next[row.key] = row.value;
       });
       cache = next;

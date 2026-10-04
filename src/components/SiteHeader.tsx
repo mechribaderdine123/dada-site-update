@@ -24,10 +24,7 @@ export function SiteHeader() {
 
         <ul className="hidden lg:flex items-center gap-2">
           <li>
-            <Link
-              to="/"
-              className={`${linkBase} ${pathname === "/" ? activePill : linkPlain}`}
-            >
+            <Link to="/" className={`${linkBase} ${pathname === "/" ? activePill : linkPlain}`}>
               Accueil
             </Link>
           </li>
@@ -68,9 +65,7 @@ export function SiteHeader() {
           <li>
             <Link
               to="/cours-activites"
-              className={`${linkBase} ${
-                pathname === "/cours-activites" ? activePill : linkPlain
-              }`}
+              className={`${linkBase} ${pathname === "/cours-activites" ? activePill : linkPlain}`}
             >
               Cours & Activités
             </Link>
@@ -115,32 +110,56 @@ export function SiteHeader() {
         <div className="lg:hidden mt-2 mx-2 rounded-2xl bg-background/95 backdrop-blur border border-border shadow-xl">
           <ul className="flex flex-col p-3 gap-1 font-display tracking-widest">
             <li>
-              <Link to="/" onClick={() => setOpen(false)} className="block px-4 py-2 rounded-lg hover:bg-muted">
+              <Link
+                to="/"
+                onClick={() => setOpen(false)}
+                className="block px-4 py-2 rounded-lg hover:bg-muted"
+              >
                 Accueil
               </Link>
             </li>
             <li>
-              <Link to="/a-propos" onClick={() => setOpen(false)} className="block px-4 py-2 rounded-lg hover:bg-muted">
+              <Link
+                to="/a-propos"
+                onClick={() => setOpen(false)}
+                className="block px-4 py-2 rounded-lg hover:bg-muted"
+              >
                 Qui sommes-nous
               </Link>
             </li>
             <li>
-              <Link to="/contact" onClick={() => setOpen(false)} className="block px-4 py-2 rounded-lg hover:bg-muted">
+              <Link
+                to="/contact"
+                onClick={() => setOpen(false)}
+                className="block px-4 py-2 rounded-lg hover:bg-muted"
+              >
                 Contact
               </Link>
             </li>
             <li>
-              <Link to="/cours-activites" onClick={() => setOpen(false)} className="block px-4 py-2 rounded-lg hover:bg-muted">
+              <Link
+                to="/cours-activites"
+                onClick={() => setOpen(false)}
+                className="block px-4 py-2 rounded-lg hover:bg-muted"
+              >
                 Cours & Activités
               </Link>
             </li>
             <li>
-              <Link to="/studio-musique" onClick={() => setOpen(false)} className="block px-4 py-2 rounded-lg hover:bg-muted">
+              <Link
+                to="/studio-musique"
+                onClick={() => setOpen(false)}
+                className="block px-4 py-2 rounded-lg hover:bg-muted"
+              >
                 Studio Musique
               </Link>
             </li>
             <li>
-              <Link to="/workshops" onClick={() => setOpen(false)} className="block px-4 py-2 rounded-lg hover:bg-muted">
+              <Link
+                to="/workshops"
+                onClick={() => setOpen(false)}
+                className="block px-4 py-2 rounded-lg hover:bg-muted"
+              >
                 Workshops & Événements
               </Link>
             </li>

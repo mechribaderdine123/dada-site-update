@@ -1,6 +1,14 @@
 import { createFileRoute, Link, useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, User as UserIcon, Music as MusicIcon, Youtube, Instagram, Facebook, Twitter } from "lucide-react";
+import {
+  ArrowLeft,
+  User as UserIcon,
+  Music as MusicIcon,
+  Youtube,
+  Instagram,
+  Facebook,
+  Twitter,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { signedMusicUrl } from "@/lib/music-url";
 
@@ -65,7 +73,9 @@ function PublicArtistPage() {
       // Try the public view first (approved profiles, visible to everyone).
       const { data: pub } = await supabase
         .from("public_profiles")
-        .select("id, artist_name, genre, city, bio, avatar_url, youtube, spotify, facebook, instagram, tiktok, twitter")
+        .select(
+          "id, artist_name, genre, city, bio, avatar_url, youtube, spotify, facebook, instagram, tiktok, twitter",
+        )
         .eq("id", id)
         .maybeSingle();
 
@@ -76,7 +86,9 @@ function PublicArtistPage() {
       if (!p) {
         const { data: full } = await supabase
           .from("profiles")
-          .select("id, artist_name, genre, city, bio, avatar_url, youtube, spotify, facebook, instagram, tiktok, twitter")
+          .select(
+            "id, artist_name, genre, city, bio, avatar_url, youtube, spotify, facebook, instagram, tiktok, twitter",
+          )
           .eq("id", id)
           .maybeSingle();
         p = (full as PublicProfile | null) ?? null;
@@ -99,9 +111,7 @@ function PublicArtistPage() {
         .select("id, title, genre, cover_url, audio_url")
         .eq("user_id", id)
         .order("created_at", { ascending: false });
-      const { data: t } = isPrivate
-        ? await trackQuery
-        : await trackQuery.eq("status", "approved");
+      const { data: t } = isPrivate ? await trackQuery : await trackQuery.eq("status", "approved");
       const list = (t as Track[]) ?? [];
       const resolved = await Promise.all(
         list.map(async (x) => ({
@@ -132,7 +142,10 @@ function PublicArtistPage() {
       <div className="min-h-screen grid place-items-center bg-[#1a1a1a] text-white px-6 text-center">
         <div>
           <p className="text-xl">Artiste introuvable.</p>
-          <Link to={backLink} className="mt-4 inline-flex items-center gap-2 text-primary hover:underline">
+          <Link
+            to={backLink}
+            className="mt-4 inline-flex items-center gap-2 text-primary hover:underline"
+          >
             <ArrowLeft className="w-4 h-4" /> {backLabel}
           </Link>
         </div>
@@ -150,7 +163,10 @@ function PublicArtistPage() {
   return (
     <div className="min-h-screen bg-[#1a1a1a] text-white">
       <div className="max-w-5xl mx-auto px-6 pt-28 pb-16">
-        <Link to={backLink} className="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm mb-8">
+        <Link
+          to={backLink}
+          className="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm mb-8"
+        >
           <ArrowLeft className="w-4 h-4" /> {backLabel}
         </Link>
 
@@ -163,19 +179,29 @@ function PublicArtistPage() {
         <div className="grid md:grid-cols-[280px_1fr] gap-8 items-start">
           <div className="aspect-square w-full max-w-[280px] rounded-2xl overflow-hidden bg-white/5 grid place-items-center">
             {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt={profile.artist_name} className="w-full h-full object-cover" />
+              <img
+                src={profile.avatar_url}
+                alt={profile.artist_name}
+                className="w-full h-full object-cover"
+              />
             ) : (
               <UserIcon className="w-16 h-16 text-white/40" />
             )}
           </div>
 
           <div>
-            <h1 className="font-display text-4xl md:text-6xl tracking-wide">{profile.artist_name}</h1>
+            <h1 className="font-display text-4xl md:text-6xl tracking-wide">
+              {profile.artist_name}
+            </h1>
             <p className="mt-2 text-white/70">
               {profile.genre || "—"}
               {profile.city ? ` · ${profile.city}` : ""}
             </p>
-            {profile.bio && <p className="mt-6 text-white/85 whitespace-pre-wrap leading-relaxed">{profile.bio}</p>}
+            {profile.bio && (
+              <p className="mt-6 text-white/85 whitespace-pre-wrap leading-relaxed">
+                {profile.bio}
+              </p>
+            )}
 
             {socials.some((s) => s.url) && (
               <div className="mt-6 flex flex-wrap gap-3">
@@ -215,7 +241,14 @@ function PublicArtistPage() {
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold truncate">{t.title}</p>
                     {t.genre && <p className="text-xs text-white/60">{t.genre}</p>}
-                    {t.audio_url && <audio controls src={t.audio_url} preload="none" className="mt-2 w-full h-9" />}
+                    {t.audio_url && (
+                      <audio
+                        controls
+                        src={t.audio_url}
+                        preload="none"
+                        className="mt-2 w-full h-9"
+                      />
+                    )}
                   </div>
                 </div>
               ))}

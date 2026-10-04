@@ -36,7 +36,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
@@ -80,7 +80,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Dada Hip Hop Academy — Danse. Culture. Création." },
-      { name: "description", content: "Centre artistique et sportif fondé par Ghada Belgacem. Danse, gymnastique, arts martiaux et création — un espace pour révéler chaque talent." },
+      {
+        name: "description",
+        content:
+          "Centre artistique et sportif fondé par Ghada Belgacem. Danse, gymnastique, arts martiaux et création — un espace pour révéler chaque talent.",
+      },
       { property: "og:title", content: "Dada Hip Hop Academy" },
       { property: "og:description", content: "L'espace où chaque talent trouve son expression." },
       { property: "og:type", content: "website" },
@@ -92,7 +96,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preload", as: "image", href: logo },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700;800&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700;800&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -136,7 +143,10 @@ import { SiteFooter } from "@/components/SiteFooter";
 function SiteLayout({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   // Hide site chrome on auth pages and inside the artist dashboard (has its own sidebar)
-  const bare = pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up") || pathname.startsWith("/artist");
+  const bare =
+    pathname.startsWith("/sign-in") ||
+    pathname.startsWith("/sign-up") ||
+    pathname.startsWith("/artist");
   if (bare) return <>{children}</>;
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">

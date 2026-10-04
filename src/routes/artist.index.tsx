@@ -4,6 +4,7 @@ import { ExternalLink, Music2, Play, Share2, User, Youtube } from "lucide-react"
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { signedMusicUrl } from "@/lib/music-url";
+import logo from "@/assets/dada-logo.png";
 
 export const Route = createFileRoute("/artist/")({ component: ArtistPage });
 type Track = {
@@ -84,22 +85,14 @@ function ArtistPage() {
         className="relative z-20 flex h-20 items-center justify-between border-b border-white/5 px-5 md:px-8"
         style={{ backgroundColor: background }}
       >
-        <Link
-          to="/artist"
-          className="font-display text-2xl tracking-wide"
-          style={{ color: accent }}
-        >
-          DADAHIPHOP
+        <Link to="/artist" className="flex items-center">
+          <img
+            src={logo}
+            alt="Dada Hip Hop Academy"
+            className="h-9 w-auto md:h-11"
+            fetchPriority="high"
+          />
         </Link>
-        <nav className="hidden items-center gap-2 text-xs font-bold uppercase tracking-wider text-white/55 sm:flex">
-          <span className="rounded bg-white/5 px-3 py-2">Mon profil</span>
-          <Link
-            to="/artist/my-music"
-            className="rounded px-3 py-2 hover:bg-white/5 hover:text-white"
-          >
-            My music
-          </Link>
-        </nav>
         <Link
           to="/artist/edit"
           className="rounded px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#00382d]"
@@ -165,13 +158,6 @@ function ArtistPage() {
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
-              <Link
-                to="/artist/my-music"
-                className="inline-flex h-11 items-center gap-2 rounded px-4 text-sm font-bold text-[#00382d]"
-                style={{ backgroundColor: accent }}
-              >
-                <Music2 className="w-4" /> My music
-              </Link>
               <button
                 onClick={copy}
                 className="inline-flex h-11 items-center gap-2 rounded bg-white/10 px-4 text-sm font-bold hover:bg-white/15"
@@ -182,10 +168,24 @@ function ArtistPage() {
             </div>
           </div>
         </section>
+        {/* On phones the grid below stacks, which would drop About to the very
+            bottom of a long page. Render it here instead so it sits directly
+            under the avatar and cover; lg keeps the original sidebar copy. */}
+        <div className="mt-5 lg:hidden">
+          <AboutCard
+            bio={profile.bio ?? ""}
+            slug={profile.slug}
+            publicUrl={publicUrl}
+            accent={accent}
+            surface={surface}
+          />
+        </div>
         <div className="mt-8 grid gap-8 lg:grid-cols-12">
           <main className="lg:col-span-8">
             <Title>My music</Title>
             <div className="mt-4 space-y-3">
+              {/* Inline track list is temporarily disabled; the link below is shown instead. */}
+              {/* eslint-disable-next-line no-constant-condition */}
               {false ? (
                 tracks.map((track, i) => (
                   <article
@@ -219,11 +219,12 @@ function ArtistPage() {
                 ))
               ) : (
                 <Link
-                  to="/artist/my-music"
+                  to="/artist/edit"
+                  hash="music"
                   className="flex items-center justify-between rounded-xl p-5 font-bold hover:brightness-110"
                   style={{ backgroundColor: surface }}
                 >
-                  <span>Open your music page to listen to all your tracks.</span>
+                  <span>Add and listen to your tracks in Edit profile.</span>
                   <Music2 className="w-5" style={{ color: accent }} />
                 </Link>
               )}
@@ -267,26 +268,49 @@ function ArtistPage() {
               </div>
             </div>
           </main>
-          <aside className="lg:col-span-4">
-            <section className="rounded-xl p-6" style={{ backgroundColor: surface }}>
-              <Title>About</Title>
-              <p className="mt-4 whitespace-pre-wrap leading-relaxed text-white/65">
-                {profile.bio || "Add your artist biography from Edit profile."}
-              </p>
-              <a
-                href={publicUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-5 inline-flex items-center gap-2 text-sm hover:underline"
-                style={{ color: accent }}
-              >
-                <ExternalLink className="w-4" /> dadahiphop.com/artist/{profile.slug}
-              </a>
-            </section>
+          <aside className="hidden lg:col-span-4 lg:block">
+            <AboutCard
+              bio={profile.bio ?? ""}
+              slug={profile.slug}
+              publicUrl={publicUrl}
+              accent={accent}
+              surface={surface}
+            />
           </aside>
         </div>
       </div>
     </div>
+  );
+}
+function AboutCard({
+  bio,
+  slug,
+  publicUrl,
+  accent,
+  surface,
+}: {
+  bio: string;
+  slug: string;
+  publicUrl: string;
+  accent: string;
+  surface: string;
+}) {
+  return (
+    <section className="rounded-xl p-6" style={{ backgroundColor: surface }}>
+      <Title>About</Title>
+      <p className="mt-4 whitespace-pre-wrap leading-relaxed text-white/65">
+        {bio || "Add your artist biography from Edit profile."}
+      </p>
+      <a
+        href={publicUrl}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-5 inline-flex items-center gap-2 text-sm hover:underline"
+        style={{ color: accent }}
+      >
+        <ExternalLink className="w-4" /> dadahiphop.com/artist/{slug}
+      </a>
+    </section>
   );
 }
 function Title({ children, pink }: { children: React.ReactNode; pink?: boolean }) {
