@@ -5,6 +5,12 @@
 #   nginx  Reverse proxy, TLS termination for ${DOMAIN}
 #
 # Start everything with:  docker compose up -d --build
+#
+# Every service below is attached explicitly to the same `dada` network.
+# Do not rely on Compose's implicit default network here: if the db and the
+# app end up on different networks the host name `db` stops resolving and the
+# app fails its migrations with "getaddrinfo EAI_AGAIN db", which shows up as
+# a permanently unhealthy container and a 502 from the reverse proxy.
 
 services:
   db:
@@ -19,8 +25,13 @@ services:
     ports:
       # Bound to loopback only. The app reaches the database over the compose
       # network (db:5432), so this exists purely for host-side tooling
-      # (psql, migrations). Never publish 5432 to the internet.
+      # (psql, migrations). Never publish 5432 on 0.0.0.0: Docker's published
+      # ports bypass ufw/firewalld, so 0.0.0.0 here exposes Postgres to the
+      # whole internet no matter what the host firewall says.
       - "127.0.0.1:5432:5432"
+
+    networks:
+      - dada
 
     volumes:
       - db_data:/var/lib/postgresql/data
@@ -55,16 +66,28 @@ services:
       MAX_IMAGE_BYTES: ${MAX_IMAGE_BYTES:-8388608}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      # Outgoing mail (mailbox confirmation + password reset). SMTP_HOST set =
+      # mail enabled; the guard in accounts.server.ts refuses sign-ups when unset.
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+      SITE_URL: ${SITE_URL:-}
     volumes:
       - uploads:${UPLOAD_DIR:-/data/uploads}
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:3000/api/auth/session || exit 1"]
       interval: 15s
-      timeout: 5s
+      timeout: 10s
       retries: 10
       start_period: 20s
+    # Loopback only: the reverse proxy in front of the app is what the internet
+    # talks to, never the Node server directly.
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
+    networks:
+      - dada
 
   nginx:
     image: nginx:1.27-alpine
@@ -79,6 +102,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    networks:
+      - dada
     volumes:
       - ./deploy/nginx/templates:/etc/nginx/templates:ro
       - ./deploy/certbot/conf:/etc/letsencrypt:ro
@@ -97,12 +122,12 @@ services:
       - ./deploy/certbot/conf:/etc/letsencrypt
       - ./deploy/certbot/www:/var/www/certbot
     networks:
-      - internal
+      - dada
 
 volumes:
   db_data:
   uploads:
 
 networks:
-  internal:
+  dada:
     driver: bridge

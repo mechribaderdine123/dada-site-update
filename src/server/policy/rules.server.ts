@@ -219,12 +219,15 @@ function trackPolicy(action: Action, actor: Actor, param: ParamBinder): AccessDe
   return DENIED("Tracks cannot be upserted.");
 }
 
-/** Feed posts are owner-scoped: an artist reads, writes and deletes only their own rows. */
+/** Feed posts are owner-scoped for writes, but approved posts are visible publicly. */
 function feedPostPolicy(action: Action, actor: Actor, param: ParamBinder): AccessDecision {
   if (action === "select") {
     if (actor?.isAdmin) return allowed({ columns: null });
-    if (!actor) return DENIED("Sign in to read feed posts.");
-    return allowed({ columns: null, filter: `user_id = ${param(actor.id)}` });
+    if (!actor) return allowed({ columns: null, filter: "status = 'approved'" });
+    return allowed({
+      columns: null,
+      filter: `(user_id = ${param(actor.id)} or status = 'approved')`,
+    });
   }
 
   if (action === "insert") {
