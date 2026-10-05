@@ -46,5 +46,31 @@ export async function handleServerRequest(request: Request): Promise<Response> {
 export function withSecurityHeaders(response: Response): Response {
   response.headers.set("x-content-type-options", "nosniff");
   response.headers.set("referrer-policy", "strict-origin-when-cross-origin");
+  response.headers.set("x-frame-options", "DENY");
+  response.headers.set("cross-origin-opener-policy", "same-origin");
+  response.headers.set(
+    "permissions-policy",
+    "geolocation=(), microphone=(), camera=(), payment=()",
+  );
+  // TanStack Start inlines the hydration payload, hence 'unsafe-inline' for
+  // scripts. Everything else is locked to this origin, which still stops a
+  // third-party script from being injected and the page from being framed.
+  response.headers.set(
+    "content-security-policy",
+    [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline'",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com data:",
+      "img-src 'self' data: blob: https:",
+      "media-src 'self' blob: https:",
+      "connect-src 'self'",
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "object-src 'none'",
+      "upgrade-insecure-requests",
+    ].join("; "),
+  );
   return response;
 }

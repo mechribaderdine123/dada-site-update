@@ -17,6 +17,15 @@ export type ServerEnv = {
   dbPoolMax: number;
   adminEmail: string | null;
   adminPassword: string | null;
+  /** Public origin used to build links inside outgoing e-mails. */
+  siteUrl: string;
+  resendApiKey: string | null;
+  smtpHost: string | null;
+  smtpPort: number;
+  smtpUser: string | null;
+  smtpPass: string | null;
+  smtpSecure: boolean;
+  mailFrom: string | null;
 };
 
 const MEGABYTE = 1024 * 1024;
@@ -55,6 +64,14 @@ export function getEnv(): ServerEnv {
     dbPoolMax: numberOf(process.env.DB_POOL_MAX, 10),
     adminEmail: process.env.ADMIN_EMAIL?.trim() || null,
     adminPassword: process.env.ADMIN_PASSWORD?.trim() || null,
+    siteUrl: (process.env.SITE_URL?.trim() || "http://localhost:3000").replace(/\/+$/, ""),
+    resendApiKey: process.env.RESEND_API_KEY?.trim() || null,
+    smtpHost: process.env.SMTP_HOST?.trim() || null,
+    smtpPort: numberOf(process.env.SMTP_PORT, 587),
+    smtpUser: process.env.SMTP_USER?.trim() || null,
+    smtpPass: process.env.SMTP_PASS?.trim() || null,
+    smtpSecure: process.env.SMTP_SECURE === "true" || numberOf(process.env.SMTP_PORT, 587) === 465,
+    mailFrom: process.env.MAIL_FROM?.trim() || null,
   };
 
   return cached;

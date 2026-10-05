@@ -28,7 +28,7 @@ export function SiteFooter() {
               <Facebook className="w-4 h-4" />
             </a>
             <a
-              href="https://www.instagram.com/dada.hiphop.academy1/"
+              href="https://www.instagram.com/dada.hiphop.academy/"
               target="_blank"
               rel="noreferrer"
               className="w-10 h-10 grid place-items-center rounded-full border border-border hover:bg-primary hover:text-primary-foreground hover:border-primary transition"

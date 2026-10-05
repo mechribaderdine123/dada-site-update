@@ -256,11 +256,13 @@ function TrackModal({
     const path = `${userId}/${kind}-${crypto.randomUUID()}.${file.name.split(".").pop() || "bin"}`;
     // MP3s go to the music folder, cover art to the covers folder.
     const bucket = kind === "cover" ? "covers" : "music";
-    const { error } = await supabase.storage.from(bucket).upload(path, file, {
+    const { data, error } = await supabase.storage.from(bucket).upload(path, file, {
       contentType: file.type,
     });
     if (error) throw error;
-    return path;
+    // The server may re-encode images as WebP and returns the real on-disk path
+    // (with a changed extension). Use that path so signing finds the file.
+    return data?.path ?? path;
   };
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();

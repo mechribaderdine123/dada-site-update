@@ -186,12 +186,15 @@ function EditProfilePage() {
         "." +
         (file.name.split(".").pop() || "jpg");
       // Avatars and covers are stored in their own folders on the server.
-      const { error } = await supabase.storage
+      const { data, error } = await supabase.storage
         .from(kind === "avatar" ? "avatars" : "covers")
         .upload(path, file, { contentType: file.type });
       if (error) throw error;
-      set((kind + "_url") as keyof typeof f, path);
-      const url = await signedMusicUrl(path);
+      // The server may re-encode images (e.g. PNG → WebP) and returns the
+      // true on-disk path. Store and sign that path.
+      const storedPath = data?.path ?? path;
+      set((kind + "_url") as keyof typeof f, storedPath);
+      const url = await signedMusicUrl(storedPath);
       if (kind === "avatar") setAvatar(url);
       else setCover(url);
     } catch (error) {

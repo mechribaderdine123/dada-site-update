@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import teamAsset from "@/assets/dada-founder.jpg";
 import dancersAsset from "@/assets/hero-dancers.jpg";
-import { useContent } from "@/lib/site-content";
+import { SiteContentProvider, useContent } from "@/lib/site-content";
+import { loadSiteContent } from "@/lib/site-content.server";
 
 export const Route = createFileRoute("/a-propos")({
   head: () => ({
@@ -14,10 +15,20 @@ export const Route = createFileRoute("/a-propos")({
       },
     ],
   }),
+  loader: () => loadSiteContent(),
+
   component: AboutPage,
 });
 
 function AboutPage() {
+  return (
+    <SiteContentProvider content={Route.useLoaderData()}>
+      <AboutPageContent />
+    </SiteContentProvider>
+  );
+}
+
+function AboutPageContent() {
   const title = useContent("about.title", "QUI SOMMES-NOUS ?");
   const image1 = useContent("about.image1", teamAsset);
   const p1 = useContent(

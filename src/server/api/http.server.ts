@@ -3,6 +3,9 @@ import { QueryInputError } from "../db/tables.server";
 import { StorageError } from "../storage/buckets.server";
 import { AuthError } from "../auth/accounts.server";
 import { ForbiddenError, UnauthorizedError } from "../auth/identity.server";
+import { TokenError } from "../auth/tokens.server";
+import { EmailAddressError } from "../mail/email-address.server";
+import { RateLimitError } from "./rate-limit.server";
 
 // Small helpers shared by every API route: JSON responses, body parsing, the
 // same-origin check that protects cookie-authenticated writes, and a single
@@ -20,8 +23,8 @@ export function json(body: unknown, status = 200, headers: Record<string, string
   });
 }
 
-export function failure(status: number, message: string): Response {
-  return json({ data: null, error: { message } }, status);
+export function failure(status: number, message: string, code?: string): Response {
+  return json({ data: null, error: { message, ...(code ? { code } : {}) } }, status);
 }
 
 export function noContent(headers: Record<string, string> = {}): Response {
@@ -80,13 +83,16 @@ export function assertSameOrigin(request: Request): void {
 }
 
 export function toApiError(error: unknown): ApiError {
+  if (error instanceof RateLimitError) return { status: 429, message: error.message };
   if (error instanceof QueryDeniedError) return { status: 403, message: error.message };
   if (error instanceof ForbiddenError) return { status: 403, message: error.message };
   if (error instanceof UnauthorizedError) return { status: 401, message: error.message };
   if (error instanceof QueryInputError) return { status: 400, message: error.message };
   if (error instanceof StorageError) return { status: 400, message: error.message };
+  if (error instanceof EmailAddressError) return { status: 400, message: error.message };
+  if (error instanceof TokenError) return { status: 400, message: error.message };
   if (error instanceof AuthError) {
-    const status = /credentials/i.test(error.message) ? 401 : 400;
+    const status = error.code === "invalid_credentials" ? 401 : 400;
     return { status, message: error.message };
   }
 

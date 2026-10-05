@@ -65,7 +65,6 @@ function FieldRow({
 
   useEffect(() => {
     setValue(current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [current]);
 
   const dirty = value !== current;

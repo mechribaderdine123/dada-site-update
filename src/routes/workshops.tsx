@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { useContent } from "@/lib/site-content";
+import { SiteContentProvider, useContent } from "@/lib/site-content";
+import { loadSiteContent } from "@/lib/site-content.server";
 import { useWorkshops, WORKSHOP_CATEGORIES } from "@/lib/workshops";
 
 export const Route = createFileRoute("/workshops")({
@@ -17,6 +18,8 @@ export const Route = createFileRoute("/workshops")({
       { property: "og:description", content: "Prochains workshops et événements hip hop à Dada." },
     ],
   }),
+  loader: () => loadSiteContent(),
+
   component: WorkshopsPage,
 });
 
@@ -24,6 +27,14 @@ const CATEGORIES = ["Tous", ...WORKSHOP_CATEGORIES] as const;
 type Category = (typeof CATEGORIES)[number];
 
 function WorkshopsPage() {
+  return (
+    <SiteContentProvider content={Route.useLoaderData()}>
+      <WorkshopsPageContent />
+    </SiteContentProvider>
+  );
+}
+
+function WorkshopsPageContent() {
   const [category, setCategory] = useState<Category>("Tous");
   const [open, setOpen] = useState(false);
   const title1 = useContent("workshops.title1", "WORKSHOPS &");

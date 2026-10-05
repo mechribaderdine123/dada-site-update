@@ -1,7 +1,22 @@
-import { useSyncExternalStore } from "react";
+import { createContext, useContext, useSyncExternalStore, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 type Store = Record<string, string>;
+
+// Store hydrated on the server for the current request. When a route provides
+// it, useContent reads from here so the server renders the real value and the
+// first client render matches it -- no fallback image, no swap.
+const SiteContentContext = createContext<Store | null>(null);
+
+export function SiteContentProvider({
+  content,
+  children,
+}: {
+  content: Store;
+  children: ReactNode;
+}) {
+  return <SiteContentContext.Provider value={content}>{children}</SiteContentContext.Provider>;
+}
 
 const listeners = new Set<() => void>();
 let cache: Store = {};
@@ -34,11 +49,16 @@ function subscribe(cb: () => void) {
   return () => listeners.delete(cb);
 }
 
-export function getContent(key: string, fallback: string): string {
-  const v = cache[key];
+function resolve(store: Store | null, key: string, fallback: string): string {
+  const source = store ?? cache;
+  const v = source[key];
   // Lovable asset metadata uses a development-only URL that a self-hosted app
   // cannot serve, so retain the bundled image when an old value is present.
   return v !== undefined && v !== "" && !v.startsWith("/__l5e/") ? v : fallback;
+}
+
+export function getContent(key: string, fallback: string): string {
+  return resolve(cache, key, fallback);
 }
 
 export async function setContent(key: string, value: string) {
@@ -56,9 +76,10 @@ export async function setContent(key: string, value: string) {
 }
 
 export function useContent(key: string, fallback: string): string {
-  return useSyncExternalStore(
-    subscribe,
-    () => getContent(key, fallback),
-    () => fallback,
-  );
+  // The server and the browser resolve against the same store, so the first
+  // client render reproduces the server markup exactly and the image never
+  // swaps after hydration.
+  const store = useContext(SiteContentContext) ?? cache;
+  const read = () => resolve(store, key, fallback);
+  return useSyncExternalStore(subscribe, read, read);
 }

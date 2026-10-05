@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Facebook, Instagram, Mail, Phone, MapPin } from "lucide-react";
-import { useContent } from "@/lib/site-content";
+import { SiteContentProvider, useContent } from "@/lib/site-content";
+import { loadSiteContent } from "@/lib/site-content.server";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -12,10 +13,20 @@ export const Route = createFileRoute("/contact")({
       },
     ],
   }),
+  loader: () => loadSiteContent(),
+
   component: ContactPage,
 });
 
 function ContactPage() {
+  return (
+    <SiteContentProvider content={Route.useLoaderData()}>
+      <ContactPageContent />
+    </SiteContentProvider>
+  );
+}
+
+function ContactPageContent() {
   const title = useContent("contact.title", "CONTACTEZ-NOUS");
   const intro = useContent(
     "contact.intro",
@@ -26,10 +37,10 @@ function ContactPage() {
     "contact.facebook.url",
     "https://www.facebook.com/profile.php?id=61585478522995",
   );
-  const ig = useContent("contact.instagram", "dada.hiphop.academy1");
+  const ig = useContent("contact.instagram", "dada.hiphop.academy");
   const igUrl = useContent(
     "contact.instagram.url",
-    "https://www.instagram.com/dada.hiphop.academy1/",
+    "https://www.instagram.com/dada.hiphop.academy/",
   );
   const email = useContent("contact.email", "contact.dadahiphop@gmail.com");
   const phone = useContent("contact.phone", "97 800 464");

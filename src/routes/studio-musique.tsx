@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Mic, Music2, SlidersHorizontal, Building2, Video, GraduationCap } from "lucide-react";
 import heroImage from "@/assets/dada-hero.jpg";
-import { useContent } from "@/lib/site-content";
+import { SiteContentProvider, useContent } from "@/lib/site-content";
+import { loadSiteContent } from "@/lib/site-content.server";
 import { useStudioServices, type StudioServiceIcon } from "@/lib/studio-services";
 import { useStudioTags } from "@/lib/studio-tags";
 
@@ -16,6 +17,8 @@ export const Route = createFileRoute("/studio-musique")({
       },
     ],
   }),
+  loader: () => loadSiteContent(),
+
   component: StudioMusiquePage,
 });
 
@@ -57,6 +60,14 @@ function ServiceCard({
 }
 
 function StudioMusiquePage() {
+  return (
+    <SiteContentProvider content={Route.useLoaderData()}>
+      <StudioMusiquePageContent />
+    </SiteContentProvider>
+  );
+}
+
+function StudioMusiquePageContent() {
   const heroImg = useContent("studio.hero.image", heroImage);
   const title1 = useContent("studio.title1", "STUDIO MUSIQUE");
   const title2 = useContent("studio.title2", "CRÉATION & PRODUCTION");

@@ -211,13 +211,13 @@ export const PAGE_SCHEMAS: PageSchema[] = [
         key: "contact.instagram",
         label: "Instagram - texte",
         type: "text",
-        default: "dada.hiphop.academy1",
+        default: "dada.hiphop.academy",
       },
       {
         key: "contact.instagram.url",
         label: "Instagram - lien",
         type: "text",
-        default: "https://www.instagram.com/dada.hiphop.academy1/",
+        default: "https://www.instagram.com/dada.hiphop.academy/",
       },
       {
         key: "contact.email",

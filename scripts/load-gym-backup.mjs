@@ -32,10 +32,33 @@ const toDate = (v) => {
 const str = (v) => String(v ?? "");
 
 const inscCols = [
-  "nom", "ddn", "cin", "adresse", "tel", "email", "statut", "np", "tp",
-  "cin_parent", "adresse_parent", "cn", "dd", "mt", "mt_original", "ac", "mp",
-  "ap", "di", "obs", "ass_payee", "ass_date", "promo_code", "promo_type",
-  "promo_valeur", "nb_renouvellements", "historique",
+  "nom",
+  "ddn",
+  "cin",
+  "adresse",
+  "tel",
+  "email",
+  "statut",
+  "np",
+  "tp",
+  "cin_parent",
+  "adresse_parent",
+  "cn",
+  "dd",
+  "mt",
+  "mt_original",
+  "ac",
+  "mp",
+  "ap",
+  "di",
+  "obs",
+  "ass_payee",
+  "ass_date",
+  "promo_code",
+  "promo_type",
+  "promo_valeur",
+  "nb_renouvellements",
+  "historique",
 ];
 
 const inscVals = (r) => [
@@ -65,7 +88,9 @@ const inscVals = (r) => [
   q(str(r.promo_type)),
   q(Number(r.promo_valeur) || 0),
   q(Number(r.nb_renouvellements) || 0),
-  q(JSON.stringify(Array.isArray(r.historique_renouvellements) ? r.historique_renouvellements : [])) + "::jsonb",
+  q(
+    JSON.stringify(Array.isArray(r.historique_renouvellements) ? r.historique_renouvellements : []),
+  ) + "::jsonb",
 ];
 
 const statements = [];
@@ -88,8 +113,16 @@ for (const r of data.inscriptions || []) {
 
 const sql = statements.join("\n") + "\n";
 const psql = [
-  "exec", "-i", "dada-db",
-  "psql", "-v", "ON_ERROR_STOP=1", "-U", "dadahiphop", "-d", "dadahiphop",
+  "exec",
+  "-i",
+  "dada-db",
+  "psql",
+  "-v",
+  "ON_ERROR_STOP=1",
+  "-U",
+  "dadahiphop",
+  "-d",
+  "dadahiphop",
 ];
 execFileSync("docker", psql, { input: sql, stdio: ["pipe", "inherit", "inherit"] });
 

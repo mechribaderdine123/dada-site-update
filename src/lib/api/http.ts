@@ -1,7 +1,14 @@
 // Thin fetch wrapper for the project's own REST API. Every call returns either
 // `{ data }` or `{ error }`, which keeps the calling code simple.
 
-export type ApiResult<T> = { data: T; error: null } | { data: null; error: Error };
+export type ApiResult<T> = { data: T; error: null } | { data: null; error: ApiError };
+
+/**
+ * An error carrying the machine-readable `code` the API attached, so a form
+ * can react to (say) "email_unverified" without matching on the wording of a
+ * translated message.
+ */
+export type ApiError = Error & { code?: string };
 
 type RequestOptions = {
   method?: "GET" | "POST";
@@ -57,7 +64,10 @@ export async function apiRequest<T = unknown>(
     }
   }
 
-  const envelope = (parsed ?? {}) as { data?: unknown; error?: { message?: string } | null };
+  const envelope = (parsed ?? {}) as {
+    data?: unknown;
+    error?: { message?: string; code?: string } | null;
+  };
 
   if (!response.ok) {
     const message =
@@ -67,12 +77,19 @@ export async function apiRequest<T = unknown>(
         : response.status === 403
           ? "You do not have permission to do that."
           : `Request failed (${response.status}).`);
-    return { data: null, error: new Error(message) };
+    return { data: null, error: withCode(new Error(message), envelope.error?.code) };
   }
 
   if (envelope.error) {
-    return { data: null, error: new Error(envelope.error.message ?? "Request failed.") };
+    return {
+      data: null,
+      error: withCode(new Error(envelope.error.message ?? "Request failed."), envelope.error.code),
+    };
   }
 
   return { data: (envelope.data ?? null) as T, error: null };
+}
+
+function withCode(error: Error, code: string | undefined): ApiError {
+  return code ? Object.assign(error, { code }) : error;
 }

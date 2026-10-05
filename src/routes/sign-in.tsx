@@ -25,10 +25,19 @@ function SignInPage() {
   const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [unverified, setUnverified] = useState(false);
+  const [resent, setResent] = useState(false);
+
+  const resendConfirmation = async () => {
+    setResent(false);
+    await supabase.auth.resendVerification(email.trim());
+    setResent(true);
+  };
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setUnverified(false);
     setLoading(true);
     const { error: err } = await supabase.auth.signInWithPassword({
       email: email.trim(),
@@ -36,11 +45,16 @@ function SignInPage() {
     });
     setLoading(false);
     if (err) {
-      setError(
-        err.message === "Invalid login credentials"
-          ? "E-mail ou mot de passe incorrect."
-          : err.message,
-      );
+      if (err.code === "invalid_credentials") {
+        setError("E-mail ou mot de passe incorrect.");
+        return;
+      }
+      if (err.code === "email_unverified") {
+        setUnverified(true);
+        setError(null);
+        return;
+      }
+      setError(err.message);
       return;
     }
     navigate({ to: "/artist" });
@@ -72,7 +86,12 @@ function SignInPage() {
             />
           </div>
           <div>
-            <label className="text-sm font-semibold">Mot de Passe</label>
+            <div className="flex items-baseline justify-between">
+              <label className="text-sm font-semibold">Mot de Passe</label>
+              <Link to="/forgot-password" className="text-xs text-secondary hover:underline">
+                Mot de passe oublié ?
+              </Link>
+            </div>
             <div className="mt-2 relative">
               <input
                 type={showPwd ? "text" : "password"}
@@ -97,6 +116,28 @@ function SignInPage() {
             <p className="text-sm text-red-200 bg-red-900/40 border border-red-400/30 rounded-lg px-3 py-2">
               {error}
             </p>
+          )}
+
+          {unverified && (
+            <div className="text-sm bg-white/10 border border-white/20 rounded-lg px-3 py-3 space-y-2">
+              <p className="text-white">
+                Votre mot de passe est correct, mais cette adresse e-mail n&apos;a pas encore été
+                confirmée.
+              </p>
+              {resent ? (
+                <p className="text-white/70 text-xs">
+                  Si un e-mail vous a été envoyé, il arrive. Pensez à vérifier les courriers
+                  indésirables.
+                </p>
+              ) : null}
+              <button
+                type="button"
+                onClick={resendConfirmation}
+                className="text-secondary font-semibold hover:underline"
+              >
+                Renvoyer le lien de confirmation
+              </button>
+            </div>
           )}
 
           <button

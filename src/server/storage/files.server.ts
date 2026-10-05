@@ -1,5 +1,5 @@
 import { createReadStream, createWriteStream } from "node:fs";
-import { mkdir, stat, unlink } from "node:fs/promises";
+import { mkdir, stat, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
@@ -16,6 +16,12 @@ import {
   type Bucket,
   type BucketName,
 } from "./buckets.server";
+import { LOGO_MAX_EDGE, optimiseImage } from "./image-optimiser.server";
+
+/** Logos live in small tiles; photos deserve a larger render. */
+function maxEdgeFor(objectPath: string): number | undefined {
+  return objectPath.startsWith("sponsors/") ? LOGO_MAX_EDGE : undefined;
+}
 
 // All disk access for uploads lives here: writing, deleting, locating and
 // streaming files. Nothing outside this module touches UPLOAD_DIR.
@@ -62,15 +68,47 @@ export async function saveUpload(
 
   const absolute = absoluteObjectPath(bucket, normalised);
   await mkdir(path.dirname(absolute), { recursive: true });
-  await pipeline(Readable.fromWeb(file.stream() as never), createWriteStream(absolute));
 
-  const written = await stat(absolute);
+  // Audio is streamed straight to disk: a track must never sit in memory.
+  if (!contentType.startsWith("image/")) {
+    await pipeline(Readable.fromWeb(file.stream() as never), createWriteStream(absolute));
+    const written = await stat(absolute);
+    if (written.size > limit) {
+      await unlink(absolute).catch(() => undefined);
+      throw new StorageError("File is too large.");
+    }
+    return { path: normalised, size: written.size };
+  }
+
+  // Photos are shrunk before they touch the disk so a site image is never a
+  // multi-megabyte PNG. The optimiser may pick a different extension, which
+  // becomes the stored path and the path handed back to the caller.
+  const incoming = Buffer.from(await file.arrayBuffer());
+  const optimised = await optimiseImage(
+    incoming,
+    path.extname(normalised).toLowerCase(),
+    maxEdgeFor(normalised),
+  );
+  const storedPath =
+    optimised.extension === path.extname(normalised).toLowerCase()
+      ? normalised
+      : `${normalised.slice(0, -path.extname(normalised).length)}${optimised.extension}`;
+  const storedAbsolute = absoluteObjectPath(bucket, storedPath);
+
+  await writeFile(storedAbsolute, optimised.bytes);
+
+  const written = await stat(storedAbsolute);
   if (written.size > limit) {
-    await unlink(absolute).catch(() => undefined);
+    await unlink(storedAbsolute).catch(() => undefined);
     throw new StorageError("File is too large.");
   }
 
-  return { path: normalised, size: written.size };
+  // Drop the unoptimised file when the extension changed.
+  if (storedAbsolute !== absolute) {
+    await unlink(absolute).catch(() => undefined);
+  }
+
+  return { path: storedPath, size: written.size };
 }
 
 export async function findAssetInBucket(

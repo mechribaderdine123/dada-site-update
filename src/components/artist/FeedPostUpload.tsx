@@ -40,16 +40,20 @@ export function FeedPostUpload({ userId, accent, surface, onPostCreated }: FeedP
         userId + "/feed-" + crypto.randomUUID() + "." + (file.name.split(".").pop() || "jpg");
 
       // Upload image
-      const { error: uploadError } = await supabase.storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from("feed-images")
         .upload(path, file, { contentType: file.type });
 
       if (uploadError) throw uploadError;
 
+      // The server may re-encode the image (e.g. PNG → WebP) and returns the
+      // true on-disk path. Store that path so signing can locate the file.
+      const storedPath = uploadData?.path ?? path;
+
       // Create post record
       const { error: dbError } = await supabase.from("feed_posts").insert({
         user_id: userId,
-        image_url: path,
+        image_url: storedPath,
         caption: caption.trim() || null,
         // Held for review: an admin must approve before it is public.
         status: "pending",

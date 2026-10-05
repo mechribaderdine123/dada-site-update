@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Users, Radio } from "lucide-react";
 import heroImageAsset from "@/assets/dada-hero.jpg";
 import handstandImage from "@/assets/hero-dancers.jpg";
-import { useContent } from "@/lib/site-content";
+import { SiteContentProvider, useContent } from "@/lib/site-content";
+import { loadSiteContent } from "@/lib/site-content.server";
 import { defaultSponsors, useSponsors } from "@/lib/sponsors";
 
 export const Route = createFileRoute("/")({
@@ -15,16 +16,30 @@ export const Route = createFileRoute("/")({
           "L'espace où chaque talent trouve son expression. Cours de danse, studio musique et création artistique.",
       },
     ],
-    links: defaultSponsors.map((sponsor) => ({
-      rel: "preload",
-      as: "image",
-      href: sponsor.image_url,
-    })),
+    // Only real image URLs may be preloaded: an empty href makes the browser
+    // log "<link rel=preload> has an invalid href value".
+    links: defaultSponsors
+      .filter((sponsor) => sponsor.image_url)
+      .map((sponsor) => ({
+        rel: "preload",
+        as: "image",
+        href: sponsor.image_url,
+      })),
   }),
+  loader: () => loadSiteContent(),
+
   component: HomePage,
 });
 
 function HomePage() {
+  return (
+    <SiteContentProvider content={Route.useLoaderData()}>
+      <HomePageContent />
+    </SiteContentProvider>
+  );
+}
+
+function HomePageContent() {
   const heroImage = useContent("home.hero.image", heroImageAsset);
   const title1 = useContent("home.hero.title1", "DADA HIP HOP");
   const title2 = useContent("home.hero.title2", "ACADEMY");
@@ -178,8 +193,8 @@ function SponsorsStrip() {
                     src={s.image_url}
                     alt={s.name}
                     className="h-20 md:h-28 w-[180px] md:w-[220px] object-contain opacity-90 hover:opacity-100 transition"
+                    fetchPriority="low"
                     decoding="async"
-                    fetchPriority="high"
                   />
                 ) : (
                   <span className="grid h-20 md:h-28 w-[180px] md:w-[220px] place-items-center rounded-xl border border-border bg-card px-4 text-center font-display text-2xl tracking-wide text-primary">

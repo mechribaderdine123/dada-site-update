@@ -5,7 +5,8 @@ import heroAsset from "@/assets/dada-hero.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { signedMusicUrl } from "@/lib/music-url";
 import { useAuth } from "@/lib/auth";
-import { useContent } from "@/lib/site-content";
+import { SiteContentProvider, useContent } from "@/lib/site-content";
+import { loadSiteContent } from "@/lib/site-content.server";
 
 export const Route = createFileRoute("/dada-reseaux-artist")({
   head: () => ({
@@ -18,6 +19,8 @@ export const Route = createFileRoute("/dada-reseaux-artist")({
       },
     ],
   }),
+  loader: () => loadSiteContent(),
+
   component: DadaReseauxArtistPage,
 });
 
@@ -31,6 +34,14 @@ type PublicArtist = {
 };
 
 function DadaReseauxArtistPage() {
+  return (
+    <SiteContentProvider content={Route.useLoaderData()}>
+      <DadaReseauxArtistPageContent />
+    </SiteContentProvider>
+  );
+}
+
+function DadaReseauxArtistPageContent() {
   const [search, setSearch] = useState("");
   const [artists, setArtists] = useState<PublicArtist[]>([]);
   const [loading, setLoading] = useState(true);

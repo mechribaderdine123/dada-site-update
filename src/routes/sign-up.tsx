@@ -1,9 +1,10 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Eye, EyeOff, Youtube, Facebook, Instagram, Music2, Twitter } from "lucide-react";
 import bg from "@/assets/dada-auth.jpg";
 import logo from "@/assets/dada-logo.png";
 import { supabase } from "@/integrations/supabase/client";
+import { AuthNotice } from "@/components/auth/AuthCard";
 
 export const Route = createFileRoute("/sign-up")({
   head: () => ({
@@ -50,15 +51,22 @@ const empty: FormState = {
 };
 
 function SignUpPage() {
-  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [registered, setRegistered] = useState<{ email: string; mailSent: boolean } | null>(null);
+  const [resent, setResent] = useState(false);
   const [showPwd, setShowPwd] = useState(false);
   const [showPwd2, setShowPwd2] = useState(false);
   const [f, setF] = useState<FormState>(empty);
 
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) => setF((p) => ({ ...p, [k]: v }));
+
+  const resend = async () => {
+    setResent(false);
+    await supabase.auth.resendVerification(f.email.trim());
+    setResent(true);
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,7 +80,7 @@ function SignUpPage() {
       return;
     }
     setLoading(true);
-    const { error: err } = await supabase.auth.signUp({
+    const { data, error: err } = await supabase.auth.signUp({
       email: f.email.trim(),
       password: f.password,
       options: {
@@ -94,11 +102,74 @@ function SignUpPage() {
     });
     setLoading(false);
     if (err) {
-      setError(err.message);
+      setError(
+        err.code === "email_taken"
+          ? "Un compte existe déjà avec cette adresse e-mail."
+          : err.message,
+      );
       return;
     }
-    navigate({ to: "/artist" });
+    setRegistered({ email: f.email.trim(), mailSent: data?.mailSent ?? false });
   };
+
+  if (registered) {
+    return (
+      <div className="relative min-h-screen w-full flex items-center justify-center p-4 text-white">
+        <img src={bg} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/45" />
+
+        <div className="relative w-full max-w-lg rounded-2xl bg-black/55 backdrop-blur-xl border border-white/10 shadow-2xl p-8 md:p-10">
+          <div className="flex justify-center">
+            <img
+              src={logo}
+              alt="Dada Hip Hop Academy"
+              className="h-16 w-auto"
+              fetchPriority="high"
+            />
+          </div>
+          <h1 className="mt-4 text-center font-display text-3xl md:text-4xl tracking-wide">
+            Vérifiez votre e-mail
+          </h1>
+
+          {registered.mailSent ? (
+            <AuthNotice tone="success">
+              Nous avons envoyé un lien de confirmation à <strong>{registered.email}</strong>.
+              Ouvrez-le pour activer votre compte, puis revenez vous connecter. Le lien est valable
+              24 heures.
+            </AuthNotice>
+          ) : (
+            <AuthNotice tone="error">
+              Votre compte est créé, mais l&apos;e-mail n&apos;a pas pu partir. Contactez
+              l&apos;administration pour l&apos;activer.
+            </AuthNotice>
+          )}
+
+          {resent && (
+            <AuthNotice tone="info">
+              Si un e-mail vous a été envoyé, il arrive. Pensez à vérifier les courriers
+              indésirables.
+            </AuthNotice>
+          )}
+
+          <div className="mt-6 grid gap-3">
+            <button
+              type="button"
+              onClick={resend}
+              className="h-12 rounded-lg bg-white/10 hover:bg-white/15 border border-white/15 font-semibold transition"
+            >
+              Renvoyer le lien
+            </button>
+            <Link
+              to="/sign-in"
+              className="h-12 rounded-lg bg-secondary text-secondary-foreground font-semibold hover:opacity-90 transition grid place-items-center"
+            >
+              Aller à la connexion
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center p-4 text-white">

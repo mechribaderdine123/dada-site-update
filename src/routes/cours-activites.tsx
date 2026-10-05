@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PersonStanding, Dumbbell, Flower2 } from "lucide-react";
 import heroAsset from "@/assets/dada-cours.jpg";
 import planAsset from "@/assets/dada-plan.jpg";
-import { useContent } from "@/lib/site-content";
+import { SiteContentProvider, useContent } from "@/lib/site-content";
+import { loadSiteContent } from "@/lib/site-content.server";
 
 export const Route = createFileRoute("/cours-activites")({
   head: () => ({
@@ -15,6 +16,8 @@ export const Route = createFileRoute("/cours-activites")({
       },
     ],
   }),
+  loader: () => loadSiteContent(),
+
   component: CoursPage,
 });
 
@@ -76,6 +79,14 @@ const CARDS: Card[] = [
 ];
 
 function CoursPage() {
+  return (
+    <SiteContentProvider content={Route.useLoaderData()}>
+      <CoursPageContent />
+    </SiteContentProvider>
+  );
+}
+
+function CoursPageContent() {
   const heroImg = useContent("cours.hero.image", heroAsset);
   const title = useContent("cours.title", "NOS COURS & ACTIVITÉS");
   const intro = useContent(

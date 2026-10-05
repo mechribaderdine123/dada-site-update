@@ -16,9 +16,12 @@ import { Route as ArtistRouteImport } from './routes/artist'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CoursActivitesRouteImport } from './routes/cours-activites'
 import { Route as DadaReseauxArtistRouteImport } from './routes/dada-reseaux-artist'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as StudioMusiqueRouteImport } from './routes/studio-musique'
+import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as WorkshopsRouteImport } from './routes/workshops'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAboutRouteImport } from './routes/admin.about'
@@ -76,6 +79,16 @@ const DadaReseauxArtistRoute = DadaReseauxArtistRouteImport.update({
   path: '/dada-reseaux-artist',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignInRoute = SignInRouteImport.update({
   id: '/sign-in',
   path: '/sign-in',
@@ -89,6 +102,11 @@ const SignUpRoute = SignUpRouteImport.update({
 const StudioMusiqueRoute = StudioMusiqueRouteImport.update({
   id: '/studio-musique',
   path: '/studio-musique',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyEmailRoute = VerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WorkshopsRoute = WorkshopsRouteImport.update({
@@ -205,9 +223,12 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/cours-activites': typeof CoursActivitesRoute
   '/dada-reseaux-artist': typeof DadaReseauxArtistRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/studio-musique': typeof StudioMusiqueRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/workshops': typeof WorkshopsRoute
   '/admin/about': typeof AdminAboutRoute
   '/admin/accounts': typeof AdminAccountsRoute
@@ -236,9 +257,12 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/cours-activites': typeof CoursActivitesRoute
   '/dada-reseaux-artist': typeof DadaReseauxArtistRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/studio-musique': typeof StudioMusiqueRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/workshops': typeof WorkshopsRoute
   '/admin/about': typeof AdminAboutRoute
   '/admin/accounts': typeof AdminAccountsRoute
@@ -270,9 +294,12 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/cours-activites': typeof CoursActivitesRoute
   '/dada-reseaux-artist': typeof DadaReseauxArtistRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/studio-musique': typeof StudioMusiqueRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/workshops': typeof WorkshopsRoute
   '/admin/about': typeof AdminAboutRoute
   '/admin/accounts': typeof AdminAccountsRoute
@@ -305,9 +332,12 @@ export interface FileRouteTypes {
     | '/contact'
     | '/cours-activites'
     | '/dada-reseaux-artist'
+    | '/forgot-password'
+    | '/reset-password'
     | '/sign-in'
     | '/sign-up'
     | '/studio-musique'
+    | '/verify-email'
     | '/workshops'
     | '/admin/about'
     | '/admin/accounts'
@@ -336,9 +366,12 @@ export interface FileRouteTypes {
     | '/contact'
     | '/cours-activites'
     | '/dada-reseaux-artist'
+    | '/forgot-password'
+    | '/reset-password'
     | '/sign-in'
     | '/sign-up'
     | '/studio-musique'
+    | '/verify-email'
     | '/workshops'
     | '/admin/about'
     | '/admin/accounts'
@@ -369,9 +402,12 @@ export interface FileRouteTypes {
     | '/contact'
     | '/cours-activites'
     | '/dada-reseaux-artist'
+    | '/forgot-password'
+    | '/reset-password'
     | '/sign-in'
     | '/sign-up'
     | '/studio-musique'
+    | '/verify-email'
     | '/workshops'
     | '/admin/about'
     | '/admin/accounts'
@@ -403,9 +439,12 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   CoursActivitesRoute: typeof CoursActivitesRoute
   DadaReseauxArtistRoute: typeof DadaReseauxArtistRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SignInRoute: typeof SignInRoute
   SignUpRoute: typeof SignUpRoute
   StudioMusiqueRoute: typeof StudioMusiqueRoute
+  VerifyEmailRoute: typeof VerifyEmailRoute
   WorkshopsRoute: typeof WorkshopsRoute
   ArtistsIdRoute: typeof ArtistsIdRoute
 }
@@ -461,6 +500,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DadaReseauxArtistRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sign-in': {
       id: '/sign-in'
       path: '/sign-in'
@@ -480,6 +533,13 @@ declare module '@tanstack/react-router' {
       path: '/studio-musique'
       fullPath: '/studio-musique'
       preLoaderRoute: typeof StudioMusiqueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify-email': {
+      id: '/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof VerifyEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/workshops': {
@@ -705,9 +765,12 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   CoursActivitesRoute: CoursActivitesRoute,
   DadaReseauxArtistRoute: DadaReseauxArtistRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SignInRoute: SignInRoute,
   SignUpRoute: SignUpRoute,
   StudioMusiqueRoute: StudioMusiqueRoute,
+  VerifyEmailRoute: VerifyEmailRoute,
   WorkshopsRoute: WorkshopsRoute,
   ArtistsIdRoute: ArtistsIdRoute,
 }

@@ -215,6 +215,15 @@ async function loadSession(): Promise<void> {
   emit(cachedSession ? "INITIALIZED" : "SIGNED_OUT");
 }
 
+/** Re-reads the session cookie after the server issued a fresh one. */
+async function refreshSession(): Promise<void> {
+  if (!isBrowser()) return;
+  cachedSession = null;
+  sessionLoaded = false;
+  await loadSession();
+  emit(cachedSession ? "SIGNED_IN" : "SIGNED_OUT");
+}
+
 const auth = {
   // Awaiting loadSession guarantees the session is resolved (and listeners
   // notified) before getSession resolves.
@@ -244,11 +253,13 @@ const auth = {
   async signUp(input: {
     email: string;
     password: string;
-    // `emailRedirectTo` is accepted for call-site compatibility; there is no
-    // e-mail verification flow in this self-hosted setup, so it is ignored.
     options?: { data?: Record<string, unknown>; emailRedirectTo?: string };
   }) {
-    const result = await apiRequest<{ user: LocalUser; session: Session }>("/api/auth/sign-up", {
+    const result = await apiRequest<{
+      user: LocalUser;
+      confirmationRequired: boolean;
+      mailSent: boolean;
+    }>("/api/auth/sign-up", {
       method: "POST",
       json: {
         email: input.email,
@@ -256,12 +267,48 @@ const auth = {
         profile: input.options?.data ?? {},
       },
     });
-    if (result.error) return { data: { user: null }, error: result.error };
+    if (result.error) return { data: { user: null, mailSent: false }, error: result.error };
 
-    cachedSession = result.data.session;
-    sessionLoaded = true;
-    emit("SIGNED_IN");
-    return { data: { user: result.data.user, session: cachedSession }, error: null };
+    // The account waits for e-mail confirmation: no session is issued until
+    // the artist follows the link in the confirmation e-mail.
+    return {
+      data: { user: result.data.user, mailSent: result.data.mailSent },
+      error: null,
+    };
+  },
+
+  /** Confirms an address with the token from the link in the e-mail. */
+  async verifyEmail(token: string) {
+    const result = await apiRequest<{ verified: boolean }>("/api/auth/verify-email", {
+      method: "POST",
+      json: { token },
+    });
+    if (result.error) return { data: { verified: false }, error: result.error };
+
+    await refreshSession();
+    return { data: { verified: true }, error: null };
+  },
+
+  /** Asks for another confirmation link. The answer never reveals the account. */
+  async resendVerification(email: string) {
+    return apiRequest<{ sent: boolean }>("/api/auth/resend-verification", {
+      method: "POST",
+      json: { email },
+    });
+  },
+
+  async forgotPassword(email: string) {
+    return apiRequest<{ sent: boolean }>("/api/auth/forgot-password", {
+      method: "POST",
+      json: { email },
+    });
+  },
+
+  async resetPassword(token: string, password: string) {
+    return apiRequest<{ reset: boolean }>("/api/auth/reset-password", {
+      method: "POST",
+      json: { token, password },
+    });
   },
 
   async signInWithPassword(input: { email: string; password: string }) {

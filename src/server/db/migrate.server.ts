@@ -3,6 +3,7 @@ import publishTracksSql from "./sql/002_publish_tracks.sql?raw";
 import feedPostsSql from "./sql/003_feed_posts.sql?raw";
 import gymSql from "./sql/004_gym.sql?raw";
 import moderationSql from "./sql/005_moderation.sql?raw";
+import emailAuthSql from "./sql/006_email_auth.sql?raw";
 import { getPool, query } from "./pool.server";
 
 // Migrations are inlined at build time via `?raw`, so the production image
@@ -17,6 +18,7 @@ const MIGRATIONS: Migration[] = [
   { id: "003_feed_posts", sql: feedPostsSql },
   { id: "004_gym", sql: gymSql },
   { id: "005_moderation", sql: moderationSql },
+  { id: "006_email_auth", sql: emailAuthSql },
 ];
 
 let migrationRun: Promise<void> | undefined;
