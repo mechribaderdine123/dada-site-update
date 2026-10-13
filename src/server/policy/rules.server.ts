@@ -61,6 +61,7 @@ const PRIVATE_PROFILE_COLUMNS = ["email", "phone", "updated_at"];
 
 const CONTENT_TABLES: TableName[] = [
   "workshops",
+  "daily_plans",
   "sponsors",
   "site_content",
   "studio_services",

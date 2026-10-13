@@ -13,6 +13,7 @@ export type TableName =
   | "site_content"
   | "studio_services"
   | "studio_tags"
+  | "daily_plans"
   | "gym_cours"
   | "gym_inscriptions"
   | "gym_presences";
@@ -160,6 +161,12 @@ export const TABLES: Record<TableName, TableMeta> = {
   studio_tags: {
     columns: ["id", "label", "sort_order", "created_at", "updated_at"],
     publicColumns: ["id", "label", "sort_order", "created_at"],
+    conflictTarget: "id",
+    insertable: true,
+  },
+  daily_plans: {
+    columns: ["id", "day", "title", "image_url", "sort_order", "created_at", "updated_at"],
+    publicColumns: ["id", "day", "title", "image_url", "sort_order", "created_at"],
     conflictTarget: "id",
     insertable: true,
   },
