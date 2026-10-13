@@ -197,29 +197,54 @@ const storage = {
 
 let cachedSession: Session | null = null;
 let sessionLoaded = false;
+/** The read currently in flight, shared by every caller awaiting it. */
+let sessionLoad: Promise<void> | null = null;
+/** Bumped whenever an in-flight read must be discarded (sign-in/out, refresh). */
+let sessionGeneration = 0;
 const listeners = new Set<Listener>();
 
 function emit(event: string) {
   listeners.forEach((listener) => listener(event, cachedSession));
 }
 
-async function loadSession(): Promise<void> {
-  if (sessionLoaded || !isBrowser()) return;
-  sessionLoaded = true;
-  const result = await apiRequest<{ session: Session | null }>("/api/auth/session", {
-    method: "GET",
+function loadSession(): Promise<void> {
+  if (!isBrowser()) return Promise.resolve();
+  // A completed read is cached, an in-flight one is shared: without the
+  // second check a caller arriving while the first request is running would
+  // see an empty cache, conclude the visitor is signed out and make route
+  // guards bounce them to the sign-in page on a normal page load.
+  if (sessionLoaded) return Promise.resolve();
+  if (sessionLoad) return sessionLoad;
+
+  const generation = ++sessionGeneration;
+  const run = (async () => {
+    const result = await apiRequest<{ session: Session | null }>("/api/auth/session", {
+      method: "GET",
+    });
+    // A failed request keeps the cache empty so the next call retries instead
+    // of latching "signed out" for the rest of the page's life.
+    if (result.error || generation !== sessionGeneration) return;
+    cachedSession = result.data?.session ?? null;
+    sessionLoaded = true;
+    // Tell listeners what was found before anyone flips their loading flag off,
+    // so route guards never observe a signed-out frame on a normal page load.
+    emit(cachedSession ? "INITIALIZED" : "SIGNED_OUT");
+  })();
+
+  const shared = run.finally(() => {
+    if (sessionLoad === shared) sessionLoad = null;
   });
-  cachedSession = result.data?.session ?? null;
-  // Tell listeners what was found before anyone flips their loading flag off,
-  // so route guards never observe a signed-out frame on a normal page load.
-  emit(cachedSession ? "INITIALIZED" : "SIGNED_OUT");
+  sessionLoad = shared;
+  return shared;
 }
 
 /** Re-reads the session cookie after the server issued a fresh one. */
 async function refreshSession(): Promise<void> {
   if (!isBrowser()) return;
+  sessionGeneration += 1; // discard any read still in flight
   cachedSession = null;
   sessionLoaded = false;
+  sessionLoad = null;
   await loadSession();
   emit(cachedSession ? "SIGNED_IN" : "SIGNED_OUT");
 }
@@ -318,16 +343,20 @@ const auth = {
     });
     if (result.error) return { data: { user: null }, error: result.error };
 
+    sessionGeneration += 1; // the fresh session wins over any in-flight read
     cachedSession = result.data.session;
     sessionLoaded = true;
+    sessionLoad = null;
     emit("SIGNED_IN");
     return { data: { user: result.data.user, session: cachedSession }, error: null };
   },
 
   async signOut(): Promise<{ error: Error | null }> {
     const result = await apiRequest("/api/auth/sign-out", { method: "POST", json: {} });
+    sessionGeneration += 1;
     cachedSession = null;
     sessionLoaded = true;
+    sessionLoad = null;
     emit("SIGNED_OUT");
     return { error: result.error };
   },
