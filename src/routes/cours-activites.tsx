@@ -201,21 +201,22 @@ function PlanSection() {
         Choisissez un jour pour voir le planning de la journée.
       </p>
 
+      {/* The weekly overview stays visible whether or not daily plans exist;
+          it remains editable from the dashboard (cours.plan.image). */}
+      <div className="mt-6 rounded-2xl overflow-hidden border border-border">
+        <img
+          src={planImg}
+          alt="Planning hebdomadaire Dada Hip Hop Academy"
+          className="w-full h-auto"
+          loading="lazy"
+        />
+      </div>
+
       {loading ? (
         <p className="mt-6 text-sm text-muted-foreground">Chargement du planning…</p>
-      ) : plans.length === 0 ? (
-        // No plans uploaded yet: keep the single weekly image editable from the dashboard.
-        <div className="mt-6 rounded-2xl overflow-hidden border border-border">
-          <img
-            src={planImg}
-            alt="Planning hebdomadaire Dada Hip Hop Academy"
-            className="w-full h-auto"
-            loading="lazy"
-          />
-        </div>
-      ) : (
+      ) : plans.length === 0 ? null : (
         <>
-          <div className="mt-6 flex flex-wrap gap-2">
+          <div className="mt-8 flex flex-wrap gap-2">
             {PLAN_DAYS.map((d) => {
               const has = daysWithPlans.includes(d);
               const active = d === activeDay;
