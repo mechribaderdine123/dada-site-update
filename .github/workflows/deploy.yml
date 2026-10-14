@@ -27,6 +27,9 @@ jobs:
             set -e
             cd "$DEPLOY_PATH"
             git pull --ff-only origin main
-            docker compose up -d --build --remove-orphans
+            # Caddy owns ports 80/443 on this host, so the nginx/certbot
+            # services from docker-compose.yml cannot start there. Deploy the
+            # app + db only (see DEPLOYMENT.md §4).
+            docker compose -f server-docker-compose.yml up -d --build --remove-orphans
         env:
           DEPLOY_PATH: ${{ secrets.HOSTINGER_DEPLOY_PATH }}
